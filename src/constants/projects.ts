@@ -23,7 +23,7 @@ export const projects = [
         tags: ["WordPress", "PHP", "CSS"],
         image: "/hino.png",
         liveUrl: "https://www.dealerhinojkt.com/",
-        featured: true,
+        featured: false,
     },
     {
         title: "Spestama",
@@ -55,7 +55,7 @@ export const projects = [
         tags: ["WordPress", "PHP", "CSS"],
         image: "/gibrancctv.png",
         liveUrl: "https://gibrancctvjakarta-bogor.com/",
-        featured: false,
+        featured: true,
     },
     {
         title: "Wuling Maju Jabodetabek",
