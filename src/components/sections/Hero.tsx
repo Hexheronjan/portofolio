@@ -8,6 +8,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Section } from "@/components/ui/Section";
 import { Badge } from "@/components/ui/Badge";
+import { Magnetic } from "@/components/ui/Magnetic";
 
 const techStack = [
     "Next.js",
@@ -19,6 +20,34 @@ const techStack = [
     "Node.js",
     "Framer Motion",
 ];
+
+// Text Reveal component for Hero heading
+function TextReveal({ text, className, delay = 0 }: { text: string; className?: string; delay?: number }) {
+    return (
+        <span className={className}>
+            {text.split("").map((char, i) => (
+                <motion.span
+                    key={i}
+                    initial={{ opacity: 0, y: 20, rotate: 10 }}
+                    animate={{ opacity: 1, y: 0, rotate: 0 }}
+                    transition={{
+                        duration: 0.5,
+                        delay: delay + i * 0.05,
+                        ease: [0.215, 0.61, 0.355, 1],
+                    }}
+                    style={{ display: "inline-block", whiteSpace: char === " " ? "pre" : "normal" }}
+                    whileHover={{
+                        scale: 1.2,
+                        color: "var(--highlight)",
+                        transition: { duration: 0.2 }
+                    }}
+                >
+                    {char}
+                </motion.span>
+            ))}
+        </span>
+    );
+}
 
 // Particle burst on click
 function Particle({ x, y, color }: { x: number; y: number; color: string }) {
@@ -109,6 +138,16 @@ export function Hero() {
             <div className="absolute top-40 right-[20%] w-1.5 h-1.5 rounded-full bg-[var(--highlight)]/40 animate-float" style={{ animationDuration: "7s", animationDelay: "1s" }} />
             <div className="absolute bottom-40 left-[25%] w-1 h-1 rounded-full bg-primary/20 animate-float" style={{ animationDuration: "6s", animationDelay: "0.5s" }} />
 
+            {/* Floating Interactive Blobs */}
+            <motion.div
+                animate={{
+                    x: [0, 50, -20, 0],
+                    y: [0, -30, 40, 0]
+                }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                className="absolute top-1/3 right-1/3 w-64 h-64 bg-purple-500/10 rounded-full blur-[80px] -z-10"
+            />
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center w-full max-w-6xl mx-auto px-4 z-10">
                 {/* Kiri: teks & CTA */}
                 <div className="flex flex-col items-center md:items-start text-center md:text-left space-y-8 order-2 md:order-1">
@@ -122,9 +161,9 @@ export function Hero() {
                             Terbuka untuk peluang baru
                         </Badge>
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight text-foreground leading-[1.1]">
-                            Standar untuk <br />
+                            <TextReveal text="Standar untuk" delay={0.2} /><br />
                             <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-[length:200%_auto] animate-gradient">
-                                Pengembangan Web Modern
+                                <TextReveal text="Pengembangan Web Modern" delay={0.8} />
                             </span>
                         </h1>
                     </motion.div>
@@ -143,18 +182,23 @@ export function Hero() {
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.4 }}
+                        transition={{ duration: 0.5, delay: 2.2 }}
                         className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto"
                     >
-                        <Button size="lg" className="group h-12 px-8 text-base shadow-lg hover:shadow-xl hover:shadow-primary/20 transition-all duration-300" asChild>
-                            <Link href="/projects">
-                                Lihat Proyek
-                                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                            </Link>
-                        </Button>
-                        <Button size="lg" variant="outline" className="h-12 px-8 text-base border-2 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300" asChild>
-                            <Link href="/contact">Hubungi Saya</Link>
-                        </Button>
+                        <Magnetic strength={0.25}>
+                            <Button size="lg" className="group h-12 px-8 text-base shadow-lg hover:shadow-xl hover:shadow-primary/20 transition-all duration-300 w-full sm:w-auto" asChild>
+                                <Link href="/projects">
+                                    Lihat Proyek
+                                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                                </Link>
+                            </Button>
+                        </Magnetic>
+
+                        <Magnetic strength={0.4}>
+                            <Button size="lg" variant="outline" className="h-12 px-8 text-base border-2 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 w-full sm:w-auto" asChild>
+                                <Link href="/contact">Hubungi Saya</Link>
+                            </Button>
+                        </Magnetic>
                     </motion.div>
                 </div>
 

@@ -17,6 +17,8 @@ const navItems = [
     { name: "Kontak", href: "/contact" },
 ];
 
+import { Magnetic } from "@/components/ui/Magnetic";
+
 export function Navbar() {
     const [isOpen, setIsOpen] = React.useState(false);
     const [isScrolled, setIsScrolled] = React.useState(false);
@@ -42,26 +44,28 @@ export function Navbar() {
             )}
         >
             <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
-                <Link href="/" className="flex items-center gap-2 group">
-                    {!logoError ? (
-                        <Image
-                            src="/set.png"
-                            alt="FRAVOX Digital Solutions"
-                            width={40}
-                            height={40}
-                            className="h-10 w-10 object-contain group-hover:opacity-90 transition-opacity"
-                            unoptimized
-                            onError={() => setLogoError(true)}
-                        />
-                    ) : (
-                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                            <span className="font-display font-bold text-sm text-primary">F</span>
-                        </div>
-                    )}
-                    <span className="font-display font-bold text-xl tracking-tight hidden sm:inline">
-                        FRAVOX<span className="text-primary">.</span>
-                    </span>
-                </Link>
+                <Magnetic strength={0.2}>
+                    <Link href="/" className="flex items-center gap-2 group">
+                        {!logoError ? (
+                            <Image
+                                src="/set.png"
+                                alt="FRAVOX Digital Solutions"
+                                width={40}
+                                height={40}
+                                className="h-10 w-10 object-contain group-hover:opacity-90 transition-opacity"
+                                unoptimized
+                                onError={() => setLogoError(true)}
+                            />
+                        ) : (
+                            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                                <span className="font-display font-bold text-sm text-primary">F</span>
+                            </div>
+                        )}
+                        <span className="font-display font-bold text-xl tracking-tight hidden sm:inline">
+                            FRAVOX<span className="text-primary">.</span>
+                        </span>
+                    </Link>
+                </Magnetic>
 
                 {/* Desktop Nav */}
                 <nav className="hidden md:flex items-center gap-8">
@@ -85,7 +89,11 @@ export function Navbar() {
                             />
                         </Link>
                     ))}
-                    <ThemeToggle />
+                    <Magnetic strength={0.5}>
+                        <div className="p-1">
+                            <ThemeToggle />
+                        </div>
+                    </Magnetic>
                 </nav>
 
                 {/* Mobile Nav Toggle */}

@@ -8,6 +8,8 @@ import { Footer } from "@/components/layout/Footer";
 import { CursorGlow } from "@/components/ui/CursorGlow";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
 
+import { ScrollProgress } from "@/components/ui/ScrollProgress";
+
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
@@ -33,7 +35,7 @@ export default function RootLayout({
     <html lang="id" suppressHydrationWarning className="scroll-smooth">
       <body
         className={cn(
-          "min-h-screen bg-background font-sans text-foreground antialiased selection:bg-primary selection:text-primary-foreground",
+          "min-h-screen bg-background font-sans text-foreground antialiased selection:bg-primary/20",
           inter.variable,
           poppins.variable
         )}
@@ -44,9 +46,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <ScrollProgress />
           <CursorGlow />
           <ScrollToTop />
-          <div className="flex flex-col min-h-screen">
+          <div className="flex flex-col min-h-screen noise-bg">
             <Navbar />
             <main className="flex-grow pt-20">{children}</main>
             <Footer />

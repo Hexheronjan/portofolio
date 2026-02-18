@@ -11,9 +11,11 @@ const socialLinks = [
     { name: "Email", href: "mailto:fauzanbagusprasetyobisnis@gmail.com", icon: Mail },
 ];
 
+import { Magnetic } from "@/components/ui/Magnetic";
+
 export function Footer() {
     return (
-        <footer className="bg-background border-t border-border py-12 mt-20 relative overflow-hidden">
+        <footer className="bg-background border-t border-border py-12 mt-20 relative overflow-hidden noise-bg">
             {/* Animated gradient accent line */}
             <motion.div
                 initial={{ scaleX: 0 }}
@@ -36,21 +38,23 @@ export function Footer() {
                     transition={{ duration: 0.5 }}
                     className="flex flex-col items-center md:items-start gap-2"
                 >
-                    <Link href="/" className="flex items-center gap-2 group">
-                        <motion.div whileHover={{ rotate: 10, scale: 1.1 }} transition={{ type: "spring", stiffness: 300 }}>
-                            <Image
-                                src="/set.png"
-                                alt="FRAVOX Digital Solutions"
-                                width={36}
-                                height={36}
-                                className="h-9 w-9 object-contain"
-                                unoptimized
-                            />
-                        </motion.div>
-                        <span className="font-display font-bold text-xl tracking-tight group-hover:text-primary transition-colors duration-300">
-                            FRAVOX<span className="text-primary">.</span>
-                        </span>
-                    </Link>
+                    <Magnetic strength={0.2}>
+                        <Link href="/" className="flex items-center gap-2 group">
+                            <motion.div whileHover={{ rotate: 10, scale: 1.1 }} transition={{ type: "spring", stiffness: 300 }}>
+                                <Image
+                                    src="/set.png"
+                                    alt="FRAVOX Digital Solutions"
+                                    width={36}
+                                    height={36}
+                                    className="h-9 w-9 object-contain"
+                                    unoptimized
+                                />
+                            </motion.div>
+                            <span className="font-display font-bold text-xl tracking-tight group-hover:text-primary transition-colors duration-300">
+                                FRAVOX<span className="text-primary">.</span>
+                            </span>
+                        </Link>
+                    </Magnetic>
                     <p className="text-muted-foreground text-sm">
                         © {new Date().getFullYear()} FRAVOX Digital Solutions. Hak cipta dilindungi.
                     </p>
@@ -65,25 +69,26 @@ export function Footer() {
                     className="flex items-center gap-4"
                 >
                     {socialLinks.map((link, index) => (
-                        <motion.div
-                            key={link.name}
-                            initial={{ opacity: 0, y: 10 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.4, delay: 0.2 + index * 0.1 }}
-                            whileHover={{ y: -3, scale: 1.15 }}
-                            whileTap={{ scale: 0.9 }}
-                        >
-                            <Link
-                                href={link.href}
-                                className="relative flex items-center justify-center w-10 h-10 rounded-full border border-border/50 bg-secondary/50 text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-colors duration-300"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                aria-label={link.name}
+                        <Magnetic key={link.name} strength={0.5}>
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.4, delay: 0.2 + index * 0.1 }}
+                                whileHover={{ y: -3, scale: 1.15 }}
+                                whileTap={{ scale: 0.9 }}
                             >
-                                <link.icon size={18} />
-                            </Link>
-                        </motion.div>
+                                <Link
+                                    href={link.href}
+                                    className="relative flex items-center justify-center w-10 h-10 rounded-full border border-border/50 bg-secondary/50 text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-colors duration-300"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label={link.name}
+                                >
+                                    <link.icon size={18} />
+                                </Link>
+                            </motion.div>
+                        </Magnetic>
                     ))}
                 </motion.div>
             </div>
