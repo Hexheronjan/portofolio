@@ -190,10 +190,10 @@ export function Hero() {
                                 transition={{ type: "spring", stiffness: 200, damping: 20 }}
                             >
                                 <Image
-                                    src="/gibrancctv.png"
-                                    alt="Hero Image"
+                                    src="/hero-logo.png"
+                                    alt="FRAVOX Logo"
                                     fill
-                                    className="object-contain drop-shadow-2xl rounded-xl"
+                                    className="object-contain drop-shadow-2xl"
                                     style={{
                                         filter: isHovered
                                             ? "drop-shadow(0 0 24px rgba(59,130,246,0.3)) brightness(1.05)"
