@@ -182,64 +182,6 @@ export function Hero() {
                                 ))}
                             </div>
 
-                            {/* Outer spinning rainbow ring */}
-                            <motion.div
-                                className="absolute inset-[-16px] rounded-full"
-                                style={{
-                                    background: "conic-gradient(from 0deg, #3b82f6, #8b5cf6, #ec4899, #f59e0b, #10b981, #3b82f6)",
-                                    opacity: isHovered ? 0.7 : 0.3,
-                                    filter: "blur(2px)",
-                                }}
-                                animate={{ rotate: 360 }}
-                                transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
-                            />
-                            {/* Mask to make it ring-shaped */}
-                            <div className="absolute inset-[-4px] rounded-full bg-background/90 dark:bg-background/95" />
-
-                            {/* Middle spinning ring (reverse) */}
-                            <motion.div
-                                className="absolute inset-[-8px] rounded-full"
-                                style={{
-                                    background: "conic-gradient(from 180deg, #f59e0b, #ef4444, #8b5cf6, #3b82f6, #10b981, #f59e0b)",
-                                    opacity: isHovered ? 0.5 : 0.15,
-                                    filter: "blur(1px)",
-                                }}
-                                animate={{ rotate: -360 }}
-                                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-                            />
-                            <div className="absolute inset-[-2px] rounded-full bg-background/90 dark:bg-background/95" />
-
-                            {/* Dynamic glow behind logo */}
-                            <motion.div
-                                className="absolute inset-0 rounded-full blur-2xl"
-                                animate={{
-                                    background: isHovered
-                                        ? [
-                                            "radial-gradient(circle, rgba(59,130,246,0.5) 0%, transparent 70%)",
-                                            "radial-gradient(circle, rgba(168,85,247,0.5) 0%, transparent 70%)",
-                                            "radial-gradient(circle, rgba(236,72,153,0.5) 0%, transparent 70%)",
-                                            "radial-gradient(circle, rgba(245,158,11,0.5) 0%, transparent 70%)",
-                                            "radial-gradient(circle, rgba(59,130,246,0.5) 0%, transparent 70%)",
-                                        ]
-                                        : "radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%)",
-                                    scale: isHovered ? 1.1 : 1,
-                                }}
-                                transition={{
-                                    background: { duration: 2, repeat: Infinity, ease: "linear" },
-                                    scale: { duration: 0.3 },
-                                }}
-                            />
-
-                            {/* Click glow burst */}
-                            <motion.div
-                                key={clickCount}
-                                className="absolute inset-0 rounded-full pointer-events-none"
-                                initial={{ opacity: 0.8, scale: 1 }}
-                                animate={{ opacity: 0, scale: 1.6 }}
-                                transition={{ duration: 0.6, ease: "easeOut" }}
-                                style={{ background: `radial-gradient(circle, ${glowColors[glowIndex]} 0%, transparent 70%)` }}
-                            />
-
                             {/* 3D tilt logo image */}
                             <motion.div
                                 className="relative w-full h-full"
@@ -248,13 +190,13 @@ export function Hero() {
                                 transition={{ type: "spring", stiffness: 200, damping: 20 }}
                             >
                                 <Image
-                                    src="/hero-logo.png"
-                                    alt="FRAVOX Logo"
+                                    src="/gibrancctv.png"
+                                    alt="Hero Image"
                                     fill
-                                    className="object-contain drop-shadow-2xl"
+                                    className="object-contain drop-shadow-2xl rounded-xl"
                                     style={{
                                         filter: isHovered
-                                            ? "drop-shadow(0 0 24px rgba(59,130,246,0.6)) drop-shadow(0 0 48px rgba(168,85,247,0.3)) brightness(1.1)"
+                                            ? "drop-shadow(0 0 24px rgba(59,130,246,0.3)) brightness(1.05)"
                                             : "drop-shadow(0 8px 32px rgba(0,0,0,0.3))",
                                         transition: "filter 0.4s ease",
                                     }}
