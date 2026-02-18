@@ -45,31 +45,9 @@ function TextReveal({ text, className, delay = 0 }: { text: string; className?: 
     );
 }
 
-// Particle burst on click
-function Particle({ x, y, color }: { x: number; y: number; color: string }) {
-    const angle = Math.random() * 360;
-    const distance = 60 + Math.random() * 80;
-    const dx = Math.cos((angle * Math.PI) / 180) * distance;
-    const dy = Math.sin((angle * Math.PI) / 180) * distance;
-
-    return (
-        <motion.div
-            className="absolute w-2 h-2 rounded-full pointer-events-none z-50"
-            style={{ left: x, top: y, backgroundColor: color }}
-            initial={{ scale: 1, opacity: 1, x: 0, y: 0 }}
-            animate={{ scale: 0, opacity: 0, x: dx, y: dy }}
-            transition={{ duration: 0.7, ease: "easeOut" }}
-        />
-    );
-}
-
-const COLORS = ["#3b82f6", "#f59e0b", "#8b5cf6", "#10b981", "#ef4444", "#f97316", "#ec4899"];
-
 export function Hero() {
     const [heroLogoError, setHeroLogoError] = useState(false);
-    const [particles, setParticles] = useState<{ id: number; x: number; y: number; color: string }[]>([]);
     const [isHovered, setIsHovered] = useState(false);
-    const [clickCount, setClickCount] = useState(0);
     const logoRef = useRef<HTMLDivElement>(null);
 
     // 3D tilt effect
@@ -91,33 +69,6 @@ export function Hero() {
         mouseY.set(0);
         setIsHovered(false);
     };
-
-    const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const cx = e.clientX - rect.left;
-        const cy = e.clientY - rect.top;
-        const newParticles = Array.from({ length: 6 }, (_, i) => ({
-            id: Date.now() + i,
-            x: cx,
-            y: cy,
-            color: COLORS[Math.floor(Math.random() * COLORS.length)],
-        }));
-        setParticles((prev) => [...prev, ...newParticles]);
-        setClickCount((c) => c + 1);
-        setTimeout(() => {
-            setParticles((prev) => prev.filter((p) => !newParticles.find((n) => n.id === p.id)));
-        }, 800);
-    };
-
-    // Cycling rainbow glow colors
-    const glowColors = [
-        "rgba(59,130,246,0.6)",
-        "rgba(168,85,247,0.6)",
-        "rgba(236,72,153,0.6)",
-        "rgba(245,158,11,0.6)",
-        "rgba(16,185,129,0.6)",
-    ];
-    const glowIndex = clickCount % glowColors.length;
 
     return (
         <Section className="min-h-[85vh] flex items-center justify-center relative overflow-hidden">
@@ -208,20 +159,12 @@ export function Hero() {
                     {!heroLogoError ? (
                         <div
                             ref={logoRef}
-                            className="relative w-full max-w-sm md:max-w-md aspect-square cursor-pointer select-none"
+                            className="relative w-full max-w-sm md:max-w-md aspect-square select-none"
                             onMouseMove={handleMouseMove}
                             onMouseEnter={() => setIsHovered(true)}
                             onMouseLeave={handleMouseLeave}
-                            onClick={handleClick}
                             style={{ perspective: "800px" }}
                         >
-                            {/* Particle container */}
-                            <div className="absolute inset-0 pointer-events-none overflow-visible z-50">
-                                {particles.map((p) => (
-                                    <Particle key={p.id} x={p.x} y={p.y} color={p.color} />
-                                ))}
-                            </div>
-
                             {/* 3D tilt logo image */}
                             <motion.div
                                 className="relative w-full h-full"
@@ -243,16 +186,6 @@ export function Hero() {
                                     unoptimized
                                     onError={() => setHeroLogoError(true)}
                                 />
-                            </motion.div>
-
-                            {/* Hint text */}
-                            <motion.div
-                                className="absolute -bottom-8 left-0 right-0 text-center"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: isHovered ? 1 : 0 }}
-                                transition={{ duration: 0.3 }}
-                            >
-                                <span className="text-xs text-muted-foreground/60 font-mono">✨ klik untuk efek!</span>
                             </motion.div>
                         </div>
                     ) : (
