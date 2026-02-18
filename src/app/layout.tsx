@@ -5,6 +5,8 @@ import { ThemeProvider } from "./providers";
 import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { CursorGlow } from "@/components/ui/CursorGlow";
+import { ScrollToTop } from "@/components/ui/ScrollToTop";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -42,6 +44,8 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <CursorGlow />
+          <ScrollToTop />
           <div className="flex flex-col min-h-screen">
             <Navbar />
             <main className="flex-grow pt-20">{children}</main>
