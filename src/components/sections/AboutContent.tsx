@@ -6,28 +6,26 @@ import { Section } from "@/components/ui/Section";
 
 const experience = [
     {
-        year: "2023 - Sekarang",
-        title: "Frontend Developer",
-        organization: "Tech Solutions Inc.",
+        year: "2025 – 2026",
+        title: "Full Stack Developer + WordPress",
         description:
-            "Mengembangkan aplikasi web yang skalabel menggunakan React, Next.js, dan TypeScript. Meningkatkan performa situs sebesar 40% melalui pemisahan kode dan optimasi gambar.",
+            "Mengembangkan aplikasi web full stack menggunakan React/Vue + Node.js/Express + MySQL, PostgreSQL & Supabase. Membuat website WordPress dengan custom theme & plugin. Project: e-commerce, blog platform, website perusahaan.",
     },
     {
-        year: "2022 - 2023",
-        title: "Junior Web Developer",
-        organization: "Creative Agency",
+        year: "2023 – 2024",
+        title: "Web Developer / Frontend Developer",
         description:
-            "Berkolaborasi dengan desainer untuk mengimplementasikan antarmuka pengguna yang responsif. Membangun pustaka komponen yang dapat digunakan kembali menggunakan Tailwind CSS.",
+            "Membuat website statis & interaktif menggunakan HTML, CSS, dan JavaScript. Project: landing page, toko online, dan berbagai website klien.",
     },
 ];
 
 const education = [
     {
-        year: "2019 - 2023",
-        title: "Sarjana Ilmu Komputer",
-        organization: "Universitas Indonesia",
+        year: "2026 – Lulusan",
+        title: "Rekayasa Perangkat Lunak",
+        organization: "SMK Negeri 1 Jenangan",
         description:
-            "Fokus pada Rekayasa Perangkat Lunak dan Interaksi Manusia-Komputer. Anggota aktif klub pemrograman universitas.",
+            "Jurusan Rekayasa Perangkat Lunak (RPL). Mempelajari dasar-dasar pemrograman, pengembangan web, dan rekayasa perangkat lunak secara profesional.",
     },
 ];
 
