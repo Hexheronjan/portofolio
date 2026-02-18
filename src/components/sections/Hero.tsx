@@ -28,19 +28,15 @@ function TextReveal({ text, className, delay = 0 }: { text: string; className?: 
             {text.split("").map((char, i) => (
                 <motion.span
                     key={i}
-                    initial={{ opacity: 0, y: 20, rotate: 10 }}
-                    animate={{ opacity: 1, y: 0, rotate: 0 }}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
                     transition={{
-                        duration: 0.5,
-                        delay: delay + i * 0.05,
-                        ease: [0.215, 0.61, 0.355, 1],
+                        duration: 0.4,
+                        delay: delay + i * 0.03,
+                        ease: "easeOut",
                     }}
                     style={{ display: "inline-block", whiteSpace: char === " " ? "pre" : "normal" }}
-                    whileHover={{
-                        scale: 1.2,
-                        color: "var(--highlight)",
-                        transition: { duration: 0.2 }
-                    }}
+                    className="hover:text-primary transition-colors duration-200"
                 >
                     {char}
                 </motion.span>
@@ -100,7 +96,7 @@ export function Hero() {
         const rect = e.currentTarget.getBoundingClientRect();
         const cx = e.clientX - rect.left;
         const cy = e.clientY - rect.top;
-        const newParticles = Array.from({ length: 14 }, (_, i) => ({
+        const newParticles = Array.from({ length: 6 }, (_, i) => ({
             id: Date.now() + i,
             x: cx,
             y: cy,
@@ -138,14 +134,14 @@ export function Hero() {
             <div className="absolute top-40 right-[20%] w-1.5 h-1.5 rounded-full bg-[var(--highlight)]/40 animate-float" style={{ animationDuration: "7s", animationDelay: "1s" }} />
             <div className="absolute bottom-40 left-[25%] w-1 h-1 rounded-full bg-primary/20 animate-float" style={{ animationDuration: "6s", animationDelay: "0.5s" }} />
 
-            {/* Floating Interactive Blobs */}
+            {/* Floating Interactive Blobs - Hidden on mobile/tablet for performance */}
             <motion.div
                 animate={{
                     x: [0, 50, -20, 0],
                     y: [0, -30, 40, 0]
                 }}
                 transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                className="absolute top-1/3 right-1/3 w-64 h-64 bg-purple-500/10 rounded-full blur-[80px] -z-10"
+                className="absolute top-1/3 right-1/3 w-64 h-64 bg-purple-500/10 rounded-full blur-[80px] -z-10 hidden lg:block"
             />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center w-full max-w-6xl mx-auto px-4 z-10">

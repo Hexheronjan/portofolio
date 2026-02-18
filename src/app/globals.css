@@ -389,7 +389,12 @@
   opacity: 0.05;
   pointer-events: none;
   z-index: 0;
-  animation: noise 2s steps(4) infinite;
+}
+
+@media (min-width: 1024px) {
+  .noise-bg::before {
+    animation: noise 2s steps(4) infinite;
+  }
 }
 
 .dark .noise-bg::before {
