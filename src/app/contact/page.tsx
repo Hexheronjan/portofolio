@@ -58,7 +58,7 @@ export default function ContactPage() {
                                 <div className="bg-secondary p-3 rounded-full group-hover:bg-primary/10 group-hover:scale-110 transition-all duration-300">
                                     <Mail className="h-6 w-6" />
                                 </div>
-                                <span className="text-lg font-medium">fauzanbagusprasetyobisnis@gmail.com</span>
+                                <span className="text-base sm:text-lg font-medium break-all sm:break-normal">fauzanbagusprasetyobisnis@gmail.com</span>
                             </a>
 
                             <a
@@ -68,7 +68,7 @@ export default function ContactPage() {
                                 <div className="bg-secondary p-3 rounded-full group-hover:bg-primary/10 group-hover:scale-110 transition-all duration-300">
                                     <Phone className="h-6 w-6" />
                                 </div>
-                                <span className="text-lg font-medium">082338689711</span>
+                                <span className="text-base sm:text-lg font-medium">082338689711</span>
                             </a>
 
                             <div className="pt-8">
@@ -99,7 +99,7 @@ export default function ContactPage() {
                         transition={{ duration: 0.5, delay: 0.2 }}
                     >
                         <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover:border-primary/40 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
-                            <CardContent className="p-6 md:p-8">
+                            <CardContent className="p-5 sm:p-6 md:p-8">
                                 {isSuccess ? (
                                     <div className="flex flex-col items-center justify-center text-center py-12 space-y-4">
                                         <div className="bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 p-4 rounded-full mb-2">
