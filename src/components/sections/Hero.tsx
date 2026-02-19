@@ -107,7 +107,7 @@ export function Hero() {
                             <Sparkles className="h-3.5 w-3.5 text-primary" />
                             Terbuka untuk peluang baru
                         </Badge>
-                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight text-foreground leading-[1.1]">
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight text-foreground leading-[1.2] sm:leading-[1.1]">
                             <TextReveal text="Standar untuk" delay={0.2} /><br />
                             <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-[length:200%_auto] animate-gradient">
                                 <TextReveal text="Pengembangan Web Modern" delay={0.8} />

@@ -40,7 +40,7 @@ export function AboutContent() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
-                    className="text-4xl md:text-5xl font-display font-bold mb-6"
+                    className="text-3xl sm:text-4xl md:text-5xl font-display font-bold mb-6"
                 >
                     Tentang Saya
                 </motion.h1>
@@ -73,7 +73,7 @@ export function AboutContent() {
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.5, delay: 0.3 }}
-                        className="bg-secondary/30 p-8 rounded-2xl border border-border/50 shadow-lg hover:shadow-xl hover:border-primary/20 transition-all duration-300"
+                        className="bg-secondary/30 p-6 sm:p-8 rounded-2xl border border-border/50 shadow-lg hover:shadow-xl hover:border-primary/20 transition-all duration-300"
                     >
                         <h3 className="text-xl font-bold mb-6">Filosofi Saya</h3>
                         <ul className="space-y-6">

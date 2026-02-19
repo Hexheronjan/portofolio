@@ -73,7 +73,7 @@ export function SkillsContent() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <h1 className="text-4xl md:text-5xl font-display font-bold mb-6">
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold mb-6">
                         Keahlian Teknis
                     </h1>
                     <p className="text-lg text-muted-foreground max-w-2xl mb-12">
@@ -118,9 +118,9 @@ function SkillBar({ name, level, index }: { name: string; level: number; index: 
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4, delay: index * 0.05 }}
         >
-            <div className="flex justify-between mb-2">
-                <span className="font-medium text-sm">{name}</span>
-                <span className="text-xs text-muted-foreground font-mono">{level}%</span>
+            <div className="flex justify-between mb-2 gap-2">
+                <span className="font-medium text-sm truncate">{name}</span>
+                <span className="text-xs text-muted-foreground font-mono shrink-0">{level}%</span>
             </div>
             <div className="w-full bg-secondary rounded-full h-3 overflow-hidden">
                 <motion.div
