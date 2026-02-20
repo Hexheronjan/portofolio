@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import Image from "next/image";
 import { ArrowRight, Sparkles } from "lucide-react";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { Section } from "@/components/ui/Section";
 import { Badge } from "@/components/ui/Badge";
 import { Magnetic } from "@/components/ui/Magnetic";
+import { cn } from "@/lib/utils";
 
 const techStack = [
     "Next.js",
@@ -23,22 +24,45 @@ const techStack = [
 
 // Text Reveal component for Hero heading
 function TextReveal({ text, className, delay = 0 }: { text: string; className?: string; delay?: number }) {
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        setIsMobile(window.innerWidth < 768);
+    }, []);
+
+    const words = text.split(" ");
+
+    // If mobile, just animate the whole line to avoid DOM overhead and wrapping issues
+    if (isMobile) {
+        return (
+            <motion.span
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay, ease: "easeOut" }}
+                className={cn("inline-block", className)}
+            >
+                {text}
+            </motion.span>
+        );
+    }
+
     return (
-        <span className={className}>
-            {text.split("").map((char, i) => (
+        <span className={cn("inline-flex flex-wrap", className)}>
+            {words.map((word, i) => (
                 <motion.span
                     key={i}
                     initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
                     transition={{
                         duration: 0.4,
-                        delay: delay + i * 0.03,
+                        delay: delay + i * 0.1,
                         ease: "easeOut",
                     }}
-                    style={{ display: "inline-block", whiteSpace: char === " " ? "pre" : "normal" }}
-                    className="hover:text-primary transition-colors duration-200"
+                    className="hover:text-primary transition-colors duration-200 mr-[0.25em] last:mr-0 whitespace-nowrap inline-block"
                 >
-                    {char}
+                    {word}
                 </motion.span>
             ))}
         </span>
@@ -49,6 +73,11 @@ export function Hero() {
     const [heroLogoError, setHeroLogoError] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const logoRef = useRef<HTMLDivElement>(null);
+    const [isTouch, setIsTouch] = useState(false);
+
+    useEffect(() => {
+        setIsTouch('ontouchstart' in window || navigator.maxTouchPoints > 0);
+    }, []);
 
     // 3D tilt effect
     const mouseX = useMotionValue(0);
@@ -57,6 +86,7 @@ export function Hero() {
     const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-15, 15]), { stiffness: 200, damping: 20 });
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (isTouch) return;
         const rect = e.currentTarget.getBoundingClientRect();
         const x = (e.clientX - rect.left) / rect.width - 0.5;
         const y = (e.clientY - rect.top) / rect.height - 0.5;
@@ -77,13 +107,13 @@ export function Hero() {
             {/* Grid pattern */}
             <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
             {/* Gradient orbs */}
-            <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] -z-10 rounded-full bg-primary/10 blur-3xl animate-glow" />
-            <div className="absolute bottom-1/4 right-1/4 w-80 h-80 -z-10 rounded-full bg-[var(--highlight)]/10 blur-3xl animate-float" />
-            <div className="absolute top-1/2 right-1/3 w-64 h-64 -z-10 rounded-full bg-[var(--highlight)]/5 blur-3xl animate-float" style={{ animationDelay: "2s" }} />
+            <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] -z-10 rounded-full bg-primary/10 blur-3xl animate-glow hidden lg:block" />
+            <div className="absolute bottom-1/4 right-1/4 w-80 h-80 -z-10 rounded-full bg-[var(--highlight)]/10 blur-3xl animate-float hidden lg:block" />
+            <div className="absolute top-1/2 right-1/3 w-64 h-64 -z-10 rounded-full bg-[var(--highlight)]/5 blur-3xl animate-float hidden lg:block" style={{ animationDelay: "2s" }} />
             {/* Floating dots */}
-            <div className="absolute top-20 left-[15%] w-2 h-2 rounded-full bg-primary/30 animate-float" style={{ animationDuration: "5s" }} />
-            <div className="absolute top-40 right-[20%] w-1.5 h-1.5 rounded-full bg-[var(--highlight)]/40 animate-float" style={{ animationDuration: "7s", animationDelay: "1s" }} />
-            <div className="absolute bottom-40 left-[25%] w-1 h-1 rounded-full bg-primary/20 animate-float" style={{ animationDuration: "6s", animationDelay: "0.5s" }} />
+            <div className="absolute top-20 left-[15%] w-2 h-2 rounded-full bg-primary/30 animate-float hidden md:block" style={{ animationDuration: "5s" }} />
+            <div className="absolute top-40 right-[20%] w-1.5 h-1.5 rounded-full bg-[var(--highlight)]/40 animate-float hidden md:block" style={{ animationDuration: "7s", animationDelay: "1s" }} />
+            <div className="absolute bottom-40 left-[25%] w-1 h-1 rounded-full bg-primary/20 animate-float hidden md:block" style={{ animationDuration: "6s", animationDelay: "0.5s" }} />
 
             {/* Floating Interactive Blobs - Hidden on mobile/tablet for performance */}
             <motion.div
@@ -100,7 +130,8 @@ export function Hero() {
                 <div className="flex flex-col items-center md:items-start text-center md:text-left space-y-8 order-2 md:order-1">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
                         transition={{ duration: 0.5 }}
                     >
                         <Badge variant="secondary" className="mb-4 px-4 py-1.5 text-sm font-medium border border-primary/20 gap-1.5">
@@ -109,8 +140,8 @@ export function Hero() {
                         </Badge>
                         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight text-foreground leading-[1.2] sm:leading-[1.1]">
                             <TextReveal text="Standar untuk" delay={0.2} /><br />
-                            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-[length:200%_auto] animate-gradient">
-                                <TextReveal text="Pengembangan Web Modern" delay={0.8} />
+                            <span className="inline-block bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-[length:200%_auto] animate-gradient">
+                                <TextReveal text="Pengembangan Web Modern" delay={0.4} />
                             </span>
                         </h1>
                     </motion.div>
@@ -128,8 +159,9 @@ export function Hero() {
 
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 2.2 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: 0.6 }}
                         className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto"
                     >
                         <Magnetic strength={0.25}>
@@ -176,6 +208,7 @@ export function Hero() {
                                     src="/hero-logo.png"
                                     alt="FRAVOX Logo"
                                     fill
+                                    priority
                                     className="object-contain drop-shadow-2xl"
                                     style={{
                                         filter: isHovered
@@ -183,7 +216,7 @@ export function Hero() {
                                             : "drop-shadow(0 8px 32px rgba(0,0,0,0.3))",
                                         transition: "filter 0.4s ease",
                                     }}
-                                    unoptimized
+                                    sizes="(max-width: 768px) 100vw, 50vw"
                                     onError={() => setHeroLogoError(true)}
                                 />
                             </motion.div>
@@ -199,9 +232,10 @@ export function Hero() {
             {/* Teknologi - full width di bawah */}
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.6 }}
-                className="w-full max-w-4xl mx-auto pt-16 pb-4 z-10"
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.8 }}
+                className="w-full max-max-4xl mx-auto pt-16 pb-4 z-10"
             >
                 <p className="text-sm text-muted-foreground mb-4 font-medium uppercase tracking-wider text-center">
                     Teknologi
@@ -211,8 +245,9 @@ export function Hero() {
                         <motion.div
                             key={tech}
                             initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.3, delay: 0.7 + index * 0.05 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.3, delay: 0.9 + index * 0.05 }}
                             whileHover={{ scale: 1.08, y: -2 }}
                         >
                             <Badge

@@ -31,12 +31,16 @@ export function Magnetic({ children, strength = 0.5 }: { children: React.ReactNo
 
     const { x, y } = position;
 
+    if (isTouchDevice) {
+        return <>{children}</>;
+    }
+
     return (
         <motion.div
             ref={ref}
             onMouseMove={handleMouse}
             onMouseLeave={reset}
-            animate={!isTouchDevice ? { x, y } : { x: 0, y: 0 }}
+            animate={{ x, y }}
             transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
         >
             {children}

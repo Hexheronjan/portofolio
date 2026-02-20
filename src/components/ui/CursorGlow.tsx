@@ -37,6 +37,10 @@ export function CursorGlow() {
         };
     }, []);
 
+    if (typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0)) {
+        return null;
+    }
+
     return (
         <div
             ref={glowRef}

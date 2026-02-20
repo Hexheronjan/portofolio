@@ -115,7 +115,8 @@ function SkillBar({ name, level, index }: { name: string; level: number; index: 
     return (
         <motion.div
             initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.4, delay: index * 0.05 }}
         >
             <div className="flex justify-between mb-2 gap-2">
@@ -124,10 +125,12 @@ function SkillBar({ name, level, index }: { name: string; level: number; index: 
             </div>
             <div className="w-full bg-secondary rounded-full h-3 overflow-hidden">
                 <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${level}%` }}
-                    transition={{ duration: 1.2, delay: 0.2 + index * 0.05, ease: "easeOut" }}
-                    className="bg-gradient-to-r from-primary to-primary/80 h-full rounded-full shadow-sm"
+                    initial={{ scaleX: 0 }}
+                    whileInView={{ scaleX: level / 100 }}
+                    viewport={{ once: true, margin: "-20px" }}
+                    transition={{ duration: 0.8, delay: 0.1 + index * 0.05, ease: [0.33, 1, 0.68, 1] }}
+                    style={{ originX: 0 }}
+                    className="bg-gradient-to-r from-primary to-primary/80 h-full rounded-full shadow-sm will-change-transform"
                 />
             </div>
         </motion.div>
