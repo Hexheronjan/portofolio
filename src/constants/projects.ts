@@ -1,11 +1,10 @@
 export const projects = [
     {
-        title: "Perpustakaan Online",
-        description: "Sistem manajemen perpustakaan berbasis web untuk mengelola koleksi buku, peminjaman, dan pengembalian dengan fitur admin dan member yang lengkap.",
-        tags: ["Next.js", "Tailwind CSS", "Prisma", "PostgreSQL"],
-        image: "/perpus.png",
-        githubUrl: "https://github.com/Hexheronjan/perpustkaan-online",
-        liveUrl: "https://perpustkaan-online.vercel.app/",
+        title: "Rempang Melayu Perkasa",
+        description: "Website resmi Rempang Melayu Perkasa yang menampilkan profil dan layanan perusahaan.",
+        tags: ["WordPress", "PHP", "CSS"],
+        image: "/rempang.png",
+        liveUrl: "https://rempangmelayuperkasa.com/",
         featured: true,
     },
     {
@@ -129,14 +128,7 @@ export const projects = [
         liveUrl: "https://bernardusinsight.com/",
         featured: false,
     },
-    {
-        title: "Rempang Melayu Perkasa",
-        description: "Website resmi Rempang Melayu Perkasa yang menampilkan profil dan layanan perusahaan.",
-        tags: ["WordPress", "PHP", "CSS"],
-        image: "/rempang.png",
-        liveUrl: "https://rempangmelayuperkasa.com/",
-        featured: false,
-    },
+
     {
         title: "Kriya Besi Nusantara",
         description: "Website jasa pengerjaan konstruksi besi dan las untuk berbagai kebutuhan properti.",
