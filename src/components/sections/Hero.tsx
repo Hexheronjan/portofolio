@@ -70,7 +70,7 @@ export function Hero() {
             ref={containerRef}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
-            className="relative w-full h-[100svh] min-h-[700px] overflow-hidden bg-[#0A0A0A] select-none touch-none"
+            className="relative w-full h-[100svh] min-h-[700px] overflow-hidden bg-[#0A0A0A] select-none"
         >
             {/* =========================================
                 BASE LAYER (RIGHT SIDE - FULL STACK DEVELOPER)

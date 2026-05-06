@@ -382,7 +382,7 @@
 /* ===================== NOISE TEXTURE ===================== */
 .noise-bg {
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 .noise-bg::before {
