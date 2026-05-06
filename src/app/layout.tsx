@@ -7,7 +7,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { CursorGlow } from "@/components/ui/CursorGlow";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
-
+import { Preloader } from "@/components/ui/Preloader";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 
 const inter = Inter({
@@ -46,6 +46,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <Preloader />
           <ScrollProgress />
           <CursorGlow />
           <ScrollToTop />

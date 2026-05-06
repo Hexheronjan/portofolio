@@ -19,6 +19,33 @@ const navItems = [
 
 import { Magnetic } from "@/components/ui/Magnetic";
 
+const FlipperLink = ({ name, href, isActive }: { name: string; href: string; isActive: boolean }) => {
+    return (
+        <Link
+            href={href}
+            className="group relative overflow-hidden flex flex-col items-start justify-start text-sm font-medium h-[24px]"
+        >
+            <div className="flex flex-col transition-transform duration-500 ease-[0.87,0,0.13,1] group-hover:-translate-y-1/2">
+                <span className={cn(
+                    "flex items-center h-[24px]",
+                    isActive ? "text-primary" : "text-muted-foreground"
+                )}>
+                    {name}
+                </span>
+                <span className="flex items-center h-[24px] text-foreground font-semibold">
+                    {name}
+                </span>
+            </div>
+            <span
+                className={cn(
+                    "absolute bottom-0 left-0 h-px bg-primary transition-all duration-500 ease-[0.87,0,0.13,1] group-hover:w-full",
+                    isActive ? "w-full" : "w-0"
+                )}
+            />
+        </Link>
+    );
+};
+
 export function Navbar() {
     const [isOpen, setIsOpen] = React.useState(false);
     const [isScrolled, setIsScrolled] = React.useState(false);
@@ -37,10 +64,10 @@ export function Navbar() {
     return (
         <header
             className={cn(
-                "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+                "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
                 isScrolled
-                    ? "bg-background/90 backdrop-blur-md md:backdrop-blur-xl border-b border-border/80 py-4 shadow-lg shadow-primary/5"
-                    : "bg-transparent py-6"
+                    ? "premium-glass py-4"
+                    : "bg-transparent border-b border-transparent py-6"
             )}
         >
             <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
@@ -49,7 +76,7 @@ export function Navbar() {
                         {!logoError ? (
                             <Image
                                 src="/set.png"
-                                alt="FRAVOX Digital Solutions"
+                                alt="Fauzan Digital Solutions"
                                 width={40}
                                 height={40}
                                 className="h-10 w-10 object-contain group-hover:opacity-90 transition-opacity"
@@ -62,7 +89,7 @@ export function Navbar() {
                             </div>
                         )}
                         <span className="font-display font-bold text-xl tracking-tight hidden sm:inline">
-                            FRAVOX<span className="text-primary">.</span>
+                            Fauzan<span className="text-primary">.</span>
                         </span>
                     </Link>
                 </Magnetic>
@@ -70,24 +97,12 @@ export function Navbar() {
                 {/* Desktop Nav */}
                 <nav className="hidden md:flex items-center gap-8">
                     {navItems.map((item) => (
-                        <Link
+                        <FlipperLink
                             key={item.href}
                             href={item.href}
-                            className={cn(
-                                "text-sm font-medium transition-colors hover:text-primary relative group",
-                                pathname === item.href
-                                    ? "text-primary"
-                                    : "text-muted-foreground"
-                            )}
-                        >
-                            {item.name}
-                            <span
-                                className={cn(
-                                    "absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full",
-                                    pathname === item.href ? "w-full" : "w-0"
-                                )}
-                            />
-                        </Link>
+                            name={item.name}
+                            isActive={pathname === item.href}
+                        />
                     ))}
                     <Magnetic strength={0.5}>
                         <div className="p-1">

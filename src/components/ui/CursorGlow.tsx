@@ -1,19 +1,29 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 
 export function CursorGlow() {
-    const glowRef = useRef<HTMLDivElement>(null);
+    const dotRef = useRef<HTMLDivElement>(null);
+    const ringRef = useRef<HTMLDivElement>(null);
+    const [isTouch, setIsTouch] = useState(false);
+    const pathname = usePathname();
 
     useEffect(() => {
-        const glow = glowRef.current;
-        if (!glow) return;
+        const isDeviceTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        setIsTouch(isDeviceTouch);
+        
+        if (isDeviceTouch) return;
+
+        const dot = dotRef.current;
+        const ring = ringRef.current;
+        if (!dot || !ring) return;
 
         let animFrame: number;
-        let mouseX = 0;
-        let mouseY = 0;
-        let currentX = 0;
-        let currentY = 0;
+        let mouseX = -100;
+        let mouseY = -100;
+        let ringX = -100;
+        let ringY = -100;
 
         const handleMouseMove = (e: MouseEvent) => {
             mouseX = e.clientX;
@@ -21,34 +31,54 @@ export function CursorGlow() {
         };
 
         const animate = () => {
-            // Smooth lerp follow
-            currentX += (mouseX - currentX) * 0.08;
-            currentY += (mouseY - currentY) * 0.08;
-            glow.style.transform = `translate(${currentX - 200}px, ${currentY - 200}px)`;
+            ringX += (mouseX - ringX) * 0.15;
+            ringY += (mouseY - ringY) * 0.15;
+            
+            // Offset logic for centering
+            dot.style.transform = `translate(${mouseX - 4}px, ${mouseY - 4}px)`;
+            ring.style.transform = `translate(${ringX - 16}px, ${ringY - 16}px)`;
+            
             animFrame = requestAnimationFrame(animate);
         };
 
-        window.addEventListener("mousemove", handleMouseMove);
+        window.addEventListener("mousemove", handleMouseMove, { passive: true });
         animFrame = requestAnimationFrame(animate);
+
+        // Hover effect for links
+        const handleMouseOver = (e: MouseEvent) => {
+            const target = e.target as HTMLElement;
+            if (target.closest('a') || target.closest('button')) {
+                ring.style.transform = `translate(${ringX - 16}px, ${ringY - 16}px) scale(1.5)`;
+                ring.style.borderColor = 'rgba(190, 242, 100, 0.8)';
+                ring.style.backgroundColor = 'rgba(190, 242, 100, 0.1)';
+            } else {
+                ring.style.transform = `translate(${ringX - 16}px, ${ringY - 16}px) scale(1)`;
+                ring.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+                ring.style.backgroundColor = 'transparent';
+            }
+        };
+
+        window.addEventListener("mouseover", handleMouseOver);
 
         return () => {
             window.removeEventListener("mousemove", handleMouseMove);
+            window.removeEventListener("mouseover", handleMouseOver);
             cancelAnimationFrame(animFrame);
         };
-    }, []);
+    }, [pathname]);
 
-    if (typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0)) {
-        return null;
-    }
+    if (isTouch) return null;
 
     return (
-        <div
-            ref={glowRef}
-            className="pointer-events-none fixed top-0 left-0 z-0 w-[400px] h-[400px] rounded-full opacity-[0.06] dark:opacity-[0.08]"
-            style={{
-                background: "radial-gradient(circle, rgba(59,130,246,1) 0%, transparent 70%)",
-                willChange: "transform",
-            }}
-        />
+        <div className="pointer-events-none fixed inset-0 z-[120] overflow-hidden hidden md:block">
+            <div 
+                ref={dotRef}
+                className="absolute top-0 left-0 w-2 h-2 bg-foreground/80 rounded-full will-change-transform"
+            />
+            <div 
+                ref={ringRef}
+                className="absolute top-0 left-0 w-8 h-8 border border-foreground/30 rounded-full will-change-transform transition-colors duration-300"
+            />
+        </div>
     );
 }

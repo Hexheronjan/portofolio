@@ -1,265 +1,236 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import Image from "next/image";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { motion, useMotionValue, useSpring } from "framer-motion";
+import { ArrowRight, Code, PenTool } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/Button";
-import { Section } from "@/components/ui/Section";
-import { Badge } from "@/components/ui/Badge";
 import { Magnetic } from "@/components/ui/Magnetic";
-import { cn } from "@/lib/utils";
-
-const techStack = [
-    "Next.js",
-    "React",
-    "TypeScript",
-    "Tailwind CSS",
-    "Laravel",
-    "WordPress",
-    "Node.js",
-    "Framer Motion",
-];
-
-// Text Reveal component for Hero heading
-function TextReveal({ text, className, delay = 0 }: { text: string; className?: string; delay?: number }) {
-    const [isMobile, setIsMobile] = useState(false);
-
-    useEffect(() => {
-        setIsMobile(window.innerWidth < 768);
-    }, []);
-
-    const words = text.split(" ");
-
-    // If mobile, just animate the whole line to avoid DOM overhead and wrapping issues
-    if (isMobile) {
-        return (
-            <motion.span
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay, ease: "easeOut" }}
-                className={cn("inline-block", className)}
-            >
-                {text}
-            </motion.span>
-        );
-    }
-
-    return (
-        <span className={cn("inline-flex flex-wrap", className)}>
-            {words.map((word, i) => (
-                <motion.span
-                    key={i}
-                    initial={{ opacity: 0, y: 15 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{
-                        duration: 0.4,
-                        delay: delay + i * 0.1,
-                        ease: "easeOut",
-                    }}
-                    className="hover:text-primary transition-colors duration-200 mr-[0.25em] last:mr-0 whitespace-nowrap inline-block"
-                >
-                    {word}
-                </motion.span>
-            ))}
-        </span>
-    );
-}
 
 export function Hero() {
-    const [heroLogoError, setHeroLogoError] = useState(false);
-    const [isHovered, setIsHovered] = useState(false);
-    const logoRef = useRef<HTMLDivElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const overlayRef = useRef<HTMLDivElement>(null);
     const [isTouch, setIsTouch] = useState(false);
+    
+    // Mouse X position percentage (0 to 100)
+    const mouseX = useMotionValue(50);
+    // Add physics to the movement for a smooth fluid feel
+    const springX = useSpring(mouseX, { stiffness: 45, damping: 15, mass: 0.8 });
+
+    // FIX: useMotionTemplate produces a MotionValue<string> which can trigger
+    // mixObject on unmount. Write clipPath directly to element.style instead.
+    useEffect(() => {
+        const unsubscribe = springX.on("change", (v: number) => {
+            if (overlayRef.current) {
+                overlayRef.current.style.clipPath = `polygon(0 0, ${v}% 0, ${v}% 100%, 0 100%)`;
+            }
+        });
+        // Set initial value
+        if (overlayRef.current) {
+            overlayRef.current.style.clipPath = `polygon(0 0, 50% 0, 50% 100%, 0 100%)`;
+        }
+        return () => unsubscribe();
+    }, [springX]);
 
     useEffect(() => {
-        setIsTouch('ontouchstart' in window || navigator.maxTouchPoints > 0);
-    }, []);
+        setIsTouch("ontouchstart" in window || navigator.maxTouchPoints > 0);
+        
+        // Mobile auto-wobble effect so the user sees it's interactive
+        if ("ontouchstart" in window || navigator.maxTouchPoints > 0) {
+            let step = 0;
+            const interval = setInterval(() => {
+                step += 0.05;
+                const wave = Math.sin(step) * 15 + 50; // oscillates between 35% and 65%
+                mouseX.set(wave);
+            }, 50);
+            return () => clearInterval(interval);
+        }
+    }, [mouseX]);
 
-    // 3D tilt effect
-    const mouseX = useMotionValue(0);
-    const mouseY = useMotionValue(0);
-    const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [15, -15]), { stiffness: 200, damping: 20 });
-    const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-15, 15]), { stiffness: 200, damping: 20 });
-
-    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const handleMouseMove = (e: React.MouseEvent) => {
         if (isTouch) return;
-        const rect = e.currentTarget.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / rect.width - 0.5;
-        const y = (e.clientY - rect.top) / rect.height - 0.5;
-        mouseX.set(x);
-        mouseY.set(y);
+        const rect = containerRef.current?.getBoundingClientRect();
+        if (rect) {
+            // Calculate percentage based on mouse position
+            const percentage = ((e.clientX - rect.left) / rect.width) * 100;
+            // Clamp it slightly so it doesn't completely disappear (limit to 10% - 90%)
+            const clamped = Math.min(Math.max(percentage, 10), 90);
+            mouseX.set(clamped);
+        }
     };
 
     const handleMouseLeave = () => {
-        mouseX.set(0);
-        mouseY.set(0);
-        setIsHovered(false);
+        if (!isTouch) {
+            // Return to perfectly centered when mouse leaves
+            mouseX.set(50); 
+        }
     };
 
     return (
-        <Section className="min-h-[85vh] flex items-center justify-center relative overflow-hidden">
-            {/* Mesh gradient background */}
-            <div className="absolute inset-0 -z-20 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(59,130,246,0.15),transparent)] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(96,165,250,0.08),transparent)]" />
-            {/* Grid pattern */}
-            <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
-            {/* Gradient orbs */}
-            <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] -z-10 rounded-full bg-primary/10 blur-3xl animate-glow hidden lg:block" />
-            <div className="absolute bottom-1/4 right-1/4 w-80 h-80 -z-10 rounded-full bg-[var(--highlight)]/10 blur-3xl animate-float hidden lg:block" />
-            <div className="absolute top-1/2 right-1/3 w-64 h-64 -z-10 rounded-full bg-[var(--highlight)]/5 blur-3xl animate-float hidden lg:block" style={{ animationDelay: "2s" }} />
-            {/* Floating dots */}
-            <div className="absolute top-20 left-[15%] w-2 h-2 rounded-full bg-primary/30 animate-float hidden md:block" style={{ animationDuration: "5s" }} />
-            <div className="absolute top-40 right-[20%] w-1.5 h-1.5 rounded-full bg-[var(--highlight)]/40 animate-float hidden md:block" style={{ animationDuration: "7s", animationDelay: "1s" }} />
-            <div className="absolute bottom-40 left-[25%] w-1 h-1 rounded-full bg-primary/20 animate-float hidden md:block" style={{ animationDuration: "6s", animationDelay: "0.5s" }} />
-
-            {/* Floating Interactive Blobs - Hidden on mobile/tablet for performance */}
-            <motion.div
-                animate={{
-                    x: [0, 50, -20, 0],
-                    y: [0, -30, 40, 0]
-                }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                className="absolute top-1/3 right-1/3 w-64 h-64 bg-purple-500/10 rounded-full blur-[80px] -z-10 hidden lg:block"
-            />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center w-full max-w-6xl mx-auto px-4 z-10">
-                {/* Kiri: teks & CTA */}
-                <div className="flex flex-col items-center md:items-start text-center md:text-left space-y-8 order-2 md:order-1">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.5 }}
-                    >
-                        <Badge variant="secondary" className="mb-4 px-4 py-1.5 text-sm font-medium border border-primary/20 gap-1.5">
-                            <Sparkles className="h-3.5 w-3.5 text-primary" />
-                            Terbuka untuk peluang baru
-                        </Badge>
-                        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight text-foreground leading-[1.2] sm:leading-[1.1]">
-                            <TextReveal text="Standar untuk" delay={0.2} /><br />
-                            <span className="inline-block bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-[length:200%_auto] animate-gradient">
-                                <TextReveal text="Pengembangan Web Modern" delay={0.4} />
-                            </span>
-                        </h1>
-                    </motion.div>
-
-                    <motion.p
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.2 }}
-                        className="text-lg text-muted-foreground max-w-xl leading-relaxed"
-                    >
-                        Halo, saya <span className="text-foreground font-semibold">Fauzan</span>.
-                        Saya menciptakan pengalaman web yang aksesibel, pixel-perfect, dan berperforma tinggi
-                        menggunakan teknologi modern.
-                    </motion.p>
-
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.5, delay: 0.6 }}
-                        className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto"
-                    >
-                        <Magnetic strength={0.25}>
-                            <Button size="lg" className="group h-12 px-8 text-base shadow-lg hover:shadow-xl hover:shadow-primary/20 transition-all duration-300 w-full sm:w-auto" asChild>
-                                <Link href="/projects">
-                                    Lihat Proyek
-                                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                                </Link>
-                            </Button>
-                        </Magnetic>
-
-                        <Magnetic strength={0.4}>
-                            <Button size="lg" variant="outline" className="h-12 px-8 text-base border-2 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 w-full sm:w-auto" asChild>
-                                <Link href="/contact">Hubungi Saya</Link>
-                            </Button>
-                        </Magnetic>
-                    </motion.div>
+        <section 
+            ref={containerRef}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            className="relative w-full h-[100svh] min-h-[700px] overflow-hidden bg-[#0A0A0A] select-none touch-none"
+        >
+            {/* =========================================
+                BASE LAYER (RIGHT SIDE - FULL STACK DEVELOPER)
+                ========================================= */}
+            <div className="absolute inset-0 bg-[#0A0A0A] text-zinc-100 flex flex-col justify-center">
+                {/* Tech-themed background for Developer side */}
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_50%,rgba(132,204,22,0.08),transparent_50%)]" />
+                    <div 
+                        className="absolute inset-0 opacity-[0.03]" 
+                        style={{ 
+                            backgroundImage: "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
+                            backgroundSize: "60px 60px"
+                        }} 
+                    />
                 </div>
 
-                {/* Kanan: Logo dengan efek premium */}
-                <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.6, delay: 0.2 }}
-                    className="flex items-center justify-center order-1 md:order-2"
-                >
-                    {!heroLogoError ? (
-                        <div
-                            ref={logoRef}
-                            className="relative w-full max-w-sm md:max-w-md aspect-square select-none"
-                            onMouseMove={handleMouseMove}
-                            onMouseEnter={() => setIsHovered(true)}
-                            onMouseLeave={handleMouseLeave}
-                            style={{ perspective: "800px" }}
-                        >
-                            {/* 3D tilt logo image */}
-                            <motion.div
-                                className="relative w-full h-full"
-                                style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-                                whileHover={{ scale: 1.04 }}
-                                transition={{ type: "spring", stiffness: 200, damping: 20 }}
-                            >
-                                <Image
-                                    src="/hero-logo.png"
-                                    alt="FRAVOX Logo"
-                                    fill
-                                    priority
-                                    className="object-contain drop-shadow-2xl"
-                                    style={{
-                                        filter: isHovered
-                                            ? "drop-shadow(0 0 24px rgba(59,130,246,0.3)) brightness(1.05)"
-                                            : "drop-shadow(0 8px 32px rgba(0,0,0,0.3))",
-                                        transition: "filter 0.4s ease",
-                                    }}
-                                    sizes="(max-width: 768px) 100vw, 50vw"
-                                    onError={() => setHeroLogoError(true)}
-                                />
-                            </motion.div>
+                <div className="w-full max-w-7xl mx-auto px-6 sm:px-12 md:px-20 flex items-center justify-end relative h-full">
+                    {/* Developer Text Block - Enhanced with Tech elements */}
+                    <div className="w-[42%] flex flex-col justify-center items-start z-10 hidden md:flex">
+                        <div className="relative">
+                            {/* Decorative line numbers for tech feel */}
+                            <div className="absolute -left-12 top-0 bottom-0 w-px bg-zinc-800/50 hidden lg:block">
+                                {[12, 13, 14, 15, 16].map(n => (
+                                    <span key={n} className="absolute -left-8 text-[10px] text-zinc-700 font-mono" style={{ top: `${(n-12)*40}px` }}>0{n}</span>
+                                ))}
+                            </div>
+
+                            <div className="flex flex-col gap-6">
+                                <motion.div
+                                    initial={{ opacity: 0, x: 50 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ duration: 1.2, delay: 3.2, ease: [0.16, 1, 0.3, 1] }}
+                                >
+                                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-lime-500/10 border border-lime-500/20 text-lime-400 font-mono text-xs tracking-widest uppercase shadow-[0_0_20px_rgba(132,204,22,0.1)]">
+                                        <Code className="w-4 h-4" /> full stack developer
+                                    </span>
+                                </motion.div>
+
+                                <motion.h1 
+                                    initial={{ opacity: 0, x: 80 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ duration: 1.2, delay: 3.4, ease: [0.16, 1, 0.3, 1] }}
+                                    className="text-5xl lg:text-6xl xl:text-7xl font-mono font-bold leading-[1.1] tracking-tighter text-white"
+                                >
+                                    Arsitektur <span className="text-zinc-500">&lt;</span><span className="text-lime-300">Data</span><span className="text-zinc-500">&gt;</span><br />
+                                    Kinerja <span className="text-zinc-400 italic">Efisien.</span>
+                                </motion.h1>
+
+                                <motion.p 
+                                    initial={{ opacity: 0, x: 100 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ duration: 1.2, delay: 3.6, ease: [0.16, 1, 0.3, 1] }}
+                                    className="text-zinc-300 font-mono text-sm lg:text-base max-w-sm leading-relaxed"
+                                >
+                                    Membangun logika backend yang tangguh dan infrastruktur yang skalabel untuk pengalaman digital tanpa hambatan.
+                                </motion.p>
+                            </div>
                         </div>
-                    ) : (
-                        <div className="w-full max-w-sm md:max-w-md aspect-square rounded-2xl border-2 border-dashed border-primary/20 flex items-center justify-center bg-primary/5">
-                            <p className="text-sm text-muted-foreground text-center px-4">Logo di sini</p>
+                    </div>
+
+                    {/* Developer Image */}
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 1.5, delay: 3.0 }}
+                        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-0"
+                    >
+                        <div className="w-[320px] h-[420px] md:w-[400px] md:h-[520px] overflow-hidden shadow-2xl relative border border-zinc-800 bg-zinc-950 group">
+                            <img 
+                                src="/foto dev.png" 
+                                alt="Fauzan Developer" 
+                                className="w-full h-full object-cover opacity-80 grayscale-[0.3] group-hover:grayscale-0 transition-all duration-700"
+                            />
+                            {/* Scanning line effect */}
+                            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-lime-500/10 to-transparent h-20 w-full -translate-y-full animate-[scan_3s_linear_infinite]" />
                         </div>
-                    )}
-                </motion.div>
+                    </motion.div>
+                </div>
             </div>
 
-            {/* Teknologi - full width di bawah */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.8 }}
-                className="w-full max-max-4xl mx-auto pt-16 pb-4 z-10"
+            {/* =========================================
+                TOP LAYER (LEFT SIDE - UI DESIGNER / MASKED)
+                ========================================= */}
+            <div 
+                ref={overlayRef}
+                className="absolute inset-0 bg-white text-slate-900 flex flex-col justify-center"
             >
-                <p className="text-sm text-muted-foreground mb-4 font-medium uppercase tracking-wider text-center">
-                    Teknologi
-                </p>
-                <div className="flex flex-wrap justify-center gap-2">
-                    {techStack.map((tech, index) => (
-                        <motion.div
-                            key={tech}
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.3, delay: 0.9 + index * 0.05 }}
-                            whileHover={{ scale: 1.08, y: -2 }}
-                        >
-                            <Badge
-                                variant="outline"
-                                className="px-3 py-1.5 bg-background/50 backdrop-blur-sm border-border hover:border-primary/50 hover:bg-primary/5 hover:text-primary transition-all duration-300 cursor-default"
+                {/* Designer Aesthetic Background */}
+                <div className="absolute top-[10%] left-[5%] w-[400px] h-[400px] rounded-full bg-indigo-100/50 blur-[80px]" />
+                <div className="absolute bottom-[10%] left-[20%] w-[350px] h-[350px] rounded-full bg-rose-100/40 blur-[80px]" />
+
+                <div className="w-full max-w-7xl mx-auto px-6 sm:px-12 md:px-20 flex items-center justify-start relative h-full">
+                    {/* Designer Text Block - Added sliding animations */}
+                    <div className="w-[42%] flex flex-col justify-center items-start z-10 hidden md:flex">
+                        <div className="flex flex-col gap-6">
+                            <motion.div 
+                                initial={{ opacity: 0, x: -50 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 1.2, delay: 3.2, ease: [0.16, 1, 0.3, 1] }}
                             >
-                                {tech}
-                            </Badge>
-                        </motion.div>
-                    ))}
+                                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 font-medium text-xs tracking-[0.2em] uppercase shadow-sm">
+                                    <PenTool className="w-4 h-4" /> ui/ux designer
+                                </span>
+                            </motion.div>
+
+                            <motion.h1 
+                                initial={{ opacity: 0, x: -80 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 1.2, delay: 3.4, ease: [0.16, 1, 0.3, 1] }}
+                                className="text-5xl lg:text-6xl xl:text-7xl font-display font-bold leading-[1.1] tracking-tighter text-black mb-2"
+                            >
+                                Estetika <span className="text-slate-500 font-light">Visual.</span><br />
+                                Pengalaman <span className="text-indigo-700 italic">Sempurna.</span>
+                            </motion.h1>
+
+                            <motion.p 
+                                initial={{ opacity: 0, x: -100 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 1.2, delay: 3.6, ease: [0.16, 1, 0.3, 1] }}
+                                className="text-slate-800 text-sm lg:text-base max-w-sm leading-relaxed border-l-2 border-indigo-500/20 pl-4"
+                            >
+                                Merancang antarmuka memukau dan pengalaman pengguna yang intuitif dengan presisi visual yang tinggi.
+                            </motion.p>
+                        </div>
+                    </div>
+
+                    {/* Designer Image */}
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 1.5, delay: 3.0 }}
+                        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-0"
+                    >
+                        <div className="w-[320px] h-[420px] md:w-[400px] md:h-[520px] overflow-hidden shadow-2xl relative border border-white bg-slate-100">
+                            <img 
+                                src="/foto deigner.png" 
+                                alt="Fauzan Designer" 
+                                className="w-full h-full object-cover"
+                            />
+                        </div>
+                    </motion.div>
                 </div>
+            </div>
+
+            {/* ── Scroll hint ─────────────────────────────────────── */}
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.2, duration: 0.8 }}
+                className="absolute bottom-7 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 z-50 pointer-events-none mix-blend-difference"
+                aria-hidden
+            >
+                <span className="text-[10px] tracking-[0.2em] uppercase text-white/50 font-medium">Scroll</span>
+                <motion.div
+                    animate={{ y: [0, 6, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    className="w-px h-7 bg-gradient-to-b from-white/30 to-transparent"
+                />
             </motion.div>
-        </Section>
+        </section>
     );
 }

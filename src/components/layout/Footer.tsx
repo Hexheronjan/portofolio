@@ -43,7 +43,7 @@ export function Footer() {
                             <motion.div whileHover={{ rotate: 10, scale: 1.1 }} transition={{ type: "spring", stiffness: 300 }}>
                                 <Image
                                     src="/set.png"
-                                    alt="FRAVOX Digital Solutions"
+                                    alt="Fauzan Digital Solutions"
                                     width={36}
                                     height={36}
                                     className="h-9 w-9 object-contain"
@@ -51,12 +51,12 @@ export function Footer() {
                                 />
                             </motion.div>
                             <span className="font-display font-bold text-xl tracking-tight group-hover:text-primary transition-colors duration-300">
-                                FRAVOX<span className="text-primary">.</span>
+                                Fauzan<span className="text-primary">.</span>
                             </span>
                         </Link>
                     </Magnetic>
                     <p className="text-muted-foreground text-sm">
-                        © {new Date().getFullYear()} FRAVOX Digital Solutions. Hak cipta dilindungi.
+                        © {new Date().getFullYear()} Fauzan Digital Solutions. Hak cipta dilindungi.
                     </p>
                 </motion.div>
 

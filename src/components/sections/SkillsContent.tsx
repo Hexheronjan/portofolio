@@ -123,14 +123,18 @@ function SkillBar({ name, level, index }: { name: string; level: number; index: 
                 <span className="font-medium text-sm truncate">{name}</span>
                 <span className="text-xs text-muted-foreground font-mono shrink-0">{level}%</span>
             </div>
+            {/* FIX: width "0%" → `${level}%` are STRING values that crash Framer Motion's
+                mixObject when the DOM node is null during page transition. Replace with
+                purely numeric scaleX (0 → level/100) + transformOrigin "left" which is
+                visually identical but never triggers the string parsing code path. */}
             <div className="w-full bg-secondary rounded-full h-3 overflow-hidden">
                 <motion.div
                     initial={{ scaleX: 0 }}
                     whileInView={{ scaleX: level / 100 }}
-                    viewport={{ once: true, margin: "-20px" }}
+                    viewport={{ once: true }}
                     transition={{ duration: 0.8, delay: 0.1 + index * 0.05, ease: [0.33, 1, 0.68, 1] }}
-                    style={{ originX: 0 }}
-                    className="bg-gradient-to-r from-primary to-primary/80 h-full rounded-full shadow-sm will-change-transform"
+                    className="bg-gradient-to-r from-primary to-primary/80 h-full rounded-full shadow-sm w-full"
+                    style={{ transformOrigin: "left" }}
                 />
             </div>
         </motion.div>

@@ -38,15 +38,11 @@ export function ProjectsList() {
             </motion.div>
 
             {/* Projects Grid */}
-            <motion.div
-                layout
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-            >
-                <AnimatePresence mode="popLayout">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <AnimatePresence>
                     {filteredProjects.map((project, index) => (
                         <motion.div
                             key={project.title}
-                            layout
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95 }}
@@ -56,7 +52,7 @@ export function ProjectsList() {
                         </motion.div>
                     ))}
                 </AnimatePresence>
-            </motion.div>
+            </div>
 
             {filteredProjects.length === 0 && (
                 <p className="text-muted-foreground text-center py-20">
