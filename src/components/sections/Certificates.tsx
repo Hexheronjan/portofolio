@@ -33,7 +33,7 @@ const certificates = [
     }
 ];
 
-function CertCard({ cert, scrollYProgress }: { cert: typeof certificates[0], scrollYProgress: MotionValue<number> }) {
+function CertCard({ cert, scrollYProgress }: { cert: typeof certificates[0], scrollYProgress: any }) {
     // 1. Menggunakan useSpring agar scroll parallax menjadi sangat halus (smooth)
     const smoothProgress = useSpring(scrollYProgress, { damping: 25, stiffness: 60, mass: 0.5 });
     const yScroll = useTransform(smoothProgress, [0, 1], cert.yOffset);
