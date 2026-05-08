@@ -102,7 +102,7 @@ export function Certificates() {
         <section ref={containerRef} className="relative w-full py-20 md:py-32 bg-[#eaeaea] overflow-hidden text-[#111]">
             
             {/* Decorative Noise Background */}
-            <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay pointer-events-none" />
+            <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.03] mix-blend-overlay pointer-events-none" />
 
             {/* Massive Scrolling Title Banner - Slower and Smoother */}
             <div className="w-full border-b border-[#111]/20 pb-4 mb-10 md:mb-20 overflow-hidden relative z-10">

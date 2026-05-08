@@ -77,7 +77,7 @@ export function Preloader() {
                     }}
                 >
                     {/* Noise Overlay */}
-                    <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.05] pointer-events-none" />
+                    <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.05] pointer-events-none" />
 
                     {/* Centered Content Container */}
                     <div className="relative z-10 flex items-center justify-center h-32 overflow-hidden">

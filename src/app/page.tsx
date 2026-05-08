@@ -13,7 +13,7 @@ export default function Home() {
       <CustomCursor />
       
       {/* Global noise texture overlay for premium aesthetic */}
-      <div className="pointer-events-none fixed inset-0 z-50 h-full w-full opacity-[0.03] dark:opacity-[0.05]" style={{ backgroundImage: 'url("/noise.png")' }} />
+      <div className="pointer-events-none fixed inset-0 z-50 h-full w-full opacity-[0.03] dark:opacity-[0.05]" style={{ backgroundImage: 'url("/noise.svg")' }} />
 
       {/* Latar belakang abstrak yang mengikuti scroll */}
       <AbstractBackground />

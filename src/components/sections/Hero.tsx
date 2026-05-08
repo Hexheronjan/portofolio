@@ -65,7 +65,7 @@ export function Hero() {
                             style={{ x: blob2X, y: blob2Y }}
                             className="absolute bottom-[-10%] right-[5%] w-[70vw] h-[70vw] md:w-[50vw] md:h-[50vw] bg-zinc-900/40 rounded-full pointer-events-none mix-blend-screen blur-[100px]"
                         />
-                        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.05] pointer-events-none" />
+                        <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.05] pointer-events-none" />
 
                         {/* Interactive Text Layer */}
                         <motion.div 
@@ -173,7 +173,7 @@ export function Hero() {
                 />
                 
                 {/* Noise Texture */}
-                <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.04] mix-blend-overlay pointer-events-none z-50" />
+                <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.04] mix-blend-overlay pointer-events-none z-50" />
 
                 {/* --- MASSIVE TYPOGRAPHY (Background Layer) --- */}
                 <motion.div 
