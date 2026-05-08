@@ -1,236 +1,265 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
-import { ArrowRight, Code, PenTool } from "lucide-react";
-import Link from "next/link";
-import { Magnetic } from "@/components/ui/Magnetic";
+import { useRef, useState } from "react";
+import { motion, useScroll, useTransform, useSpring, AnimatePresence, useMotionValue } from "framer-motion";
 
 export function Hero() {
-    const containerRef = useRef<HTMLDivElement>(null);
-    const overlayRef = useRef<HTMLDivElement>(null);
-    const [isTouch, setIsTouch] = useState(false);
+    const [isEntered, setIsEntered] = useState(false);
     
-    // Mouse X position percentage (0 to 100)
-    const mouseX = useMotionValue(50);
-    // Add physics to the movement for a smooth fluid feel
-    const springX = useSpring(mouseX, { stiffness: 45, damping: 15, mass: 0.8 });
+    const containerRef = useRef<HTMLDivElement>(null);
+    const { scrollYProgress } = useScroll({
+        target: containerRef,
+        offset: ["start start", "end start"],
+    });
 
-    // FIX: useMotionTemplate produces a MotionValue<string> which can trigger
-    // mixObject on unmount. Write clipPath directly to element.style instead.
-    useEffect(() => {
-        const unsubscribe = springX.on("change", (v: number) => {
-            if (overlayRef.current) {
-                overlayRef.current.style.clipPath = `polygon(0 0, ${v}% 0, ${v}% 100%, 0 100%)`;
-            }
-        });
-        // Set initial value
-        if (overlayRef.current) {
-            overlayRef.current.style.clipPath = `polygon(0 0, 50% 0, 50% 100%, 0 100%)`;
-        }
-        return () => unsubscribe();
-    }, [springX]);
+    // Main Hero Scroll Parallax
+    const yTextBg = useTransform(scrollYProgress, [0, 1], ["0%", "40%"]);
+    const yPhoto = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
+    const yFloating1 = useTransform(scrollYProgress, [0, 1], ["0%", "-50%"]);
+    const yFloating2 = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
 
-    useEffect(() => {
-        setIsTouch("ontouchstart" in window || navigator.maxTouchPoints > 0);
-        
-        // Mobile auto-wobble effect so the user sees it's interactive
-        if ("ontouchstart" in window || navigator.maxTouchPoints > 0) {
-            let step = 0;
-            const interval = setInterval(() => {
-                step += 0.05;
-                const wave = Math.sin(step) * 15 + 50; // oscillates between 35% and 65%
-                mouseX.set(wave);
-            }, 50);
-            return () => clearInterval(interval);
-        }
-    }, [mouseX]);
+    // Mouse tracking for Intro Screen Parallax
+    const mouseX = useMotionValue(0);
+    const mouseY = useMotionValue(0);
 
     const handleMouseMove = (e: React.MouseEvent) => {
-        if (isTouch) return;
-        const rect = containerRef.current?.getBoundingClientRect();
-        if (rect) {
-            // Calculate percentage based on mouse position
-            const percentage = ((e.clientX - rect.left) / rect.width) * 100;
-            // Clamp it slightly so it doesn't completely disappear (limit to 10% - 90%)
-            const clamped = Math.min(Math.max(percentage, 10), 90);
-            mouseX.set(clamped);
-        }
+        const { clientX, clientY } = e;
+        const targetX = (clientX / (typeof window !== "undefined" ? window.innerWidth : 1000) - 0.5) * 50;
+        const targetY = (clientY / (typeof window !== "undefined" ? window.innerHeight : 1000) - 0.5) * 50;
+        mouseX.set(targetX);
+        mouseY.set(targetY);
     };
 
-    const handleMouseLeave = () => {
-        if (!isTouch) {
-            // Return to perfectly centered when mouse leaves
-            mouseX.set(50); 
-        }
-    };
+    const springConfig = { damping: 20, stiffness: 100 };
+    const blob1X = useSpring(useTransform(mouseX, [-50, 50], [40, -40]), springConfig);
+    const blob1Y = useSpring(useTransform(mouseY, [-50, 50], [40, -40]), springConfig);
+    const blob2X = useSpring(useTransform(mouseX, [-50, 50], [-60, 60]), springConfig);
+    const blob2Y = useSpring(useTransform(mouseY, [-50, 50], [-60, 60]), springConfig);
+    
+    const textLayerX = useSpring(useTransform(mouseX, [-50, 50], [-10, 10]), springConfig);
+    const textLayerY = useSpring(useTransform(mouseY, [-50, 50], [-10, 10]), springConfig);
 
     return (
         <section 
             ref={containerRef}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-            className="relative w-full h-[100svh] min-h-[700px] overflow-hidden bg-[#0A0A0A] select-none"
+            className="relative w-full h-[100svh] min-h-[100svh] overflow-hidden font-sans selection:bg-lime-400 selection:text-black bg-[#0f0f0f]"
         >
-            {/* =========================================
-                BASE LAYER (RIGHT SIDE - FULL STACK DEVELOPER)
-                ========================================= */}
-            <div className="absolute inset-0 bg-[#0A0A0A] text-zinc-100 flex flex-col justify-center">
-                {/* Tech-themed background for Developer side */}
-                <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_50%,rgba(132,204,22,0.08),transparent_50%)]" />
-                    <div 
-                        className="absolute inset-0 opacity-[0.03]" 
-                        style={{ 
-                            backgroundImage: "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
-                            backgroundSize: "60px 60px"
-                        }} 
-                    />
-                </div>
+            {/* ====================================================
+                1. INTRO / COVER SCREEN (CLICK TO ENTER)
+                ==================================================== */}
+            <AnimatePresence>
+                {!isEntered && (
+                    <motion.div 
+                        key="intro-screen"
+                        exit={{ y: "-100%", opacity: 0, transition: { duration: 1.2, ease: [0.76, 0, 0.24, 1] } }}
+                        onMouseMove={handleMouseMove}
+                        onClick={() => setIsEntered(true)}
+                        className="absolute inset-0 z-50 cursor-pointer bg-[#050505] overflow-hidden flex flex-col justify-between p-6 sm:p-10 select-none border-b border-white/5"
+                    >
+                        {/* Interactive Background Blobs (Dark Theme) */}
+                        <motion.div 
+                            style={{ x: blob1X, y: blob1Y }}
+                            className="absolute top-[-10%] left-[10%] w-[60vw] h-[60vw] md:w-[40vw] md:h-[40vw] bg-zinc-800/20 rounded-full pointer-events-none mix-blend-screen blur-[80px]"
+                        />
+                        <motion.div 
+                            style={{ x: blob2X, y: blob2Y }}
+                            className="absolute bottom-[-10%] right-[5%] w-[70vw] h-[70vw] md:w-[50vw] md:h-[50vw] bg-zinc-900/40 rounded-full pointer-events-none mix-blend-screen blur-[100px]"
+                        />
+                        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.05] pointer-events-none" />
 
-                <div className="w-full max-w-7xl mx-auto px-6 sm:px-12 md:px-20 flex items-center justify-end relative h-full">
-                    {/* Developer Text Block - Enhanced with Tech elements */}
-                    <div className="w-[42%] flex flex-col justify-center items-start z-10 hidden md:flex">
-                        <div className="relative">
-                            {/* Decorative line numbers for tech feel */}
-                            <div className="absolute -left-12 top-0 bottom-0 w-px bg-zinc-800/50 hidden lg:block">
-                                {[12, 13, 14, 15, 16].map(n => (
-                                    <span key={n} className="absolute -left-8 text-[10px] text-zinc-700 font-mono" style={{ top: `${(n-12)*40}px` }}>0{n}</span>
-                                ))}
+                        {/* Interactive Text Layer */}
+                        <motion.div 
+                            style={{ x: textLayerX, y: textLayerY }}
+                            className="relative z-10 w-full h-full flex flex-col justify-center gap-6 md:gap-10"
+                        >
+                            
+                            {/* Top Left Text - Author text removed per request */}
+                            <div className="flex flex-col items-start gap-4 overflow-hidden py-2">
+                                <motion.h2 
+                                    initial={{ y: "100%" }}
+                                    animate={{ y: "0%" }}
+                                    whileHover={{ scale: 1.05, skewX: -5, color: "#a3e635" }}
+                                    transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1], delay: 0.1 }}
+                                    className="text-4xl md:text-6xl font-display font-medium tracking-tighter scale-y-[1.4] origin-top-left text-white"
+                                >
+                                    FAUZAN
+                                </motion.h2>
                             </div>
 
-                            <div className="flex flex-col gap-6">
-                                <motion.div
-                                    initial={{ opacity: 0, x: 50 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ duration: 1.2, delay: 3.2, ease: [0.16, 1, 0.3, 1] }}
+                            {/* Section 1: FOLIO OF FAUZAN */}
+                            <div className="w-full border-t border-zinc-800/80 pt-2 md:pt-4 overflow-hidden">
+                                <motion.h1 
+                                    initial={{ y: "120%" }}
+                                    animate={{ y: "0%" }}
+                                    whileHover={{ skewX: -2, y: -10 }}
+                                    transition={{ duration: 1, ease: [0.76, 0, 0.24, 1], delay: 0.2 }}
+                                    className="text-[13vw] md:text-[11vw] font-black uppercase tracking-tighter text-white scale-y-[1.6] origin-top leading-[0.75]"
                                 >
-                                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-lime-500/10 border border-lime-500/20 text-lime-400 font-mono text-xs tracking-widest uppercase shadow-[0_0_20px_rgba(132,204,22,0.1)]">
-                                        <Code className="w-4 h-4" /> full stack developer
+                                    FOLIO OF FAUZAN
+                                </motion.h1>
+                            </div>
+
+                            {/* Section 2: Date & Location */}
+                            <div className="w-full border-t border-zinc-800/80 pt-2 md:pt-4 flex flex-col md:flex-row items-start md:items-end justify-between gap-8 md:gap-4 overflow-hidden">
+                                <motion.h1 
+                                    initial={{ y: "120%" }}
+                                    animate={{ y: "0%" }}
+                                    whileHover={{ scale: 1.02, skewX: -2 }}
+                                    transition={{ duration: 1, ease: [0.76, 0, 0.24, 1], delay: 0.3 }}
+                                    className="text-[15vw] md:text-[12vw] font-black uppercase tracking-tighter text-transparent scale-y-[1.6] origin-top leading-[0.75] relative transition-colors hover:text-white"
+                                    style={{ WebkitTextStroke: "1px rgba(255,255,255,0.8)" }}
+                                >
+                                    28/MAY.2026
+                                </motion.h1>
+                                <motion.div 
+                                    initial={{ scale: 0, opacity: 0 }}
+                                    animate={{ scale: 1, opacity: 1 }}
+                                    whileHover={{ scale: 1.1, rotate: -5 }}
+                                    transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1], delay: 0.6 }}
+                                    className="flex flex-col items-center justify-center border border-zinc-700 rounded-full px-6 py-2 md:px-10 md:py-4 relative top-2 md:top-0 hover:bg-white hover:text-black transition-colors duration-500"
+                                >
+                                    <span className="font-display text-sm md:text-2xl uppercase scale-y-[1.4] origin-bottom tracking-widest">
+                                        ( BASED IN INDONESIA )
                                     </span>
                                 </motion.div>
-
-                                <motion.h1 
-                                    initial={{ opacity: 0, x: 80 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ duration: 1.2, delay: 3.4, ease: [0.16, 1, 0.3, 1] }}
-                                    className="text-5xl lg:text-6xl xl:text-7xl font-mono font-bold leading-[1.1] tracking-tighter text-white"
-                                >
-                                    Arsitektur <span className="text-zinc-500">&lt;</span><span className="text-lime-300">Data</span><span className="text-zinc-500">&gt;</span><br />
-                                    Kinerja <span className="text-zinc-400 italic">Efisien.</span>
-                                </motion.h1>
-
-                                <motion.p 
-                                    initial={{ opacity: 0, x: 100 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ duration: 1.2, delay: 3.6, ease: [0.16, 1, 0.3, 1] }}
-                                    className="text-zinc-300 font-mono text-sm lg:text-base max-w-sm leading-relaxed"
-                                >
-                                    Membangun logika backend yang tangguh dan infrastruktur yang skalabel untuk pengalaman digital tanpa hambatan.
-                                </motion.p>
                             </div>
-                        </div>
-                    </div>
 
-                    {/* Developer Image */}
-                    <motion.div 
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 1.5, delay: 3.0 }}
-                        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-0"
-                    >
-                        <div className="w-[320px] h-[420px] md:w-[400px] md:h-[520px] overflow-hidden shadow-2xl relative border border-zinc-800 bg-zinc-950 group">
-                            <img 
-                                src="/foto dev.png" 
-                                alt="Fauzan Developer" 
-                                className="w-full h-full object-cover opacity-80 grayscale-[0.3] group-hover:grayscale-0 transition-all duration-700"
-                            />
-                            {/* Scanning line effect */}
-                            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-lime-500/10 to-transparent h-20 w-full -translate-y-full animate-[scan_3s_linear_infinite]" />
-                        </div>
-                    </motion.div>
-                </div>
-            </div>
+                            {/* Section 3: Bottom Text */}
+                            <div className="w-full border-t border-zinc-800/80 pt-2 md:pt-4 mt-auto overflow-hidden">
+                                <motion.h1 
+                                    initial={{ y: "120%" }}
+                                    animate={{ y: "0%" }}
+                                    whileHover={{ skewX: -2, y: -5, color: "#a3e635" }}
+                                    transition={{ duration: 1, ease: [0.76, 0, 0.24, 1], delay: 0.4 }}
+                                    className="text-[11vw] md:text-[9vw] font-black uppercase tracking-tighter text-white scale-y-[1.6] origin-bottom leading-[0.75] opacity-90"
+                                >
+                                    FULL STACK DEVELOPER
+                                </motion.h1>
+                            </div>
+                        </motion.div>
 
-            {/* =========================================
-                TOP LAYER (LEFT SIDE - UI DESIGNER / MASKED)
-                ========================================= */}
-            <div 
-                ref={overlayRef}
-                className="absolute inset-0 bg-white text-slate-900 flex flex-col justify-center"
-            >
-                {/* Designer Aesthetic Background */}
-                <div className="absolute top-[10%] left-[5%] w-[400px] h-[400px] rounded-full bg-indigo-100/50 blur-[80px]" />
-                <div className="absolute bottom-[10%] left-[20%] w-[350px] h-[350px] rounded-full bg-rose-100/40 blur-[80px]" />
-
-                <div className="w-full max-w-7xl mx-auto px-6 sm:px-12 md:px-20 flex items-center justify-start relative h-full">
-                    {/* Designer Text Block - Added sliding animations */}
-                    <div className="w-[42%] flex flex-col justify-center items-start z-10 hidden md:flex">
-                        <div className="flex flex-col gap-6">
-                            <motion.div 
-                                initial={{ opacity: 0, x: -50 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ duration: 1.2, delay: 3.2, ease: [0.16, 1, 0.3, 1] }}
+                        {/* Floating Click Indicator */}
+                        <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 1.5, duration: 1 }}
+                            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                        >
+                            <motion.div
+                                animate={{ scale: [1, 1.05, 1] }}
+                                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                                className="bg-zinc-900/80 text-white border border-white/20 px-8 py-4 rounded-full font-mono text-xs md:text-sm uppercase tracking-widest flex items-center gap-3 backdrop-blur-xl hover:bg-white hover:text-black transition-colors duration-300"
                             >
-                                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 font-medium text-xs tracking-[0.2em] uppercase shadow-sm">
-                                    <PenTool className="w-4 h-4" /> ui/ux designer
-                                </span>
+                                <span className="w-2.5 h-2.5 rounded-full bg-white animate-pulse" />
+                                CLICK TO REVEAL
                             </motion.div>
-
-                            <motion.h1 
-                                initial={{ opacity: 0, x: -80 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ duration: 1.2, delay: 3.4, ease: [0.16, 1, 0.3, 1] }}
-                                className="text-5xl lg:text-6xl xl:text-7xl font-display font-bold leading-[1.1] tracking-tighter text-black mb-2"
-                            >
-                                Estetika <span className="text-slate-500 font-light">Visual.</span><br />
-                                Pengalaman <span className="text-indigo-700 italic">Sempurna.</span>
-                            </motion.h1>
-
-                            <motion.p 
-                                initial={{ opacity: 0, x: -100 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ duration: 1.2, delay: 3.6, ease: [0.16, 1, 0.3, 1] }}
-                                className="text-slate-800 text-sm lg:text-base max-w-sm leading-relaxed border-l-2 border-indigo-500/20 pl-4"
-                            >
-                                Merancang antarmuka memukau dan pengalaman pengguna yang intuitif dengan presisi visual yang tinggi.
-                            </motion.p>
-                        </div>
-                    </div>
-
-                    {/* Designer Image */}
-                    <motion.div 
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 1.5, delay: 3.0 }}
-                        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-0"
-                    >
-                        <div className="w-[320px] h-[420px] md:w-[400px] md:h-[520px] overflow-hidden shadow-2xl relative border border-white bg-slate-100">
-                            <img 
-                                src="/foto deigner.png" 
-                                alt="Fauzan Designer" 
-                                className="w-full h-full object-cover"
-                            />
-                        </div>
+                        </motion.div>
                     </motion.div>
-                </div>
-            </div>
+                )}
+            </AnimatePresence>
 
-            {/* ── Scroll hint ─────────────────────────────────────── */}
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.2, duration: 0.8 }}
-                className="absolute bottom-7 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 z-50 pointer-events-none mix-blend-difference"
-                aria-hidden
-            >
-                <span className="text-[10px] tracking-[0.2em] uppercase text-white/50 font-medium">Scroll</span>
-                <motion.div
-                    animate={{ y: [0, 6, 0] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                    className="w-px h-7 bg-gradient-to-b from-white/30 to-transparent"
+            {/* ====================================================
+                2. MAIN HERO (FAUZAN STUDIO)
+                ==================================================== */}
+            <div className="absolute inset-0 w-full h-full flex flex-col items-center justify-center z-10 overflow-hidden">
+                {/* --- BACKGROUND FLOATING BLOBS (Depth) --- */}
+                <motion.div 
+                    style={{ y: yFloating1 }}
+                    className="absolute top-[10%] left-[10%] w-[30vw] h-[30vw] min-w-[300px] min-h-[300px] bg-indigo-600/20 rounded-full blur-[80px] md:blur-[120px] pointer-events-none"
                 />
-            </motion.div>
+                <motion.div 
+                    style={{ y: yFloating2 }}
+                    className="absolute bottom-[10%] right-[5%] w-[40vw] h-[40vw] min-w-[400px] min-h-[400px] bg-lime-500/10 rounded-full blur-[100px] md:blur-[150px] pointer-events-none"
+                />
+                
+                {/* Noise Texture */}
+                <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.04] mix-blend-overlay pointer-events-none z-50" />
+
+                {/* --- MASSIVE TYPOGRAPHY (Background Layer) --- */}
+                <motion.div 
+                    style={{ y: yTextBg }}
+                    className="absolute inset-0 flex flex-col items-center justify-center z-0 pointer-events-none select-none w-full"
+                >
+                    <div className="flex flex-col items-center justify-center -space-y-[4vw] md:-space-y-[2vw]">
+                        <motion.h1 
+                            whileHover={{ scale: 1.02 }}
+                            className="text-[22vw] md:text-[18vw] font-black uppercase tracking-tighter text-[#eaeaea] leading-[0.8] scale-y-[1.6] origin-bottom opacity-90 pointer-events-auto cursor-default"
+                        >
+                            FAUZAN
+                        </motion.h1>
+                        <motion.h1 
+                            whileHover={{ scale: 1.02 }}
+                            className="text-[22vw] md:text-[18vw] font-black uppercase tracking-tighter text-transparent leading-[0.8] scale-y-[1.6] origin-top pointer-events-auto cursor-default"
+                            style={{ WebkitTextStroke: "2px rgba(234, 234, 234, 0.15)" }}
+                        >
+                            STUDIO
+                        </motion.h1>
+                    </div>
+                </motion.div>
+
+                {/* --- ORGANIC BLOB PHOTO (Middle Layer) --- */}
+                <motion.div 
+                    style={{ y: yPhoto }}
+                    className="relative z-10 w-[70vw] sm:w-[50vw] md:w-[35vw] max-w-[450px] aspect-[3/4] mt-[5vh]"
+                >
+                    <motion.div
+                        animate={{
+                            borderRadius: [
+                                "30% 70% 70% 30% / 30% 30% 70% 70%",
+                                "50% 50% 20% 80% / 25% 80% 20% 75%",
+                                "70% 30% 40% 60% / 60% 20% 80% 40%",
+                                "30% 70% 70% 30% / 30% 30% 70% 70%",
+                            ]
+                        }}
+                        transition={{ 
+                            duration: 10, 
+                            repeat: Infinity, 
+                            ease: "linear" 
+                        }}
+                        className="w-full h-full overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.5)] border border-white/10 relative group"
+                    >
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10" />
+                        
+                        <img 
+                            src="/foto deigner.png" 
+                            alt="Fauzan Designer" 
+                            className="w-full h-full object-cover scale-[1.15] group-hover:scale-100 transition-transform duration-1000 ease-out grayscale-[0.2]"
+                        />
+                    </motion.div>
+                    
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0 }}
+                        animate={isEntered ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0 }}
+                        transition={{ delay: 1, type: "spring", bounce: 0.5 }}
+                        className="absolute -bottom-6 -right-6 z-20 px-6 py-6 bg-lime-400 text-black rounded-full flex items-center justify-center font-black tracking-tighter text-xl shadow-2xl rotate-12"
+                    >
+                        DEV
+                    </motion.div>
+                </motion.div>
+
+                {/* --- FOREGROUND DETAILS --- */}
+                <div className="absolute bottom-8 left-6 md:left-12 z-20 font-mono text-[10px] md:text-xs text-white/50 uppercase flex flex-col gap-1 tracking-widest">
+                    <p>Portfolio <span className="text-lime-400">©2026</span></p>
+                    <p>Location: Indonesia</p>
+                </div>
+                
+                <div className="absolute bottom-8 right-6 md:right-12 z-20 font-mono text-[10px] md:text-xs text-white/50 uppercase flex flex-col gap-1 tracking-widest text-right">
+                    <p>Role: Mobile & Full Stack</p>
+                    <p>Scroll to explore ↓</p>
+                </div>
+
+                {/* --- OVERLAPPING FOREGROUND TEXT --- */}
+                <motion.div 
+                    className="absolute z-30 top-1/2 left-4 md:left-12 -translate-y-1/2 pointer-events-none mix-blend-difference hidden sm:block"
+                >
+                    <motion.p 
+                        whileHover={{ skewX: -5 }}
+                        className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-[0.9] pointer-events-auto cursor-default"
+                    >
+                        Mobile<br/>Developer.<br/>Full Stack<br/>Developer.
+                    </motion.p>
+                </motion.div>
+            </div>
         </section>
     );
 }

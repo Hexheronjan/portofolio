@@ -1,6 +1,7 @@
 import { Hero } from "@/components/sections/Hero";
 import { FeaturedProjects } from "@/components/sections/FeaturedProjects";
 import { DynamicPhoto } from "@/components/sections/DynamicPhoto";
+import { Certificates } from "@/components/sections/Certificates";
 import { Journey } from "@/components/sections/Journey";
 import { CustomCursor } from "@/components/ui/CustomCursor";
 import { AbstractBackground } from "@/components/ui/AbstractBackground";
@@ -21,6 +22,7 @@ export default function Home() {
       <Hero />
       <FeaturedProjects />
       <DynamicPhoto />
+      <Certificates />
       <Journey />
     </main>
   );

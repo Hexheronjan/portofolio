@@ -9,6 +9,7 @@ import { CursorGlow } from "@/components/ui/CursorGlow";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
 import { Preloader } from "@/components/ui/Preloader";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
+import { MusicToggle } from "@/components/ui/MusicToggle";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -35,7 +36,7 @@ export default function RootLayout({
     <html lang="id" suppressHydrationWarning className="scroll-smooth">
       <body
         className={cn(
-          "min-h-screen bg-background font-sans text-foreground antialiased selection:bg-primary/20",
+          "min-h-screen bg-background font-sans text-foreground antialiased selection:bg-primary/20 overflow-x-hidden",
           inter.variable,
           poppins.variable
         )}
@@ -46,9 +47,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <audio id="bg-music" src="/musik.mp3" loop preload="auto" />
           <Preloader />
           <ScrollProgress />
           <CursorGlow />
+          <MusicToggle />
           <ScrollToTop />
           <div className="flex flex-col min-h-screen noise-bg">
             <Navbar />

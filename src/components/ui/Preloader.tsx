@@ -1,58 +1,57 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-
-const words = [
-    "Halo",
-    "Hello",
-    "Bonjour",
-    "こんにちは",
-    "Ciao",
-    "안녕하세요",
-    "Merhaba",
-];
-
-// How long each word stays visible (ms)
-const WORD_DURATION = 420;
-
-// Easing for the word slide — feels very fluid
-const EASE = [0.22, 1, 0.36, 1] as const;
 
 export function Preloader() {
     const [mounted, setMounted] = useState(false);
     const [show, setShow] = useState(true);
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [isExiting, setIsExiting] = useState(false);
-    const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const [progress, setProgress] = useState(0);
+    const [phase, setPhase] = useState<"counting" | "welcome" | "exiting">("counting");
 
     useEffect(() => {
         setMounted(true);
 
-        // Skip if already shown this session
+        // Uncomment this section if you only want the preloader to show ONCE per session.
+        // For now, it will show on every reload so you can test and see the animation!
+        /*
         if (sessionStorage.getItem("preloader_done")) {
             setShow(false);
             return;
         }
+        */
 
-        let idx = 0;
+        let start: number | null = null;
+        const duration = 2000; // 2 seconds counting animation
 
-        function nextWord() {
-            idx += 1;
-            if (idx >= words.length) {
-                // All words done — wait a beat then slide overlay away
-                timerRef.current = setTimeout(() => setIsExiting(true), 300);
+        function step(timestamp: number) {
+            if (!start) start = timestamp;
+            const elapsed = timestamp - start;
+            
+            // Ease out quart function for smooth deceleration at the end
+            const easeOutQuart = 1 - Math.pow(1 - Math.min(elapsed / duration, 1), 4);
+            const currentProgress = Math.floor(easeOutQuart * 100);
+            
+            setProgress(currentProgress);
+
+            if (elapsed < duration) {
+                requestAnimationFrame(step);
             } else {
-                setCurrentIndex(idx);
-                timerRef.current = setTimeout(nextWord, WORD_DURATION);
+                setProgress(100);
+                setTimeout(() => {
+                    setPhase("welcome");
+                    // Memulai musik latar belakang
+                    const audio = document.getElementById("bg-music") as HTMLAudioElement;
+                    if (audio) {
+                        audio.play().catch(e => console.warn("Autoplay dicegah oleh browser:", e));
+                    }
+                }, 300); // Wait 0.3s at 100%
+                setTimeout(() => setPhase("exiting"), 2000); // Show 'Welcome' for 1.7s
             }
         }
 
-        timerRef.current = setTimeout(nextWord, WORD_DURATION);
+        requestAnimationFrame(step);
 
-        return () => {
-            if (timerRef.current) clearTimeout(timerRef.current);
-        };
     }, []);
 
     if (!mounted || !show) return null;
@@ -64,15 +63,12 @@ export function Preloader() {
                 setShow(false);
             }}
         >
-            {!isExiting && (
+            {phase !== "exiting" && (
                 <motion.div
                     key="preloader"
-                    className="fixed inset-0 z-[9999] flex items-center justify-center select-none"
-                    style={{ backgroundColor: "#0a0a0a" }}
+                    className="fixed inset-0 z-[9999] flex flex-col items-center justify-center select-none"
+                    style={{ backgroundColor: "#efefef", color: "#111" }}
                     exit={{
-                        // Whole panel slides upward — the "curtain reveal" effect
-                        // FIX: "-100%" is a string that goes through mixObject parsing.
-                        // Use a large enough negative pixel value instead.
                         y: "-100vh",
                         transition: {
                             duration: 1.0,
@@ -80,47 +76,46 @@ export function Preloader() {
                         },
                     }}
                 >
-                    {/*
-                      ── WORD FLIP ROW ─────────────────────────────────────
-                      Layout: [●] [word]
-                      The word slides up from below on enter, up into void on exit.
-                      overflow-hidden clips the motion so it feels like a slot machine.
-                    */}
-                    <div className="flex items-center gap-4">
-                        {/* Dot */}
-                        <span className="w-2.5 h-2.5 rounded-full bg-white shrink-0 opacity-90" />
+                    {/* Noise Overlay */}
+                    <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.05] pointer-events-none" />
 
-                        {/* Slot container — fixed height so layout doesn't jump */}
-                        <div
-                            className="overflow-hidden"
-                            style={{ height: "1.15em" }}
-                        >
-                            <AnimatePresence mode="popLayout" initial={false}>
-                                <motion.p
-                                    key={currentIndex}
-                                    className="m-0 text-white text-4xl sm:text-5xl md:text-6xl font-display font-bold leading-none"
-                                    initial={{ y: 80, opacity: 0 }}
-                                    animate={{
-                                        y: 0,
-                                        opacity: 1,
-                                        transition: {
-                                            duration: 0.45,
-                                            ease: EASE,
-                                        },
-                                    }}
-                                    exit={{
-                                        y: -80,
-                                        opacity: 0,
-                                        transition: {
-                                            duration: 0.35,
-                                            ease: [0.55, 0, 1, 0.45],
-                                        },
-                                    }}
+                    {/* Centered Content Container */}
+                    <div className="relative z-10 flex items-center justify-center h-32 overflow-hidden">
+                        <AnimatePresence mode="wait">
+                            {/* PHASE 1: COUNTING 0-100% */}
+                            {phase === "counting" && (
+                                <motion.div
+                                    key="counter"
+                                    exit={{ y: -80, opacity: 0, transition: { duration: 0.5, ease: [0.76, 0, 0.24, 1] } }}
+                                    className="flex items-start gap-1"
                                 >
-                                    {words[currentIndex]}
-                                </motion.p>
-                            </AnimatePresence>
-                        </div>
+                                    <span className="font-display font-medium text-[15vw] md:text-[10vw] leading-none tracking-tighter scale-y-[1.4] origin-bottom">
+                                        {progress}
+                                    </span>
+                                    <span className="font-display text-4xl md:text-5xl mt-2 font-medium scale-y-[1.2] origin-bottom">
+                                        %
+                                    </span>
+                                </motion.div>
+                            )}
+                            
+                            {/* PHASE 2: WELCOME TEXT */}
+                            {phase === "welcome" && (
+                                <motion.div
+                                    key="welcome"
+                                    initial={{ y: 80, opacity: 0 }}
+                                    animate={{ y: 0, opacity: 1, transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } }}
+                                    exit={{ y: -50, opacity: 0, transition: { duration: 0.4, ease: [0.76, 0, 0.24, 1] } }}
+                                    className="flex flex-col items-center justify-center gap-2"
+                                >
+                                    <span className="font-display font-medium text-lg md:text-2xl uppercase tracking-[0.3em] text-[#111]/60">
+                                        Welcome To
+                                    </span>
+                                    <span className="font-display font-bold text-3xl md:text-6xl uppercase tracking-tighter scale-y-[1.3] origin-bottom">
+                                        PORTOFOLIO FAUZAN
+                                    </span>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </div>
                 </motion.div>
             )}
