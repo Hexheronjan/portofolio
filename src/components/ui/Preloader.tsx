@@ -9,7 +9,10 @@ export function Preloader() {
     const [progress, setProgress] = useState(0);
     const [phase, setPhase] = useState<"counting" | "welcome" | "exiting">("counting");
 
+    const [isMobile, setIsMobile] = useState(false);
+
     useEffect(() => {
+        setIsMobile("ontouchstart" in window || navigator.maxTouchPoints > 0);
         setMounted(true);
 
         // Uncomment this section if you only want the preloader to show ONCE per session.
@@ -77,7 +80,7 @@ export function Preloader() {
                     }}
                 >
                     {/* Noise Overlay */}
-                    <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.05] pointer-events-none" />
+                    {!isMobile && <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.05] pointer-events-none" />}
 
                     {/* Centered Content Container */}
                     <div className="relative z-10 flex items-center justify-center h-32 overflow-hidden">

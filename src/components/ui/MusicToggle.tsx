@@ -6,9 +6,11 @@ import { motion } from "framer-motion";
 
 export function MusicToggle() {
     const [isPlaying, setIsPlaying] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
     useEffect(() => {
+        setIsMobile("ontouchstart" in window || navigator.maxTouchPoints > 0);
         // Cari elemen audio global yang sudah ada di layout
         const audio = document.getElementById("bg-music") as HTMLAudioElement;
         if (audio) {
@@ -49,14 +51,14 @@ export function MusicToggle() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 2.5, duration: 0.8, type: "spring" }}
             onClick={toggleMusic}
-            className="fixed bottom-6 left-6 md:bottom-8 md:left-8 z-[9000] w-12 h-12 md:w-14 md:h-14 rounded-full bg-black/20 dark:bg-white/10 backdrop-blur-xl border border-white/20 dark:border-white/10 flex items-center justify-center text-white shadow-2xl hover:scale-110 transition-transform cursor-pointer mix-blend-difference"
+            className={`fixed bottom-6 left-6 md:bottom-8 md:left-8 z-[9000] w-12 h-12 md:w-14 md:h-14 rounded-full bg-black/40 dark:bg-white/10 backdrop-blur-xl border border-white/20 dark:border-white/10 flex items-center justify-center text-white shadow-2xl hover:scale-110 transition-transform cursor-pointer ${!isMobile ? 'mix-blend-difference' : ''}`}
             aria-label="Toggle Music"
         >
             {isPlaying ? (
                 // Animasi Equalizer saat musik menyala
                 <div className="flex gap-[3px] items-end justify-center h-5">
                     <motion.div 
-                        animate={{ height: ["6px", "20px", "6px"] }} 
+                        animate={!isMobile ? { height: ["6px", "20px", "6px"] } : { height: ["8px", "16px", "8px"] }} 
                         transition={{ duration: 0.8, repeat: Infinity, ease: "easeInOut" }} 
                         className="w-1.5 bg-white rounded-t-sm" 
                     />

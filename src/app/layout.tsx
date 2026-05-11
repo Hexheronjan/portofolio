@@ -47,7 +47,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <audio id="bg-music" src="/musik.mp3" loop preload="auto" />
+          <audio id="bg-music" src="/musik (1).mp3" loop preload="auto" />
           <Preloader />
           <ScrollProgress />
           <CursorGlow />

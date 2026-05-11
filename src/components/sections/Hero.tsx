@@ -1,10 +1,15 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform, useSpring, AnimatePresence, useMotionValue } from "framer-motion";
 
 export function Hero() {
     const [isEntered, setIsEntered] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+    
+    useEffect(() => {
+        setIsMobile("ontouchstart" in window || navigator.maxTouchPoints > 0);
+    }, []);
     
     const containerRef = useRef<HTMLDivElement>(null);
     const { scrollYProgress } = useScroll({
@@ -23,6 +28,7 @@ export function Hero() {
     const mouseY = useMotionValue(0);
 
     const handleMouseMove = (e: React.MouseEvent) => {
+        if (isMobile) return;
         const { clientX, clientY } = e;
         const targetX = (clientX / (typeof window !== "undefined" ? window.innerWidth : 1000) - 0.5) * 50;
         const targetY = (clientY / (typeof window !== "undefined" ? window.innerHeight : 1000) - 0.5) * 50;
@@ -57,15 +63,19 @@ export function Hero() {
                         className="absolute inset-0 z-50 cursor-pointer bg-[#050505] overflow-hidden flex flex-col justify-between p-6 sm:p-10 select-none border-b border-white/5"
                     >
                         {/* Interactive Background Blobs (Dark Theme) */}
-                        <motion.div 
-                            style={{ x: blob1X, y: blob1Y }}
-                            className="absolute top-[-10%] left-[10%] w-[60vw] h-[60vw] md:w-[40vw] md:h-[40vw] bg-zinc-800/20 rounded-full pointer-events-none mix-blend-screen blur-[80px]"
-                        />
-                        <motion.div 
-                            style={{ x: blob2X, y: blob2Y }}
-                            className="absolute bottom-[-10%] right-[5%] w-[70vw] h-[70vw] md:w-[50vw] md:h-[50vw] bg-zinc-900/40 rounded-full pointer-events-none mix-blend-screen blur-[100px]"
-                        />
-                        <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.05] pointer-events-none" />
+                        {!isMobile && (
+                            <>
+                                <motion.div 
+                                    style={{ x: blob1X, y: blob1Y }}
+                                    className="absolute top-[-10%] left-[10%] w-[60vw] h-[60vw] md:w-[40vw] md:h-[40vw] bg-zinc-800/20 rounded-full pointer-events-none mix-blend-screen blur-[80px]"
+                                />
+                                <motion.div 
+                                    style={{ x: blob2X, y: blob2Y }}
+                                    className="absolute bottom-[-10%] right-[5%] w-[70vw] h-[70vw] md:w-[50vw] md:h-[50vw] bg-zinc-900/40 rounded-full pointer-events-none mix-blend-screen blur-[100px]"
+                                />
+                            </>
+                        )}
+                        {!isMobile && <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.05] pointer-events-none" />}
 
                         {/* Interactive Text Layer */}
                         <motion.div 
@@ -163,17 +173,21 @@ export function Hero() {
                 ==================================================== */}
             <div className="absolute inset-0 w-full h-full flex flex-col items-center justify-center z-10 overflow-hidden">
                 {/* --- BACKGROUND FLOATING BLOBS (Depth) --- */}
-                <motion.div 
-                    style={{ y: yFloating1 }}
-                    className="absolute top-[10%] left-[10%] w-[30vw] h-[30vw] min-w-[300px] min-h-[300px] bg-indigo-600/20 rounded-full blur-[80px] md:blur-[120px] pointer-events-none"
-                />
-                <motion.div 
-                    style={{ y: yFloating2 }}
-                    className="absolute bottom-[10%] right-[5%] w-[40vw] h-[40vw] min-w-[400px] min-h-[400px] bg-lime-500/10 rounded-full blur-[100px] md:blur-[150px] pointer-events-none"
-                />
+                {!isMobile && (
+                    <>
+                        <motion.div 
+                            style={{ y: yFloating1 }}
+                            className="absolute top-[10%] left-[10%] w-[30vw] h-[30vw] min-w-[300px] min-h-[300px] bg-indigo-600/20 rounded-full blur-[120px] pointer-events-none"
+                        />
+                        <motion.div 
+                            style={{ y: yFloating2 }}
+                            className="absolute bottom-[10%] right-[5%] w-[40vw] h-[40vw] min-w-[400px] min-h-[400px] bg-lime-500/10 rounded-full blur-[150px] pointer-events-none"
+                        />
+                    </>
+                )}
                 
                 {/* Noise Texture */}
-                <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.04] mix-blend-overlay pointer-events-none z-50" />
+                {!isMobile && <div className={`absolute inset-0 bg-[url('/noise.svg')] opacity-[0.04] ${!isMobile ? 'mix-blend-overlay' : ''} pointer-events-none z-50`} />}
 
                 {/* --- MASSIVE TYPOGRAPHY (Background Layer) --- */}
                 <motion.div 
@@ -203,13 +217,15 @@ export function Hero() {
                     className="relative z-10 w-[70vw] sm:w-[50vw] md:w-[35vw] max-w-[450px] aspect-[3/4] mt-[5vh]"
                 >
                     <motion.div
-                        animate={{
+                        animate={!isMobile ? {
                             borderRadius: [
                                 "30% 70% 70% 30% / 30% 30% 70% 70%",
                                 "50% 50% 20% 80% / 25% 80% 20% 75%",
                                 "70% 30% 40% 60% / 60% 20% 80% 40%",
                                 "30% 70% 70% 30% / 30% 30% 70% 70%",
                             ]
+                        } : {
+                            borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%"
                         }}
                         transition={{ 
                             duration: 10, 
@@ -250,7 +266,7 @@ export function Hero() {
 
                 {/* --- OVERLAPPING FOREGROUND TEXT --- */}
                 <motion.div 
-                    className="absolute z-30 top-1/2 left-4 md:left-12 -translate-y-1/2 pointer-events-none mix-blend-difference hidden sm:block"
+                    className={`absolute z-30 top-1/2 left-4 md:left-12 -translate-y-1/2 pointer-events-none ${!isMobile ? 'mix-blend-difference' : ''} hidden sm:block`}
                 >
                     <motion.p 
                         whileHover={{ skewX: -5 }}

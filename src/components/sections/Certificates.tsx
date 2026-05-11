@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform, useSpring, MotionValue } from "framer-motion";
 
 const certificates = [
@@ -33,7 +33,7 @@ const certificates = [
     }
 ];
 
-function CertCard({ cert, scrollYProgress }: { cert: typeof certificates[0], scrollYProgress: any }) {
+function CertCard({ cert, scrollYProgress, isMobile }: { cert: typeof certificates[0], scrollYProgress: any, isMobile: boolean }) {
     // 1. Menggunakan useSpring agar scroll parallax menjadi sangat halus (smooth)
     const smoothProgress = useSpring(scrollYProgress, { damping: 25, stiffness: 60, mass: 0.5 });
     const yScroll = useTransform(smoothProgress, [0, 1], cert.yOffset);
@@ -41,12 +41,12 @@ function CertCard({ cert, scrollYProgress }: { cert: typeof certificates[0], scr
     return (
         // Layer 1: Parallax Scrolling Effect
         <motion.div 
-            style={{ y: yScroll }}
+            style={{ y: isMobile ? 0 : yScroll }}
             className={`absolute w-[90vw] md:w-[28vw] max-w-[400px] z-20 ${cert.positionClasses}`}
         >
             {/* Layer 2: Animasi Mengambang (Floating) terus-menerus saat tidak di-scroll */}
             <motion.div
-                animate={{ y: [0, -20, 0] }}
+                animate={!isMobile ? { y: [0, -20, 0] } : {}}
                 transition={{ 
                     duration: cert.floatDuration, 
                     repeat: Infinity, 
@@ -93,6 +93,12 @@ export function Certificates() {
         offset: ["start end", "end start"],
     });
 
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        setIsMobile("ontouchstart" in window || navigator.maxTouchPoints > 0);
+    }, []);
+
     // Pelembut scroll untuk Teks besar agar gerakannya sangat smooth dan tidak patah-patah
     const smoothProgress = useSpring(scrollYProgress, { damping: 30, stiffness: 40 });
     // Dibuat lebih lambat: dari 0% ke -15% saja (sebelumnya -50%)
@@ -121,7 +127,7 @@ export function Certificates() {
             {/* Floating Cards Container */}
             <div className="max-w-[1400px] mx-auto px-4 md:px-8 relative h-[180vh] md:h-[130vh] z-20">
                 {certificates.map((cert, i) => (
-                    <CertCard key={i} cert={cert} scrollYProgress={scrollYProgress} />
+                    <CertCard key={i} cert={cert} scrollYProgress={scrollYProgress} isMobile={isMobile} />
                 ))}
             </div>
         </section>

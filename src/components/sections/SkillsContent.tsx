@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Section } from "@/components/ui/Section";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
@@ -63,10 +64,16 @@ const item = {
 };
 
 export function SkillsContent() {
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        setIsMobile("ontouchstart" in window || navigator.maxTouchPoints > 0);
+    }, []);
+
     return (
         <div className="flex flex-col relative">
             {/* Decorative background */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] -z-10 rounded-full bg-primary/5 blur-3xl" />
+            {!isMobile && <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] -z-10 rounded-full bg-primary/5 blur-3xl" />}
             <Section className="pb-8">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}

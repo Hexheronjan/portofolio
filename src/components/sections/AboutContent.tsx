@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Timeline } from "@/components/ui/Timeline";
 import { Section } from "@/components/ui/Section";
@@ -30,11 +31,17 @@ const education = [
 ];
 
 export function AboutContent() {
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        setIsMobile("ontouchstart" in window || navigator.maxTouchPoints > 0);
+    }, []);
+
     return (
         <div className="flex flex-col">
             <Section className="pb-8 relative">
                 {/* Decorative element */}
-                <div className="absolute top-20 right-0 w-72 h-72 -z-10 rounded-full bg-primary/5 blur-3xl" />
+                {!isMobile && <div className="absolute top-20 right-0 w-72 h-72 -z-10 rounded-full bg-primary/5 blur-3xl" />}
 
                 <motion.h1
                     initial={{ opacity: 0, y: 20 }}
@@ -116,7 +123,7 @@ export function AboutContent() {
             </Section>
 
             <Section className="py-16 relative">
-                <div className="absolute top-0 left-1/2 w-96 h-96 -z-10 rounded-full bg-primary/5 blur-3xl -translate-x-1/2" />
+                {!isMobile && <div className="absolute top-0 left-1/2 w-96 h-96 -z-10 rounded-full bg-primary/5 blur-3xl -translate-x-1/2" />}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}

@@ -18,8 +18,11 @@ export function CustomCursor() {
 
     useEffect(() => {
         // Deteksi apakah perangkat menggunakan layar sentuh
-        setIsMobile("ontouchstart" in window || navigator.maxTouchPoints > 0);
+        const checkMobile = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+        setIsMobile(checkMobile);
         
+        if (checkMobile) return;
+
         const moveCursor = (e: MouseEvent) => {
             cursorX.set(e.clientX - 16);
             cursorY.set(e.clientY - 16);
