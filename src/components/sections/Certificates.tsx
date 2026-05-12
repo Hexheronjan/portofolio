@@ -60,12 +60,12 @@ function CertCard({ cert, scrollYProgress, isMobile }: { cert: typeof certificat
                     <h3 className="font-display font-medium text-lg tracking-widest uppercase text-[#111]">{cert.title}</h3>
                 </div>
 
-                {/* 16:9 Image representing Certificate */}
-                <div className="w-full aspect-video bg-zinc-200 rounded-xl overflow-hidden mb-8 relative group cursor-pointer">
+                {/* Dynamic Image representing Certificate - No cropping */}
+                <div className="w-full bg-zinc-200/50 rounded-xl overflow-hidden mb-8 relative group cursor-pointer flex items-center justify-center">
                     <img 
                         src={cert.image} 
                         alt={cert.title}
-                        className="w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
+                        className="w-full h-auto object-contain grayscale-[0.2] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
                 </div>
