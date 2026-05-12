@@ -82,7 +82,7 @@
 
   /* Smooth scroll */
   html {
-    scroll-behavior: smooth;
+    scroll-behavior: auto !important;
   }
 
   /* Selection color */

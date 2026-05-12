@@ -11,6 +11,8 @@ import { Preloader } from "@/components/ui/Preloader";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { MusicToggle } from "@/components/ui/MusicToggle";
 
+import { SmoothScroll } from "@/components/ui/SmoothScroll";
+
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
@@ -33,7 +35,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" suppressHydrationWarning className="scroll-smooth">
+    <html lang="id" suppressHydrationWarning>
       <body
         className={cn(
           "min-h-screen bg-background font-sans text-foreground antialiased selection:bg-primary/20 overflow-x-hidden",
@@ -47,17 +49,19 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <audio id="bg-music" src="/musik (1).mp3" loop preload="auto" />
-          <Preloader />
-          <ScrollProgress />
-          <CursorGlow />
-          <MusicToggle />
-          <ScrollToTop />
-          <div className="flex flex-col min-h-screen noise-bg">
-            <Navbar />
-            <main className="flex-grow pt-20">{children}</main>
-            <Footer />
-          </div>
+          <SmoothScroll>
+            <audio id="bg-music" src="/musik (1).mp3" loop preload="auto" />
+            <Preloader />
+            <ScrollProgress />
+            <CursorGlow />
+            <MusicToggle />
+            <ScrollToTop />
+            <div className="flex flex-col min-h-screen noise-bg">
+              <Navbar />
+              <main className="flex-grow pt-20">{children}</main>
+              <Footer />
+            </div>
+          </SmoothScroll>
         </ThemeProvider>
       </body>
     </html>

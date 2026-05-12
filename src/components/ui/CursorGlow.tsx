@@ -34,9 +34,12 @@ export function CursorGlow() {
             ringX += (mouseX - ringX) * 0.15;
             ringY += (mouseY - ringY) * 0.15;
             
-            // Offset logic for centering
-            dot.style.transform = `translate(${mouseX - 4}px, ${mouseY - 4}px)`;
-            ring.style.transform = `translate(${ringX - 16}px, ${ringY - 16}px)`;
+            // Apply positional transform
+            dot.style.transform = `translate3d(${mouseX - 4}px, ${mouseY - 4}px, 0)`;
+            
+            // Apply positional + scale transform
+            const scale = ring.getAttribute('data-hovering') === 'true' ? 1.5 : 1;
+            ring.style.transform = `translate3d(${ringX - 16}px, ${ringY - 16}px, 0) scale(${scale})`;
             
             animFrame = requestAnimationFrame(animate);
         };
@@ -48,11 +51,11 @@ export function CursorGlow() {
         const handleMouseOver = (e: MouseEvent) => {
             const target = e.target as HTMLElement;
             if (target.closest('a') || target.closest('button')) {
-                ring.style.transform = `translate(${ringX - 16}px, ${ringY - 16}px) scale(1.5)`;
+                ring.setAttribute('data-hovering', 'true');
                 ring.style.borderColor = 'rgba(190, 242, 100, 0.8)';
                 ring.style.backgroundColor = 'rgba(190, 242, 100, 0.1)';
             } else {
-                ring.style.transform = `translate(${ringX - 16}px, ${ringY - 16}px) scale(1)`;
+                ring.setAttribute('data-hovering', 'false');
                 ring.style.borderColor = 'rgba(255, 255, 255, 0.3)';
                 ring.style.backgroundColor = 'transparent';
             }

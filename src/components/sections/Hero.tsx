@@ -67,15 +67,15 @@ export function Hero() {
                             <>
                                 <motion.div 
                                     style={{ x: blob1X, y: blob1Y }}
-                                    className="absolute top-[-10%] left-[10%] w-[60vw] h-[60vw] md:w-[40vw] md:h-[40vw] bg-zinc-800/20 rounded-full pointer-events-none mix-blend-screen blur-[80px]"
+                                    className="absolute top-[-10%] left-[10%] w-[60vw] h-[60vw] md:w-[40vw] md:h-[40vw] bg-zinc-800/10 rounded-full pointer-events-none mix-blend-screen blur-[60px] will-change-transform"
                                 />
                                 <motion.div 
                                     style={{ x: blob2X, y: blob2Y }}
-                                    className="absolute bottom-[-10%] right-[5%] w-[70vw] h-[70vw] md:w-[50vw] md:h-[50vw] bg-zinc-900/40 rounded-full pointer-events-none mix-blend-screen blur-[100px]"
+                                    className="absolute bottom-[-10%] right-[5%] w-[70vw] h-[70vw] md:w-[50vw] md:h-[50vw] bg-zinc-900/20 rounded-full pointer-events-none mix-blend-screen blur-[80px] will-change-transform"
                                 />
                             </>
                         )}
-                        {!isMobile && <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.05] pointer-events-none" />}
+                        {!isMobile && <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.03] pointer-events-none" />}
 
                         {/* Interactive Text Layer */}
                         <motion.div 
@@ -177,11 +177,11 @@ export function Hero() {
                     <>
                         <motion.div 
                             style={{ y: yFloating1 }}
-                            className="absolute top-[10%] left-[10%] w-[30vw] h-[30vw] min-w-[300px] min-h-[300px] bg-indigo-600/20 rounded-full blur-[120px] pointer-events-none"
+                            className="absolute top-[10%] left-[10%] w-[30vw] h-[30vw] min-w-[300px] min-h-[300px] bg-indigo-600/10 rounded-full blur-[80px] pointer-events-none will-change-transform"
                         />
                         <motion.div 
                             style={{ y: yFloating2 }}
-                            className="absolute bottom-[10%] right-[5%] w-[40vw] h-[40vw] min-w-[400px] min-h-[400px] bg-lime-500/10 rounded-full blur-[150px] pointer-events-none"
+                            className="absolute bottom-[10%] right-[5%] w-[40vw] h-[40vw] min-w-[400px] min-h-[400px] bg-lime-500/5 rounded-full blur-[100px] pointer-events-none will-change-transform"
                         />
                     </>
                 )}
@@ -191,19 +191,19 @@ export function Hero() {
 
                 {/* --- MASSIVE TYPOGRAPHY (Background Layer) --- */}
                 <motion.div 
-                    style={{ y: yTextBg }}
-                    className="absolute inset-0 flex flex-col items-center justify-center z-0 pointer-events-none select-none w-full"
+                    style={{ y: yTextBg, translateZ: 0 }}
+                    className="absolute inset-0 flex flex-col items-center justify-center z-0 pointer-events-none select-none w-full will-change-transform"
                 >
                     <div className="flex flex-col items-center justify-center -space-y-[4vw] md:-space-y-[2vw]">
                         <motion.h1 
                             whileHover={{ scale: 1.02 }}
-                            className="text-[22vw] md:text-[18vw] font-black uppercase tracking-tighter text-[#eaeaea] leading-[0.8] scale-y-[1.6] origin-bottom opacity-90 pointer-events-auto cursor-default"
+                            className="text-[22vw] md:text-[18vw] font-black uppercase tracking-tighter text-[#eaeaea] leading-[0.8] scale-y-[1.6] origin-bottom opacity-90 pointer-events-auto cursor-default translate-z-0"
                         >
                             FAUZAN
                         </motion.h1>
                         <motion.h1 
                             whileHover={{ scale: 1.02 }}
-                            className="text-[22vw] md:text-[18vw] font-black uppercase tracking-tighter text-transparent leading-[0.8] scale-y-[1.6] origin-top pointer-events-auto cursor-default"
+                            className="text-[22vw] md:text-[18vw] font-black uppercase tracking-tighter text-transparent leading-[0.8] scale-y-[1.6] origin-top pointer-events-auto cursor-default translate-z-0"
                             style={{ WebkitTextStroke: "2px rgba(234, 234, 234, 0.15)" }}
                         >
                             STUDIO
