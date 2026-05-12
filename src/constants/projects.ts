@@ -4,6 +4,7 @@ export const projects = [
         description: "Website resmi Rempang Melayu Perkasa yang menampilkan profil dan layanan perusahaan.",
         tags: [],
         image: "/rempang.png",
+        liveUrl: "https://rempangmelayuperkasa.com/",
         featured: true,
     },
     {
@@ -11,6 +12,7 @@ export const projects = [
         description: "Website profil perusahaan dan layanan konsultasi bisnis yang profesional.",
         tags: [],
         image: "/bernadus.png",
+        liveUrl: "https://bernardusinsight.com/",
         featured: true,
     },
     {
@@ -18,13 +20,15 @@ export const projects = [
         description: "Website resmi dealer Hino Jakarta yang menampilkan produk truk, layanan purna jual, dan informasi kontak untuk pelanggan.",
         tags: [],
         image: "/hino.png",
+        liveUrl: "https://www.dealerhinojkt.com/",
         featured: false,
     },
     {
         title: "Spestama",
-        description: "Website perusahaan Spestama yang menampilkan profil bisnis, layanan, dan informasi kontak secara profesional.",
+        description: "Website perusahaan Spestama yang menampilkan profil bisnis, layanan, and informasi kontak secara profesional.",
         tags: [],
         image: "/spestama.png",
+        liveUrl: "https://spestama.co.id/",
         featured: false,
     },
     {
@@ -32,6 +36,7 @@ export const projects = [
         description: "Website toko batu alam di Bekasi yang menampilkan katalog produk, harga, dan informasi pemesanan.",
         tags: [],
         image: "/batualam.png",
+        liveUrl: "https://batualambekasimurah.com/",
         featured: false,
     },
     {
@@ -39,6 +44,7 @@ export const projects = [
         description: "Website resmi dealer mobil listrik Aion di Jakarta yang menampilkan harga, spesifikasi, dan promo terbaru.",
         tags: [],
         image: "/aionmobil.png",
+        liveUrl: "https://hargaaionjakarta.com/",
         featured: false,
     },
     {
@@ -46,6 +52,7 @@ export const projects = [
         description: "Website jasa pemasangan CCTV di area Jakarta dan Bogor dengan layanan profesional dan harga terjangkau.",
         tags: [],
         image: "/gibrancctv.png",
+        liveUrl: "https://gibrancctvjakarta-bogor.com/",
         featured: true,
     },
     {
@@ -53,6 +60,7 @@ export const projects = [
         description: "Website dealer resmi Wuling di area Jabodetabek yang menampilkan produk mobil, harga, dan penawaran spesial.",
         tags: [],
         image: "/wuling.png",
+        liveUrl: "https://wulingmajujabodetabek.com/",
         featured: false,
     },
     {
@@ -60,6 +68,7 @@ export const projects = [
         description: "Website resmi dealer Hino di Jakarta yang menampilkan katalog produk truk dan layanan purna jual.",
         tags: [],
         image: "/truk.png",
+        liveUrl: "https://hino-trukjakarta.com/",
         featured: false,
     },
     {
@@ -67,6 +76,7 @@ export const projects = [
         description: "Layanan pembuatan stempel kilat dan berkualitas secara online dengan pilihan desain yang beragam.",
         tags: [],
         image: "/stampel.png",
+        liveUrl: "https://cetakstempelexpress.com/",
         featured: false,
     },
     {
@@ -74,6 +84,7 @@ export const projects = [
         description: "Platform pemesanan stempel profesional dengan berbagai ukuran dan model untuk kebutuhan bisnis.",
         tags: [],
         image: "/stempel.png",
+        liveUrl: "https://stempel.co.id/",
         featured: false,
     },
     {
@@ -81,6 +92,7 @@ export const projects = [
         description: "Layanan hipnoterapi berbasis nilai-nilai Islami untuk membantu mengatasi berbagai masalah psikologis.",
         tags: [],
         image: "/terapi.png",
+        liveUrl: "https://hipnoterapiislami.com/",
         featured: false,
     },
     {
@@ -88,6 +100,7 @@ export const projects = [
         description: "Perusahaan jasa desain arsitektur dan konstruksi bangunan yang profesional and terpercaya.",
         tags: [],
         image: "/rumah.png",
+        liveUrl: "https://ondesignandbuild.com/",
         featured: false,
     },
     {
@@ -95,6 +108,7 @@ export const projects = [
         description: "Website layanan servis alat elektronik dan penjualan suku cadang elektronik terlengkap.",
         tags: [],
         image: "/elek.png",
+        liveUrl: "https://mulyotronik.com/",
         featured: false,
     },
     {
@@ -102,6 +116,7 @@ export const projects = [
         description: "Jasa pembersihan furnitur (sofa, karpet, kasur) profesional dengan hasil yang bersih dan higienis.",
         tags: [],
         image: "/cuci.png",
+        liveUrl: "https://cucisofatop.co.id/",
         featured: false,
     },
 
@@ -110,6 +125,7 @@ export const projects = [
         description: "Website jasa pengerjaan konstruksi besi dan las untuk berbagai kebutuhan properti.",
         tags: [],
         image: "/kriya.png",
+        liveUrl: "https://kriyabesinusantara.com/",
         featured: false,
     },
     {
@@ -117,6 +133,7 @@ export const projects = [
         description: "Website resmi sekolah Madrasah Ibtidaiyah Tahfiz Al-Furqon untuk informasi akademik dan pendaftaran.",
         tags: [],
         image: "/mitafiz.png",
+        liveUrl: "https://mitahfizhalfurqon-sch-id.sg.okeweb.net/",
         featured: false,
     },
 ];
