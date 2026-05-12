@@ -8,7 +8,7 @@ const certificates = [
         title: "FRONTEND EXPERT",
         desc: "Advanced frontend architecture, performance optimization, and modern React patterns.",
         hugeText: "REACT",
-        image: "/perpus.png", // Ganti dengan path gambar sertifikat 1 yang asli
+        image: "/sertif1.jpeg", // Ganti dengan path gambar sertifikat 1 yang asli
         yOffset: [50, -100], // Kecepatan parallax diperhalus
         positionClasses: "left-[5%] md:left-[5%] top-[5%] md:top-[10%]",
         floatDuration: 4
@@ -17,7 +17,7 @@ const certificates = [
         title: "FULL STACK WEB",
         desc: "End-to-end development covering Next.js, Node.js, databases, and secure APIs.",
         hugeText: "NEXT.JS",
-        image: "/rempang.png", // Ganti dengan path gambar sertifikat 2 yang asli
+        image: "/sertif2.jpeg", // Ganti dengan path gambar sertifikat 2 yang asli
         yOffset: [150, -250], // Kecepatan parallax diperhalus
         positionClasses: "left-[5%] md:left-[36%] top-[35%] md:top-[25%]",
         floatDuration: 5.5
@@ -26,7 +26,7 @@ const certificates = [
         title: "MOBILE APP DEV",
         desc: "Cross-platform mobile application development with React Native and modern tools.",
         hugeText: "MOBILE",
-        image: "/mitafiz.png", // Ganti dengan path gambar sertifikat 3 yang asli
+        image: "/sertif3.jpeg", // Ganti dengan path gambar sertifikat 3 yang asli
         yOffset: [250, -400], // Kecepatan parallax diperhalus
         positionClasses: "left-[5%] md:left-[67%] top-[65%] md:top-[15%]",
         floatDuration: 4.5
