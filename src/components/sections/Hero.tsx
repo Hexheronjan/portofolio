@@ -1,17 +1,15 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import { motion, useScroll, useTransform, useSpring, AnimatePresence, useMotionValue } from "framer-motion";export function Hero() {
+import { motion, useScroll, useTransform, useSpring, AnimatePresence, useMotionValue } from "framer-motion";
+
+export function Hero() {
     const [isEntered, setIsEntered] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
-    const [isHovered, setIsHovered] = useState(false);
-    const [isTapped, setIsTapped] = useState(false);
     
     useEffect(() => {
         setIsMobile("ontouchstart" in window || navigator.maxTouchPoints > 0);
     }, []);
-
-    const isFlipped = isMobile ? isTapped : isHovered;
     
     const containerRef = useRef<HTMLDivElement>(null);
     const { scrollYProgress } = useScroll({
@@ -61,7 +59,10 @@ import { motion, useScroll, useTransform, useSpring, AnimatePresence, useMotionV
                         key="intro-screen"
                         exit={{ y: "-100%", opacity: 0, transition: { duration: isMobile ? 0.8 : 1.2, ease: [0.76, 0, 0.24, 1] } }}
                         onMouseMove={!isMobile ? handleMouseMove : undefined}
+                        onMouseEnter={() => setIsEntered(true)}
                         onClick={() => setIsEntered(true)}
+                        onWheel={() => setIsEntered(true)}
+                        onTouchStart={() => setIsEntered(true)}
                         className="absolute inset-0 z-50 cursor-pointer bg-[#050505] overflow-hidden flex flex-col justify-between p-6 sm:p-10 select-none border-b border-white/5"
                     >
                         {/* Interactive Background Blobs (Desktop only) */}
@@ -209,38 +210,18 @@ import { motion, useScroll, useTransform, useSpring, AnimatePresence, useMotionV
                 {/* --- ORGANIC BLOB PHOTO (Middle Layer) --- */}
                 <motion.div 
                     style={{ y: yPhoto }}
-                    className="relative z-10 w-[70vw] sm:w-[50vw] md:w-[35vw] max-w-[450px] aspect-[3/4] mt-[5vh] cursor-pointer select-none"
-                    onMouseEnter={() => !isMobile && setIsHovered(true)}
-                    onMouseLeave={() => !isMobile && setIsHovered(false)}
-                    onClick={() => setIsTapped(!isTapped)}
+                    className="relative z-10 w-[70vw] sm:w-[50vw] md:w-[35vw] max-w-[450px] aspect-[3/4] mt-[5vh]"
                 >
                     {/* Use CSS animation for blob morph instead of Framer Motion borderRadius animation */}
                     <div
                         className={`w-full h-full overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.5)] border border-white/10 relative group ${isMobile ? 'rounded-[30%_70%_70%_30%/30%_30%_70%_70%]' : 'animate-morph'}`}
                     >
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10 pointer-events-none" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10" />
                         
-                        {/* Image 1: Designer */}
                         <img 
                             src="/foto deigner.png" 
                             alt="Fauzan Designer" 
-                            className="w-full h-full object-cover scale-[1.15] group-hover:scale-100 grayscale-[0.2] absolute inset-0"
-                            style={{ 
-                                opacity: isFlipped ? 0 : 1,
-                                transition: "opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), transform 1s cubic-bezier(0.25, 1, 0.5, 1)" 
-                            }}
-                            loading="eager"
-                        />
-
-                        {/* Image 2: Developer */}
-                        <img 
-                            src="/foto dev.png" 
-                            alt="Fauzan Developer" 
-                            className="w-full h-full object-cover scale-[1.15] group-hover:scale-100 grayscale-[0.2] absolute inset-0"
-                            style={{ 
-                                opacity: isFlipped ? 1 : 0,
-                                transition: "opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), transform 1s cubic-bezier(0.25, 1, 0.5, 1)" 
-                            }}
+                            className="w-full h-full object-cover scale-[1.15] group-hover:scale-100 transition-transform duration-1000 ease-out grayscale-[0.2]"
                             loading="eager"
                         />
                     </div>
@@ -249,19 +230,9 @@ import { motion, useScroll, useTransform, useSpring, AnimatePresence, useMotionV
                         initial={{ opacity: 0, scale: 0 }}
                         animate={isEntered ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0 }}
                         transition={{ delay: 1, type: "spring", bounce: 0.5 }}
-                        className="absolute -bottom-6 -right-6 z-20 w-16 h-16 md:w-20 md:h-20 bg-lime-400 text-black rounded-full flex items-center justify-center font-black tracking-tighter text-lg md:text-xl shadow-2xl rotate-12 select-none"
+                        className="absolute -bottom-6 -right-6 z-20 px-6 py-6 bg-lime-400 text-black rounded-full flex items-center justify-center font-black tracking-tighter text-xl shadow-2xl rotate-12"
                     >
-                        <AnimatePresence mode="wait">
-                            <motion.span
-                                key={isFlipped ? "dev" : "dsgn"}
-                                initial={{ opacity: 0, y: 10, rotate: -15 }}
-                                animate={{ opacity: 1, y: 0, rotate: 0 }}
-                                exit={{ opacity: 0, y: -10, rotate: 15 }}
-                                transition={{ duration: 0.2 }}
-                            >
-                                {isFlipped ? "DEV" : "DSGN"}
-                            </motion.span>
-                        </AnimatePresence>
+                        DEV
                     </motion.div>
                 </motion.div>
 
