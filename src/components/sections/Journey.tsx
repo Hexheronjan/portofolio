@@ -52,7 +52,7 @@ function EntryContent({ item, align }: { item: JourneyItem; align: "left" | "rig
         <motion.div
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: false, margin: "-40px" }}
+            viewport={{ once: true, margin: "-40px" }}
             variants={wrapper}
             className={`flex flex-col ${
                 isMobile ? "items-start text-left" :
@@ -99,7 +99,7 @@ function MobileEntry({ item, index }: { item: JourneyItem; index: number }) {
             <motion.div
                 initial={{ scale: 0, opacity: 0 }}
                 whileInView={{ scale: 1, opacity: 1 }}
-                viewport={{ once: false, margin: "-20px" }}
+                viewport={{ once: true, margin: "-20px" }}
                 transition={{ duration: 0.35, delay: 0.1, ease: "backOut" }}
                 className="absolute left-0 top-1 w-3.5 h-3.5 -translate-x-1/2 rounded-full z-10"
                 style={{ background: "#BEF264", boxShadow: "0 0 12px rgba(190,242,100,0.7)" }}
@@ -124,7 +124,7 @@ function DesktopEntry({ item, index }: { item: JourneyItem; index: number }) {
                 <motion.div
                     initial={{ scale: 0, opacity: 0 }}
                     whileInView={{ scale: 1, opacity: 1 }}
-                    viewport={{ once: false, margin: "-50px" }}
+                    viewport={{ once: true, margin: "-50px" }}
                     transition={{ duration: 0.35, delay: 0.15, ease: "backOut" }}
                     className="mt-16 w-4 h-4 rounded-full relative z-10"
                     style={{ background: "#BEF264", boxShadow: "0 0 16px rgba(190,242,100,0.8)" }}
@@ -144,6 +144,11 @@ export function Journey() {
     const wrapperRef = useRef<HTMLDivElement>(null);
     const desktopTimelineRef = useRef<HTMLDivElement>(null);
     const mobileLineRef = useRef<HTMLDivElement>(null);
+    const isMobileRef = useRef(false);
+
+    useEffect(() => {
+        isMobileRef.current = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    }, []);
 
     // Scroll-driven background color (white ↔ black)
     // FIX: Do NOT pass color strings to useTransform — Framer Motion's mixObject
@@ -154,12 +159,17 @@ export function Journey() {
         target: wrapperRef,
         offset: ["start end", "end start"],
     });
-    const smoothBg = useSpring(bgProg, { stiffness: 55, damping: 20, mass: 0.5 });
+    // Softer spring on mobile to reduce CPU work
+    const smoothBg = useSpring(bgProg, isMobileRef.current
+        ? { stiffness: 30, damping: 25, mass: 0.8 }
+        : { stiffness: 55, damping: 20, mass: 0.5 }
+    );
 
     useEffect(() => {
         const el = wrapperRef.current;
         if (!el) return;
 
+        let lastChannel = -1;
         const unsubscribe = smoothBg.on("change", (v: number) => {
             // Map: 0→rgb(255,255,255), 0.14→rgb(10,10,10), 0.86→rgb(10,10,10), 1→rgb(255,255,255)
             let channel: number;
@@ -172,6 +182,10 @@ export function Journey() {
                 const t = (v - 0.86) / 0.14;
                 channel = Math.round(10 + (255 - 10) * t);
             }
+            
+            // Skip update if channel hasn't changed (reduces DOM writes on mobile)
+            if (channel === lastChannel) return;
+            lastChannel = channel;
             
             const isDarkBg = channel < 128;
             el.style.backgroundColor = `rgb(${channel},${channel},${channel})`;
@@ -222,7 +236,7 @@ export function Journey() {
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: false, margin: "-50px" }}
+                    viewport={{ once: true, margin: "-50px" }}
                     transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
                     className="relative flex flex-col items-center gap-6"
                 >

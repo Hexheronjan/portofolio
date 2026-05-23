@@ -481,6 +481,70 @@
   }
 }
 
+/* ===================== MARQUEE (GPU-accelerated) ===================== */
+@keyframes marquee-scroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.marquee-container {
+  animation: marquee-scroll 30s linear infinite;
+  will-change: transform;
+}
+
+/* ===================== MOBILE PERFORMANCE ===================== */
+@media (pointer: coarse) {
+  /* Reduce expensive blur on mobile */
+  .blur-\[60px\],
+  .blur-\[80px\],
+  .blur-\[100px\],
+  .blur-\[120px\] {
+    filter: blur(30px) !important;
+  }
+
+  /* Reduce backdrop-blur overhead on mobile */
+  .backdrop-blur-xl,
+  .backdrop-blur-md {
+    -webkit-backdrop-filter: blur(8px) !important;
+    backdrop-filter: blur(8px) !important;
+  }
+
+  /* Faster tap responses — no 300ms delay */
+  a, button, [role="button"], input, select, textarea {
+    touch-action: manipulation;
+  }
+
+  /* Reduce box-shadow complexity on mobile */
+  .shadow-2xl,
+  .shadow-xl {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  /* Optimize animations on mobile: prefer reduced motion */
+  .animate-float {
+    animation-duration: 8s;
+  }
+
+  .animate-morph {
+    animation-duration: 12s;
+  }
+
+  /* Improve scroll performance */
+  html, body {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: none;
+  }
+
+  /* Reduce noise texture rendering on mobile */
+  .noise-bg::before {
+    display: none;
+  }
+}
+
 /* Heading protection */
 h1,
 h2,

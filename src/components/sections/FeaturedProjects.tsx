@@ -34,7 +34,7 @@ export function FeaturedProjects() {
                 <motion.div
                     initial="hidden"
                     whileInView="visible"
-                    viewport={{ once: false, margin: "-50px" }}
+                    viewport={{ once: true, margin: "-50px" }}
                     className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6"
                 >
                     <div>
@@ -78,7 +78,7 @@ export function FeaturedProjects() {
                 <motion.div
                     initial="hidden"
                     whileInView="visible"
-                    viewport={{ once: false, margin: "-50px" }}
+                    viewport={{ once: true, margin: "-50px" }}
                     variants={{
                         hidden: {},
                         visible: { transition: { staggerChildren: 0.12 } },
@@ -106,7 +106,7 @@ export function FeaturedProjects() {
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: false, margin: "-50px" }}
+                    viewport={{ once: true, margin: "-50px" }}
                     transition={{ duration: 0.5 }}
                     className="flex justify-center sm:hidden"
                 >

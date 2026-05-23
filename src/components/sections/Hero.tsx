@@ -1,15 +1,17 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import { motion, useScroll, useTransform, useSpring, AnimatePresence, useMotionValue } from "framer-motion";
-
-export function Hero() {
+import { motion, useScroll, useTransform, useSpring, AnimatePresence, useMotionValue } from "framer-motion";export function Hero() {
     const [isEntered, setIsEntered] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
+    const [isTapped, setIsTapped] = useState(false);
     
     useEffect(() => {
         setIsMobile("ontouchstart" in window || navigator.maxTouchPoints > 0);
     }, []);
+
+    const isFlipped = isMobile ? isTapped : isHovered;
     
     const containerRef = useRef<HTMLDivElement>(null);
     const { scrollYProgress } = useScroll({
@@ -17,13 +19,13 @@ export function Hero() {
         offset: ["start start", "end start"],
     });
 
-    // Main Hero Scroll Parallax
-    const yTextBg = useTransform(scrollYProgress, [0, 1], ["0%", "40%"]);
-    const yPhoto = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
+    // Main Hero Scroll Parallax — simplified on mobile
+    const yTextBg = useTransform(scrollYProgress, [0, 1], ["0%", isMobile ? "20%" : "40%"]);
+    const yPhoto = useTransform(scrollYProgress, [0, 1], ["0%", isMobile ? "8%" : "15%"]);
     const yFloating1 = useTransform(scrollYProgress, [0, 1], ["0%", "-50%"]);
     const yFloating2 = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
 
-    // Mouse tracking for Intro Screen Parallax
+    // Mouse tracking for Intro Screen Parallax — desktop only
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
 
@@ -57,12 +59,12 @@ export function Hero() {
                 {!isEntered && (
                     <motion.div 
                         key="intro-screen"
-                        exit={{ y: "-100%", opacity: 0, transition: { duration: 1.2, ease: [0.76, 0, 0.24, 1] } }}
-                        onMouseMove={handleMouseMove}
+                        exit={{ y: "-100%", opacity: 0, transition: { duration: isMobile ? 0.8 : 1.2, ease: [0.76, 0, 0.24, 1] } }}
+                        onMouseMove={!isMobile ? handleMouseMove : undefined}
                         onClick={() => setIsEntered(true)}
                         className="absolute inset-0 z-50 cursor-pointer bg-[#050505] overflow-hidden flex flex-col justify-between p-6 sm:p-10 select-none border-b border-white/5"
                     >
-                        {/* Interactive Background Blobs (Dark Theme) */}
+                        {/* Interactive Background Blobs (Desktop only) */}
                         {!isMobile && (
                             <>
                                 <motion.div 
@@ -77,18 +79,17 @@ export function Hero() {
                         )}
                         {!isMobile && <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.03] pointer-events-none" />}
 
-                        {/* Interactive Text Layer */}
+                        {/* Interactive Text Layer — no parallax on mobile */}
                         <motion.div 
-                            style={{ x: textLayerX, y: textLayerY }}
+                            style={!isMobile ? { x: textLayerX, y: textLayerY } : undefined}
                             className="relative z-10 w-full h-full flex flex-col justify-center gap-6 md:gap-10"
                         >
                             
-                            {/* Top Left Text - Author text removed per request */}
+                            {/* Top Left Text */}
                             <div className="flex flex-col items-start gap-4 overflow-hidden py-2">
                                 <motion.h2 
                                     initial={{ y: "100%" }}
                                     animate={{ y: "0%" }}
-                                    whileHover={{ scale: 1.05, skewX: -5, color: "#a3e635" }}
                                     transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1], delay: 0.1 }}
                                     className="text-4xl md:text-6xl font-display font-medium tracking-tighter scale-y-[1.4] origin-top-left text-white"
                                 >
@@ -101,7 +102,6 @@ export function Hero() {
                                 <motion.h1 
                                     initial={{ y: "120%" }}
                                     animate={{ y: "0%" }}
-                                    whileHover={{ skewX: -2, y: -10 }}
                                     transition={{ duration: 1, ease: [0.76, 0, 0.24, 1], delay: 0.2 }}
                                     className="text-[13vw] md:text-[11vw] font-black uppercase tracking-tighter text-white scale-y-[1.6] origin-top leading-[0.75]"
                                 >
@@ -114,7 +114,6 @@ export function Hero() {
                                 <motion.h1 
                                     initial={{ y: "120%" }}
                                     animate={{ y: "0%" }}
-                                    whileHover={{ scale: 1.02, skewX: -2 }}
                                     transition={{ duration: 1, ease: [0.76, 0, 0.24, 1], delay: 0.3 }}
                                     className="text-[15vw] md:text-[12vw] font-black uppercase tracking-tighter text-transparent scale-y-[1.6] origin-top leading-[0.75] relative transition-colors hover:text-white"
                                     style={{ WebkitTextStroke: "1px rgba(255,255,255,0.8)" }}
@@ -124,7 +123,6 @@ export function Hero() {
                                 <motion.div 
                                     initial={{ scale: 0, opacity: 0 }}
                                     animate={{ scale: 1, opacity: 1 }}
-                                    whileHover={{ scale: 1.1, rotate: -5 }}
                                     transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1], delay: 0.6 }}
                                     className="flex flex-col items-center justify-center border border-zinc-700 rounded-full px-6 py-2 md:px-10 md:py-4 relative top-2 md:top-0 hover:bg-white hover:text-black transition-colors duration-500"
                                 >
@@ -139,7 +137,6 @@ export function Hero() {
                                 <motion.h1 
                                     initial={{ y: "120%" }}
                                     animate={{ y: "0%" }}
-                                    whileHover={{ skewX: -2, y: -5, color: "#a3e635" }}
                                     transition={{ duration: 1, ease: [0.76, 0, 0.24, 1], delay: 0.4 }}
                                     className="text-[11vw] md:text-[9vw] font-black uppercase tracking-tighter text-white scale-y-[1.6] origin-bottom leading-[0.75] opacity-90"
                                 >
@@ -186,8 +183,8 @@ export function Hero() {
                     </>
                 )}
                 
-                {/* Noise Texture */}
-                {!isMobile && <div className={`absolute inset-0 bg-[url('/noise.svg')] opacity-[0.04] ${!isMobile ? 'mix-blend-overlay' : ''} pointer-events-none z-50`} />}
+                {/* Noise Texture — desktop only */}
+                {!isMobile && <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.04] mix-blend-overlay pointer-events-none z-50" />}
 
                 {/* --- MASSIVE TYPOGRAPHY (Background Layer) --- */}
                 <motion.div 
@@ -195,61 +192,76 @@ export function Hero() {
                     className="absolute inset-0 flex flex-col items-center justify-center z-0 pointer-events-none select-none w-full will-change-transform"
                 >
                     <div className="flex flex-col items-center justify-center -space-y-[4vw] md:-space-y-[2vw]">
-                        <motion.h1 
-                            whileHover={{ scale: 1.02 }}
-                            className="text-[22vw] md:text-[18vw] font-black uppercase tracking-tighter text-[#eaeaea] leading-[0.8] scale-y-[1.6] origin-bottom opacity-90 pointer-events-auto cursor-default translate-z-0"
+                        <h1 
+                            className="text-[22vw] md:text-[18vw] font-black uppercase tracking-tighter text-[#eaeaea] leading-[0.8] scale-y-[1.6] origin-bottom opacity-90 cursor-default translate-z-0"
                         >
                             FAUZAN
-                        </motion.h1>
-                        <motion.h1 
-                            whileHover={{ scale: 1.02 }}
-                            className="text-[22vw] md:text-[18vw] font-black uppercase tracking-tighter text-transparent leading-[0.8] scale-y-[1.6] origin-top pointer-events-auto cursor-default translate-z-0"
+                        </h1>
+                        <h1 
+                            className="text-[22vw] md:text-[18vw] font-black uppercase tracking-tighter text-transparent leading-[0.8] scale-y-[1.6] origin-top cursor-default translate-z-0"
                             style={{ WebkitTextStroke: "2px rgba(234, 234, 234, 0.15)" }}
                         >
                             STUDIO
-                        </motion.h1>
+                        </h1>
                     </div>
                 </motion.div>
 
                 {/* --- ORGANIC BLOB PHOTO (Middle Layer) --- */}
                 <motion.div 
                     style={{ y: yPhoto }}
-                    className="relative z-10 w-[70vw] sm:w-[50vw] md:w-[35vw] max-w-[450px] aspect-[3/4] mt-[5vh]"
+                    className="relative z-10 w-[70vw] sm:w-[50vw] md:w-[35vw] max-w-[450px] aspect-[3/4] mt-[5vh] cursor-pointer select-none"
+                    onMouseEnter={() => !isMobile && setIsHovered(true)}
+                    onMouseLeave={() => !isMobile && setIsHovered(false)}
+                    onClick={() => setIsTapped(!isTapped)}
                 >
-                    <motion.div
-                        animate={!isMobile ? {
-                            borderRadius: [
-                                "30% 70% 70% 30% / 30% 30% 70% 70%",
-                                "50% 50% 20% 80% / 25% 80% 20% 75%",
-                                "70% 30% 40% 60% / 60% 20% 80% 40%",
-                                "30% 70% 70% 30% / 30% 30% 70% 70%",
-                            ]
-                        } : {
-                            borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%"
-                        }}
-                        transition={{ 
-                            duration: 10, 
-                            repeat: Infinity, 
-                            ease: "linear" 
-                        }}
-                        className="w-full h-full overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.5)] border border-white/10 relative group"
+                    {/* Use CSS animation for blob morph instead of Framer Motion borderRadius animation */}
+                    <div
+                        className={`w-full h-full overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.5)] border border-white/10 relative group ${isMobile ? 'rounded-[30%_70%_70%_30%/30%_30%_70%_70%]' : 'animate-morph'}`}
                     >
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10 pointer-events-none" />
                         
+                        {/* Image 1: Designer */}
                         <img 
                             src="/foto deigner.png" 
                             alt="Fauzan Designer" 
-                            className="w-full h-full object-cover scale-[1.15] group-hover:scale-100 transition-transform duration-1000 ease-out grayscale-[0.2]"
+                            className="w-full h-full object-cover scale-[1.15] group-hover:scale-100 grayscale-[0.2] absolute inset-0"
+                            style={{ 
+                                opacity: isFlipped ? 0 : 1,
+                                transition: "opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), transform 1s cubic-bezier(0.25, 1, 0.5, 1)" 
+                            }}
+                            loading="eager"
                         />
-                    </motion.div>
+
+                        {/* Image 2: Developer */}
+                        <img 
+                            src="/foto dev.png" 
+                            alt="Fauzan Developer" 
+                            className="w-full h-full object-cover scale-[1.15] group-hover:scale-100 grayscale-[0.2] absolute inset-0"
+                            style={{ 
+                                opacity: isFlipped ? 1 : 0,
+                                transition: "opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), transform 1s cubic-bezier(0.25, 1, 0.5, 1)" 
+                            }}
+                            loading="eager"
+                        />
+                    </div>
                     
                     <motion.div 
                         initial={{ opacity: 0, scale: 0 }}
                         animate={isEntered ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0 }}
                         transition={{ delay: 1, type: "spring", bounce: 0.5 }}
-                        className="absolute -bottom-6 -right-6 z-20 px-6 py-6 bg-lime-400 text-black rounded-full flex items-center justify-center font-black tracking-tighter text-xl shadow-2xl rotate-12"
+                        className="absolute -bottom-6 -right-6 z-20 w-16 h-16 md:w-20 md:h-20 bg-lime-400 text-black rounded-full flex items-center justify-center font-black tracking-tighter text-lg md:text-xl shadow-2xl rotate-12 select-none"
                     >
-                        DEV
+                        <AnimatePresence mode="wait">
+                            <motion.span
+                                key={isFlipped ? "dev" : "dsgn"}
+                                initial={{ opacity: 0, y: 10, rotate: -15 }}
+                                animate={{ opacity: 1, y: 0, rotate: 0 }}
+                                exit={{ opacity: 0, y: -10, rotate: 15 }}
+                                transition={{ duration: 0.2 }}
+                            >
+                                {isFlipped ? "DEV" : "DSGN"}
+                            </motion.span>
+                        </AnimatePresence>
                     </motion.div>
                 </motion.div>
 
@@ -268,12 +280,11 @@ export function Hero() {
                 <motion.div 
                     className={`absolute z-30 top-1/2 left-4 md:left-12 -translate-y-1/2 pointer-events-none ${!isMobile ? 'mix-blend-difference' : ''} hidden sm:block`}
                 >
-                    <motion.p 
-                        whileHover={{ skewX: -5 }}
-                        className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-[0.9] pointer-events-auto cursor-default"
+                    <p 
+                        className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-[0.9] cursor-default"
                     >
                         Mobile<br/>Developer.<br/>Full Stack<br/>Developer.
-                    </motion.p>
+                    </p>
                 </motion.div>
             </div>
         </section>

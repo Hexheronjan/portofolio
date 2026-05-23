@@ -25,7 +25,7 @@ export default function ContactPage() {
 
     const socialLinks = [
         { name: "GitHub", href: "https://github.com/Hexheronjan", icon: Github },
-        { name: "LinkedIn", href: "https://www.linkedin.com/in/fauzan-bagus-prasetyo-bisnis-b8315738b", icon: Linkedin },
+        { name: "LinkedIn", href: "https://www.linkedin.com/in/fauzan-bagus-prasetyo-b8315738b/", icon: Linkedin },
     ];
 
     return (

@@ -56,23 +56,32 @@ export function MusicToggle() {
         >
             {isPlaying ? (
                 // Animasi Equalizer saat musik menyala
-                <div className="flex gap-[3px] items-end justify-center h-5">
-                    <motion.div 
-                        animate={!isMobile ? { height: ["6px", "20px", "6px"] } : { height: ["8px", "16px", "8px"] }} 
-                        transition={{ duration: 0.8, repeat: Infinity, ease: "easeInOut" }} 
-                        className="w-1.5 bg-white rounded-t-sm" 
-                    />
-                    <motion.div 
-                        animate={{ height: ["12px", "6px", "16px", "12px"] }} 
-                        transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }} 
-                        className="w-1.5 bg-white rounded-t-sm" 
-                    />
-                    <motion.div 
-                        animate={{ height: ["20px", "10px", "20px"] }} 
-                        transition={{ duration: 1.0, repeat: Infinity, ease: "easeInOut" }} 
-                        className="w-1.5 bg-white rounded-t-sm" 
-                    />
-                </div>
+                // Di mobile: pakai CSS animation sederhana, di desktop: Framer Motion
+                isMobile ? (
+                    <div className="flex gap-[3px] items-end justify-center h-5">
+                        <div className="w-1.5 bg-white rounded-t-sm animate-pulse" style={{ height: '12px' }} />
+                        <div className="w-1.5 bg-white rounded-t-sm animate-pulse" style={{ height: '16px', animationDelay: '0.15s' }} />
+                        <div className="w-1.5 bg-white rounded-t-sm animate-pulse" style={{ height: '10px', animationDelay: '0.3s' }} />
+                    </div>
+                ) : (
+                    <div className="flex gap-[3px] items-end justify-center h-5">
+                        <motion.div 
+                            animate={{ height: ["6px", "20px", "6px"] }} 
+                            transition={{ duration: 0.8, repeat: Infinity, ease: "easeInOut" }} 
+                            className="w-1.5 bg-white rounded-t-sm" 
+                        />
+                        <motion.div 
+                            animate={{ height: ["12px", "6px", "16px", "12px"] }} 
+                            transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }} 
+                            className="w-1.5 bg-white rounded-t-sm" 
+                        />
+                        <motion.div 
+                            animate={{ height: ["20px", "10px", "20px"] }} 
+                            transition={{ duration: 1.0, repeat: Infinity, ease: "easeInOut" }} 
+                            className="w-1.5 bg-white rounded-t-sm" 
+                        />
+                    </div>
+                )
             ) : (
                 // Icon musik mati
                 <div className="relative flex items-center justify-center">

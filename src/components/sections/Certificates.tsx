@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import { motion, useScroll, useTransform, useSpring, MotionValue } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 
 const certificates = [
     {
@@ -39,19 +39,19 @@ function CertCard({ cert, scrollYProgress, isMobile }: { cert: typeof certificat
     const yScroll = useTransform(smoothProgress, [0, 1], cert.yOffset);
 
     return (
-        // Layer 1: Parallax Scrolling Effect
+        // Layer 1: Parallax Scrolling Effect — disabled on mobile
         <motion.div 
             style={{ y: isMobile ? 0 : yScroll }}
-            className={`absolute w-[90vw] md:w-[28vw] max-w-[400px] z-20 ${cert.positionClasses}`}
+            className={`${isMobile ? 'relative mb-8' : 'absolute'} w-[90vw] md:w-[28vw] max-w-[400px] z-20 ${!isMobile ? cert.positionClasses : ''}`}
         >
-            {/* Layer 2: Animasi Mengambang (Floating) terus-menerus saat tidak di-scroll */}
+            {/* Layer 2: Floating animation — disabled on mobile */}
             <motion.div
                 animate={!isMobile ? { y: [0, -20, 0] } : {}}
-                transition={{ 
+                transition={!isMobile ? { 
                     duration: cert.floatDuration, 
                     repeat: Infinity, 
                     ease: "easeInOut" 
-                }}
+                } : undefined}
                 className="w-full h-full bg-white rounded-[2rem] p-6 md:p-8 flex flex-col shadow-[0_20px_40px_rgba(0,0,0,0.06)] border border-black/5 hover:shadow-[0_40px_80px_rgba(0,0,0,0.15)] transition-shadow duration-700"
             >
                 {/* Dot and Title */}
@@ -66,6 +66,7 @@ function CertCard({ cert, scrollYProgress, isMobile }: { cert: typeof certificat
                         src={cert.image} 
                         alt={cert.title}
                         className="w-full h-auto object-contain grayscale-[0.2] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
+                        loading="lazy"
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
                 </div>
@@ -102,30 +103,36 @@ export function Certificates() {
     // Pelembut scroll untuk Teks besar agar gerakannya sangat smooth dan tidak patah-patah
     const smoothProgress = useSpring(scrollYProgress, { damping: 30, stiffness: 40 });
     // Dibuat lebih lambat: dari 0% ke -15% saja (sebelumnya -50%)
-    const titleX = useTransform(smoothProgress, [0, 1], ["0%", "-15%"]);
+    const titleX = useTransform(smoothProgress, [0, 1], ["0%", isMobile ? "-5%" : "-15%"]);
 
     return (
         <section ref={containerRef} className="relative w-full py-20 md:py-32 bg-[#eaeaea] overflow-hidden text-[#111]">
             
-            {/* Decorative Noise Background */}
-            <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.03] mix-blend-overlay pointer-events-none" />
+            {/* Decorative Noise Background — desktop only */}
+            {!isMobile && (
+                <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.03] mix-blend-overlay pointer-events-none" />
+            )}
 
             {/* Massive Scrolling Title Banner - Slower and Smoother */}
             <div className="w-full border-b border-[#111]/20 pb-4 mb-10 md:mb-20 overflow-hidden relative z-10">
                 <motion.div 
                     style={{ x: titleX }}
-                    className="whitespace-nowrap font-display text-[15vw] md:text-[8vw] font-black uppercase tracking-tighter scale-y-[1.4] origin-top flex gap-8 items-center"
+                    className="whitespace-nowrap font-display text-[15vw] md:text-[8vw] font-black uppercase tracking-tighter scale-y-[1.4] origin-top flex gap-8 items-center will-change-transform"
                 >
                     <span>CERTIFICATES & ACHIEVEMENTS</span>
                     <span className="w-4 h-4 md:w-8 md:h-8 rounded-full bg-lime-500 shrink-0" />
                     <span>PROFESSIONAL MILESTONES</span>
-                    <span className="w-4 h-4 md:w-8 md:h-8 rounded-full bg-[#111] shrink-0" />
-                    <span>CERTIFICATES & ACHIEVEMENTS</span>
+                    {!isMobile && (
+                        <>
+                            <span className="w-4 h-4 md:w-8 md:h-8 rounded-full bg-[#111] shrink-0" />
+                            <span>CERTIFICATES & ACHIEVEMENTS</span>
+                        </>
+                    )}
                 </motion.div>
             </div>
 
-            {/* Floating Cards Container */}
-            <div className="max-w-[1400px] mx-auto px-4 md:px-8 relative h-[180vh] md:h-[130vh] z-20">
+            {/* Floating Cards Container — stacked on mobile, absolute positioned on desktop */}
+            <div className={`max-w-[1400px] mx-auto px-4 md:px-8 relative z-20 ${isMobile ? 'flex flex-col items-center' : 'h-[130vh]'}`}>
                 {certificates.map((cert, i) => (
                     <CertCard key={i} cert={cert} scrollYProgress={scrollYProgress} isMobile={isMobile} />
                 ))}
