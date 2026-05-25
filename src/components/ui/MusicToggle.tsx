@@ -28,9 +28,47 @@ export function MusicToggle() {
                 setIsPlaying(true);
             }
 
+            // Fungsi untuk mencoba memutar audio secara otomatis
+            const tryPlayMusic = () => {
+                if (audio.paused) {
+                    audio.play()
+                        .then(() => {
+                            // Berhasil diputar, bersihkan listener interaksi
+                            cleanupInteraction();
+                        })
+                        .catch(err => {
+                            console.log("Autoplay ditangguhkan browser, menunggu interaksi user...", err);
+                        });
+                } else {
+                    cleanupInteraction();
+                }
+            };
+
+            // Handler untuk interaksi pertama dari user
+            const handleFirstInteraction = () => {
+                tryPlayMusic();
+            };
+
+            const cleanupInteraction = () => {
+                window.removeEventListener("click", handleFirstInteraction);
+                window.removeEventListener("touchstart", handleFirstInteraction);
+                window.removeEventListener("pointerdown", handleFirstInteraction);
+                window.removeEventListener("keydown", handleFirstInteraction);
+            };
+
+            // Daftarkan listener interaksi untuk menyalakan audio
+            window.addEventListener("click", handleFirstInteraction);
+            window.addEventListener("touchstart", handleFirstInteraction);
+            window.addEventListener("pointerdown", handleFirstInteraction);
+            window.addEventListener("keydown", handleFirstInteraction);
+
+            // Coba putar langsung saat component mount
+            tryPlayMusic();
+
             return () => {
                 audio.removeEventListener("play", handlePlay);
                 audio.removeEventListener("pause", handlePause);
+                cleanupInteraction();
             };
         }
     }, []);
