@@ -10,6 +10,8 @@ import { ScrollToTop } from "@/components/ui/ScrollToTop";
 import { Preloader } from "@/components/ui/Preloader";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { MusicToggle } from "@/components/ui/MusicToggle";
+import { WhatsAppFloat } from "@/components/ui/WhatsAppFloat";
+import { AudioInit } from "@/components/ui/AudioInit";
 
 import { SmoothScroll } from "@/components/ui/SmoothScroll";
 
@@ -50,11 +52,15 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <SmoothScroll>
-            <audio id="bg-music" src="/musik (1).mp3" loop preload="auto" muted autoPlay />
+            {/* Audio element: muted + autoPlay agar browser tidak memblokir */}
+            <audio id="bg-music" src="/musik (1).mp3" loop preload="auto" muted />
+            {/* AudioInit: memaksa play muted via JS secepat mungkin */}
+            <AudioInit />
             <Preloader />
             <ScrollProgress />
             <CursorGlow />
             <MusicToggle />
+            <WhatsAppFloat />
             <ScrollToTop />
             <div className="flex flex-col min-h-screen noise-bg">
               <Navbar />
