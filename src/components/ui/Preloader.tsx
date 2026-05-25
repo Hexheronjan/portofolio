@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function Preloader() {
@@ -8,32 +8,7 @@ export function Preloader() {
     const [show, setShow] = useState(true);
     const [progress, setProgress] = useState(0);
     const [phase, setPhase] = useState<"counting" | "welcome" | "exiting">("counting");
-    const [audioUnlocked, setAudioUnlocked] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
-    const audioUnlockedRef = useRef(false);
-
-    // Fungsi untuk membuka kunci audio (dipanggil saat ada interaksi)
-    const unlockAndPlay = () => {
-        const audio = document.getElementById("bg-music") as HTMLAudioElement;
-        if (!audio) return;
-
-        // Trick: play lalu langsung pause untuk "membuka kunci" audio di browser
-        // Setelah ini, audio.play() di masa depan tidak akan diblokir browser
-        if (!audioUnlockedRef.current) {
-            audio.volume = 0;
-            audio.play().then(() => {
-                audio.pause();
-                audio.currentTime = 0;
-                audio.volume = 1;
-                audioUnlockedRef.current = true;
-                setAudioUnlocked(true);
-            }).catch(() => {
-                // Fallback: tandai tetap terbuka kunci meski gagal
-                audioUnlockedRef.current = true;
-                setAudioUnlocked(true);
-            });
-        }
-    };
 
     useEffect(() => {
         setIsMobile("ontouchstart" in window || navigator.maxTouchPoints > 0);
@@ -56,13 +31,23 @@ export function Preloader() {
                 setProgress(100);
                 setTimeout(() => {
                     setPhase("welcome");
-                    // Coba mainkan musik saat fase Welcome muncul
+
+                    // Audio sudah berjalan dalam kondisi muted sejak awal (autoplay muted).
+                    // Sekarang kita unmute agar musik terdengar tepat saat Welcome muncul.
                     const audio = document.getElementById("bg-music") as HTMLAudioElement;
                     if (audio) {
-                        audio.volume = 1;
-                        audio.play().catch(e => {
-                            console.warn("Autoplay dicegah browser:", e);
-                        });
+                        audio.muted = false;
+                        // Jika ternyata audio belum diputar (misalnya di beberapa browser),
+                        // paksa play terlebih dahulu lalu unmute.
+                        if (audio.paused) {
+                            audio.play()
+                                .then(() => {
+                                    audio.muted = false;
+                                })
+                                .catch(e => {
+                                    console.warn("Autoplay gagal:", e);
+                                });
+                        }
                     }
                 }, 300);
                 setTimeout(() => setPhase("exiting"), 2000);
@@ -84,7 +69,7 @@ export function Preloader() {
             {phase !== "exiting" && (
                 <motion.div
                     key="preloader"
-                    className="fixed inset-0 z-[9999] flex flex-col items-center justify-center select-none cursor-pointer"
+                    className="fixed inset-0 z-[9999] flex flex-col items-center justify-center select-none"
                     style={{ backgroundColor: "#efefef", color: "#111" }}
                     exit={{
                         y: "-100vh",
@@ -93,8 +78,6 @@ export function Preloader() {
                             ease: [0.76, 0, 0.24, 1],
                         },
                     }}
-                    onClick={unlockAndPlay}
-                    onTouchStart={unlockAndPlay}
                 >
                     {/* Noise Overlay */}
                     {!isMobile && <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.05] pointer-events-none" />}
@@ -137,32 +120,6 @@ export function Preloader() {
                             )}
                         </AnimatePresence>
                     </div>
-
-                    {/* Hint klik di bawah (hanya tampil saat fase counting & audio belum terbuka kuncinya) */}
-                    <AnimatePresence>
-                        {phase === "counting" && !audioUnlocked && (
-                            <motion.p
-                                key="tap-hint"
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0, transition: { delay: 0.5, duration: 0.5 } }}
-                                exit={{ opacity: 0, transition: { duration: 0.3 } }}
-                                className="absolute bottom-12 text-[#111]/40 text-xs md:text-sm tracking-widest uppercase"
-                            >
-                                {isMobile ? "Tap to enable sound" : "Click to enable sound"}
-                            </motion.p>
-                        )}
-                        {phase === "counting" && audioUnlocked && (
-                            <motion.p
-                                key="sound-ready"
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0 }}
-                                className="absolute bottom-12 text-[#111]/40 text-xs md:text-sm tracking-widest uppercase"
-                            >
-                                🎵 Sound ready
-                            </motion.p>
-                        )}
-                    </AnimatePresence>
                 </motion.div>
             )}
         </AnimatePresence>

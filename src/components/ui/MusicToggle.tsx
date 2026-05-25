@@ -11,75 +11,45 @@ export function MusicToggle() {
 
     useEffect(() => {
         setIsMobile("ontouchstart" in window || navigator.maxTouchPoints > 0);
-        // Cari elemen audio global yang sudah ada di layout
+
         const audio = document.getElementById("bg-music") as HTMLAudioElement;
         if (audio) {
             audioRef.current = audio;
-            
-            // Dengarkan event play/pause (misalnya jika Preloader menyalakannya)
-            const handlePlay = () => setIsPlaying(true);
-            const handlePause = () => setIsPlaying(false);
-            
-            audio.addEventListener("play", handlePlay);
-            audio.addEventListener("pause", handlePause);
-            
-            // Cek status saat ini
-            if (!audio.paused) {
-                setIsPlaying(true);
-            }
 
-            // Fungsi untuk mencoba memutar audio secara otomatis
-            const tryPlayMusic = () => {
-                if (audio.paused) {
-                    audio.play()
-                        .then(() => {
-                            // Berhasil diputar, bersihkan listener interaksi
-                            cleanupInteraction();
-                        })
-                        .catch(err => {
-                            console.log("Autoplay ditangguhkan browser, menunggu interaksi user...", err);
-                        });
-                } else {
-                    cleanupInteraction();
-                }
+            const updateState = () => {
+                // Dianggap "playing" jika audio berjalan DAN tidak muted
+                setIsPlaying(!audio.paused && !audio.muted);
             };
 
-            // Handler untuk interaksi pertama dari user
-            const handleFirstInteraction = () => {
-                tryPlayMusic();
-            };
+            audio.addEventListener("play", updateState);
+            audio.addEventListener("pause", updateState);
+            audio.addEventListener("volumechange", updateState);
 
-            const cleanupInteraction = () => {
-                window.removeEventListener("click", handleFirstInteraction);
-                window.removeEventListener("touchstart", handleFirstInteraction);
-                window.removeEventListener("pointerdown", handleFirstInteraction);
-                window.removeEventListener("keydown", handleFirstInteraction);
-            };
-
-            // Daftarkan listener interaksi untuk menyalakan audio
-            window.addEventListener("click", handleFirstInteraction);
-            window.addEventListener("touchstart", handleFirstInteraction);
-            window.addEventListener("pointerdown", handleFirstInteraction);
-            window.addEventListener("keydown", handleFirstInteraction);
-
-            // Coba putar langsung saat component mount
-            tryPlayMusic();
+            // Cek status awal
+            updateState();
 
             return () => {
-                audio.removeEventListener("play", handlePlay);
-                audio.removeEventListener("pause", handlePause);
-                cleanupInteraction();
+                audio.removeEventListener("play", updateState);
+                audio.removeEventListener("pause", updateState);
+                audio.removeEventListener("volumechange", updateState);
             };
         }
     }, []);
 
     const toggleMusic = () => {
-        if (audioRef.current) {
-            if (isPlaying) {
-                audioRef.current.pause();
-            } else {
-                audioRef.current.play().catch(e => console.log("Play failed", e));
-            }
+        const audio = audioRef.current;
+        if (!audio) return;
+
+        if (isPlaying) {
+            // Matikan: pause audio
+            audio.pause();
+            setIsPlaying(false);
+        } else {
+            // Nyalakan: unmute & play
+            audio.muted = false;
+            audio.play()
+                .then(() => setIsPlaying(true))
+                .catch(e => console.log("Play failed", e));
         }
     };
 
@@ -93,8 +63,6 @@ export function MusicToggle() {
             aria-label="Toggle Music"
         >
             {isPlaying ? (
-                // Animasi Equalizer saat musik menyala
-                // Di mobile: pakai CSS animation sederhana, di desktop: Framer Motion
                 isMobile ? (
                     <div className="flex gap-[3px] items-end justify-center h-5">
                         <div className="w-1.5 bg-white rounded-t-sm animate-pulse" style={{ height: '12px' }} />
@@ -103,25 +71,24 @@ export function MusicToggle() {
                     </div>
                 ) : (
                     <div className="flex gap-[3px] items-end justify-center h-5">
-                        <motion.div 
-                            animate={{ height: ["6px", "20px", "6px"] }} 
-                            transition={{ duration: 0.8, repeat: Infinity, ease: "easeInOut" }} 
-                            className="w-1.5 bg-white rounded-t-sm" 
+                        <motion.div
+                            animate={{ height: ["6px", "20px", "6px"] }}
+                            transition={{ duration: 0.8, repeat: Infinity, ease: "easeInOut" }}
+                            className="w-1.5 bg-white rounded-t-sm"
                         />
-                        <motion.div 
-                            animate={{ height: ["12px", "6px", "16px", "12px"] }} 
-                            transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }} 
-                            className="w-1.5 bg-white rounded-t-sm" 
+                        <motion.div
+                            animate={{ height: ["12px", "6px", "16px", "12px"] }}
+                            transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+                            className="w-1.5 bg-white rounded-t-sm"
                         />
-                        <motion.div 
-                            animate={{ height: ["20px", "10px", "20px"] }} 
-                            transition={{ duration: 1.0, repeat: Infinity, ease: "easeInOut" }} 
-                            className="w-1.5 bg-white rounded-t-sm" 
+                        <motion.div
+                            animate={{ height: ["20px", "10px", "20px"] }}
+                            transition={{ duration: 1.0, repeat: Infinity, ease: "easeInOut" }}
+                            className="w-1.5 bg-white rounded-t-sm"
                         />
                     </div>
                 )
             ) : (
-                // Icon musik mati
                 <div className="relative flex items-center justify-center">
                     <Music className="w-5 h-5 md:w-6 md:h-6 opacity-60" />
                     <div className="absolute w-[120%] h-0.5 bg-white rotate-45 opacity-80 rounded-full" />

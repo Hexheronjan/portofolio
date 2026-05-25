@@ -50,7 +50,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <SmoothScroll>
-            <audio id="bg-music" src="/musik (1).mp3" loop preload="auto" />
+            <audio id="bg-music" src="/musik (1).mp3" loop preload="auto" muted autoPlay />
             <Preloader />
             <ScrollProgress />
             <CursorGlow />
