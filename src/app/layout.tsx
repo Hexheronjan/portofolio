@@ -52,8 +52,16 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <SmoothScroll>
-            {/* Audio element: muted + autoPlay agar browser tidak memblokir */}
-            <audio id="bg-music" src="/musik (1).mp3" loop preload="auto" muted />
+            {/* Audio element: muted untuk bypass autoplay policy browser */}
+            <audio
+              id="bg-music"
+              src="/musik (1).mp3"
+              loop
+              preload="auto"
+              muted
+              playsInline
+              crossOrigin="anonymous"
+            />
             {/* AudioInit: memaksa play muted via JS secepat mungkin */}
             <AudioInit />
             <Preloader />

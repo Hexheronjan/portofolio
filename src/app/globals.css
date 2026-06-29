@@ -552,3 +552,123 @@ h3 {
   overflow-wrap: normal;
   word-break: keep-all;
 }
+
+/* ===================== 3D SCENE UTILITIES ===================== */
+
+/* Perspective wrapper for 3D children */
+.scene-3d {
+  perspective: 1000px;
+  perspective-origin: 50% 50%;
+}
+
+/* Deep perspective for hero-level 3D */
+.scene-3d-deep {
+  perspective: 1400px;
+  perspective-origin: 50% 40%;
+}
+
+/* Cards with 3D depth shadow */
+.card-depth {
+  box-shadow:
+    0 2px  4px rgba(0,0,0,0.06),
+    0 8px 16px rgba(0,0,0,0.08),
+    0 24px 48px rgba(0,0,0,0.10),
+    0 0 0 1px rgba(255,255,255,0.04) inset;
+  transform-style: preserve-3d;
+}
+
+.dark .card-depth {
+  box-shadow:
+    0 2px  4px rgba(0,0,0,0.3),
+    0 8px 16px rgba(0,0,0,0.4),
+    0 24px 48px rgba(0,0,0,0.5),
+    0 0 0 1px rgba(255,255,255,0.06) inset;
+}
+
+.card-depth:hover {
+  box-shadow:
+    0 4px  8px rgba(0,0,0,0.08),
+    0 16px 32px rgba(0,0,0,0.12),
+    0 40px 80px rgba(0,0,0,0.16),
+    0 0 0 1px rgba(255,255,255,0.08) inset;
+}
+
+/* ── 3D float animation (GPU-only transforms) ── */
+@keyframes float3d {
+  0%, 100% { transform: translateY(0px)   rotateX(0deg)   rotateZ(0deg); }
+  25%       { transform: translateY(-12px) rotateX(2deg)   rotateZ(0.5deg); }
+  50%       { transform: translateY(-18px) rotateX(4deg)   rotateZ(-0.5deg); }
+  75%       { transform: translateY(-8px)  rotateX(1.5deg) rotateZ(0.3deg); }
+}
+
+.animate-float3d {
+  animation: float3d 6s ease-in-out infinite;
+  transform-style: preserve-3d;
+}
+
+/* Reduce on mobile */
+@media (pointer: coarse) {
+  .animate-float3d {
+    animation: float 8s ease-in-out infinite; /* simpler 2D float */
+  }
+}
+
+/* ── Text 3D depth (multi-layer text-shadow) ── */
+.text-3d {
+  text-shadow:
+    1px  1px 0px rgba(0,0,0,0.15),
+    2px  2px 0px rgba(0,0,0,0.10),
+    4px  4px 0px rgba(0,0,0,0.07),
+    8px  8px 12px rgba(0,0,0,0.05);
+}
+
+.dark .text-3d {
+  text-shadow:
+    1px  1px 0px rgba(255,255,255,0.04),
+    2px  2px 0px rgba(0,0,0,0.5),
+    4px  4px 8px  rgba(0,0,0,0.4);
+}
+
+/* ── Scroll-reveal 3D ── */
+/* Elements start tilted/distant and snap in on scroll */
+.reveal-3d {
+  opacity: 0;
+  transform: perspective(800px) translateY(40px) rotateX(12deg);
+  transition:
+    opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal-3d.in-view {
+  opacity: 1;
+  transform: perspective(800px) translateY(0) rotateX(0deg);
+}
+
+/* ── Navbar rgb variable for glass effect ── */
+:root  { --navbar-rgb: 255 255 255; --background-rgb: 255 255 255; }
+.dark  { --navbar-rgb: 5   5   5;   --background-rgb: 5   5   5; }
+
+/* ── 3D grid/dot background ── */
+.bg-grid-3d {
+  background-image:
+    linear-gradient(rgba(128,128,128,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(128,128,128,0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
+  transform: perspective(600px) rotateX(20deg) scale(1.3);
+  transform-origin: top center;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%);
+  pointer-events: none;
+}
+
+/* Disable expensive 3D effects on reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .reveal-3d {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .animate-float3d, .animate-morph {
+    animation: none;
+  }
+}

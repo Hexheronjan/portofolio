@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion";
 import { Section } from "@/components/ui/Section";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 
@@ -50,35 +50,123 @@ const skillCategories: SkillCategory[] = [
     },
 ];
 
-const container = {
-    hidden: { opacity: 0 },
-    show: {
-        opacity: 1,
-        transition: { staggerChildren: 0.1 },
-    },
-};
+/* ── 3D Skill Card ── */
+function SkillCard3D({
+    category,
+    index,
+    isMobile,
+}: {
+    category: SkillCategory;
+    index: number;
+    isMobile: boolean;
+}) {
+    const cardRef = useRef<HTMLDivElement>(null);
+    const mouseX = useMotionValue(0);
+    const mouseY = useMotionValue(0);
 
-const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 },
-};
+    const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [6, -6]), { stiffness: 300, damping: 30 });
+    const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-6, 6]), { stiffness: 300, damping: 30 });
+
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (isMobile || !cardRef.current) return;
+        const rect = cardRef.current.getBoundingClientRect();
+        mouseX.set((e.clientX - rect.left) / rect.width - 0.5);
+        mouseY.set((e.clientY - rect.top) / rect.height - 0.5);
+    };
+
+    const handleMouseLeave = () => {
+        mouseX.set(0);
+        mouseY.set(0);
+    };
+
+    return (
+        <div style={{ perspective: "1000px" }}>
+            <motion.div
+                ref={cardRef}
+                initial={{ opacity: 0, y: 60, rotateX: isMobile ? 0 : 20 }}
+                whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{
+                    duration: 0.7,
+                    delay: index * 0.1,
+                    ease: [0.22, 1, 0.36, 1],
+                }}
+                onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
+                style={!isMobile ? { rotateX, rotateY, transformStyle: "preserve-3d" } : {}}
+                className="h-full"
+            >
+                <Card className="relative h-full border-border/50 bg-card/50 backdrop-blur-sm hover:border-primary/40 hover:shadow-xl transition-all duration-300 overflow-hidden group">
+                    {/* Inner gradient glow */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+
+                    {/* Glare */}
+                    {!isMobile && (
+                        <motion.div
+                            className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"
+                            style={{
+                                background: "radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.08) 0%, transparent 60%)",
+                            }}
+                        />
+                    )}
+
+                    <CardHeader style={!isMobile ? { transform: "translateZ(20px)" } : {}}>
+                        <CardTitle className="text-xl text-primary relative">
+                            {category.title}
+                        </CardTitle>
+                    </CardHeader>
+
+                    <CardContent
+                        className="space-y-6 relative"
+                        style={!isMobile ? { transform: "translateZ(10px)" } : {}}
+                    >
+                        {category.skills.map((skill, skillIndex) => (
+                            <SkillBar
+                                key={skillIndex}
+                                name={skill.name}
+                                level={skill.level}
+                                index={skillIndex}
+                            />
+                        ))}
+                    </CardContent>
+                </Card>
+            </motion.div>
+        </div>
+    );
+}
 
 export function SkillsContent() {
     const [isMobile, setIsMobile] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         setIsMobile("ontouchstart" in window || navigator.maxTouchPoints > 0);
     }, []);
 
+    // Parallax scroll for the title section
+    const { scrollYProgress } = useScroll({
+        target: containerRef,
+        offset: ["start end", "end start"],
+    });
+    const titleY = useTransform(scrollYProgress, [0, 1], isMobile ? ["0%", "0%"] : ["-5%", "5%"]);
+
     return (
-        <div className="flex flex-col relative">
-            {/* Decorative background */}
-            {!isMobile && <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] -z-10 rounded-full bg-primary/5 blur-3xl" />}
+        <div ref={containerRef} className="flex flex-col relative">
+            {/* Decorative background — desktop only */}
+            {!isMobile && (
+                <>
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] -z-10 rounded-full bg-primary/5 blur-3xl" />
+                    <div className="absolute bottom-0 right-0 w-[400px] h-[400px] -z-10 rounded-full bg-blue-500/5 blur-[80px]" />
+                </>
+            )}
+
             <Section className="pb-8">
+                {/* Title with scroll parallax */}
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    style={{ y: titleY }}
+                    initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
+                    transition={{ duration: 0.6 }}
                 >
                     <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold mb-6">
                         Keahlian Teknis
@@ -89,30 +177,17 @@ export function SkillsContent() {
                     </p>
                 </motion.div>
 
-                <motion.div
-                    variants={container}
-                    initial="hidden"
-                    animate="show"
-                    className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
-                >
+                {/* 3D Cards Grid */}
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {skillCategories.map((category, index) => (
-                        <motion.div key={index} variants={item}>
-                            <Card className="relative h-full border-border/50 bg-card/50 backdrop-blur-sm hover:border-primary/40 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden group">
-                                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                                <CardHeader>
-                                    <CardTitle className="text-xl text-primary relative">
-                                        {category.title}
-                                    </CardTitle>
-                                </CardHeader>
-                                <CardContent className="space-y-6 relative">
-                                    {category.skills.map((skill, skillIndex) => (
-                                        <SkillBar key={skillIndex} name={skill.name} level={skill.level} index={skillIndex} />
-                                    ))}
-                                </CardContent>
-                            </Card>
-                        </motion.div>
+                        <SkillCard3D
+                            key={index}
+                            category={category}
+                            index={index}
+                            isMobile={isMobile}
+                        />
                     ))}
-                </motion.div>
+                </div>
             </Section>
         </div>
     );
@@ -130,10 +205,6 @@ function SkillBar({ name, level, index }: { name: string; level: number; index: 
                 <span className="font-medium text-sm truncate">{name}</span>
                 <span className="text-xs text-muted-foreground font-mono shrink-0">{level}%</span>
             </div>
-            {/* FIX: width "0%" → `${level}%` are STRING values that crash Framer Motion's
-                mixObject when the DOM node is null during page transition. Replace with
-                purely numeric scaleX (0 → level/100) + transformOrigin "left" which is
-                visually identical but never triggers the string parsing code path. */}
             <div className="w-full bg-secondary rounded-full h-3 overflow-hidden">
                 <motion.div
                     initial={{ scaleX: 0 }}

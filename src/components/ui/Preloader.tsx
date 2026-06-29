@@ -32,24 +32,18 @@ export function Preloader() {
                 setTimeout(() => {
                     setPhase("welcome");
 
-                    // Audio sudah berjalan dalam kondisi muted sejak awal (autoplay muted).
-                    // Sekarang kita unmute agar musik terdengar tepat saat Welcome muncul.
+                    // Unmute audio untuk mulai terdengar di fase Welcome
                     const audio = document.getElementById("bg-music") as HTMLAudioElement;
                     if (audio) {
                         audio.muted = false;
-                        // Jika ternyata audio belum diputar (misalnya di beberapa browser),
-                        // paksa play terlebih dahulu lalu unmute.
+                        // Jika belum diputar, pastikan play dulu
                         if (audio.paused) {
-                            audio.play()
-                                .then(() => {
-                                    audio.muted = false;
-                                })
-                                .catch(e => {
-                                    console.warn("Autoplay gagal:", e);
-                                });
+                            audio.play().catch(e => {
+                                console.warn("Audio play failed on unmute:", e);
+                            });
                         }
                     }
-                }, 300);
+                }, 100);
                 setTimeout(() => setPhase("exiting"), 2000);
             }
         }
