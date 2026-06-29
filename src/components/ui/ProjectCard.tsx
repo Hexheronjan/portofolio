@@ -32,20 +32,22 @@ export function ProjectCard({
         setIsMobile("ontouchstart" in window || navigator.maxTouchPoints > 0);
     }, []);
 
-    // 3D tilt values
+    // ── ALL hooks at top level — no hooks inside JSX or conditionals ──
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
 
-    const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [8, -8]), {
-        stiffness: 300,
-        damping: 30,
-    });
-    const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-8, 8]), {
-        stiffness: 300,
-        damping: 30,
-    });
+    const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [8, -8]), { stiffness: 300, damping: 30 });
+    const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-8, 8]), { stiffness: 300, damping: 30 });
+
     const glareX = useTransform(mouseX, [-0.5, 0.5], ["0%", "100%"]);
     const glareY = useTransform(mouseY, [-0.5, 0.5], ["0%", "100%"]);
+
+    // Must be at top level — NOT inside JSX style prop
+    const glareBackground = useTransform(
+        [glareX, glareY],
+        ([x, y]: string[]) =>
+            `radial-gradient(circle at ${x} ${y}, rgba(255,255,255,0.12) 0%, transparent 60%)`
+    );
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         if (isMobile || !cardRef.current) return;
@@ -60,7 +62,6 @@ export function ProjectCard({
     };
 
     return (
-        /* Perspective wrapper */
         <div style={{ perspective: "1000px" }} className="h-full">
             <motion.div
                 ref={cardRef}
@@ -68,11 +69,7 @@ export function ProjectCard({
                 onMouseLeave={handleMouseLeave}
                 style={
                     !isMobile
-                        ? {
-                              rotateX,
-                              rotateY,
-                              transformStyle: "preserve-3d",
-                          }
+                        ? { rotateX, rotateY, transformStyle: "preserve-3d" }
                         : {}
                 }
                 whileHover={isMobile ? { y: -4 } : { scale: 1.02 }}
@@ -82,20 +79,13 @@ export function ProjectCard({
                 {/* Animated top border glow */}
                 <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/0 to-transparent group-hover:via-primary/60 transition-all duration-700" />
 
-                {/* 3D Glare effect — desktop only */}
+                {/* 3D Glare — glareBackground is now a top-level MotionValue (safe) */}
                 {!isMobile && (
                     <motion.div
                         className="absolute inset-0 z-20 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"
-                        style={{
-                            background: useTransform(
-                                [glareX, glareY],
-                                ([x, y]: [string, string]) =>
-                                    `radial-gradient(circle at ${x} ${y}, rgba(255,255,255,0.12) 0%, transparent 60%)`
-                            ),
-                        }}
+                        style={{ background: glareBackground }}
                     />
                 )}
-
 
                 {/* Image area */}
                 <div className="relative aspect-video overflow-hidden bg-muted">
@@ -105,15 +95,12 @@ export function ProjectCard({
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-110"
                     />
-                    {/* Dark overlay on hover */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                    {/* Shimmer sweep */}
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <div className="absolute inset-0 animate-shimmer" />
                     </div>
 
-                    {/* Live link overlay button */}
                     {liveUrl && (
                         <motion.div
                             initial={{ opacity: 0, scale: 0.8 }}
@@ -133,7 +120,7 @@ export function ProjectCard({
                     )}
                 </div>
 
-                {/* Content — slightly raised in 3D on desktop */}
+                {/* Content */}
                 <div
                     className="flex flex-col flex-grow p-5 gap-3"
                     style={!isMobile ? { transform: "translateZ(20px)" } : {}}
@@ -147,7 +134,6 @@ export function ProjectCard({
                         </p>
                     </div>
 
-                    {/* Tags */}
                     {tags && tags.length > 0 && (
                         <div className="flex flex-wrap gap-1.5 mt-auto">
                             {tags.slice(0, 4).map((tag) => (
@@ -158,7 +144,6 @@ export function ProjectCard({
                         </div>
                     )}
 
-                    {/* Footer buttons */}
                     {(githubUrl || liveUrl) && (
                         <div className="flex gap-2 pt-2 border-t border-border/50 mt-1">
                             {githubUrl && (
@@ -181,7 +166,6 @@ export function ProjectCard({
                     )}
                 </div>
 
-                {/* Bottom glow line */}
                 <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/0 to-transparent group-hover:via-primary/40 transition-all duration-700" />
             </motion.div>
         </div>
