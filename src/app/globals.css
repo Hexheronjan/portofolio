@@ -80,8 +80,13 @@
     @apply bg-background text-foreground;
   }
 
-  /* Smooth scroll */
+  /* Smooth scroll - only when not using Lenis */
   html {
+    scroll-behavior: smooth;
+  }
+
+  /* Disable smooth scroll when Lenis is active (handled by JS) */
+  html.lenis-smooth {
     scroll-behavior: auto !important;
   }
 
