@@ -214,7 +214,7 @@ export function Hero() {
                     }}
                     onMouseMove={onPhotoMove}
                     onMouseLeave={onPhotoLeave}
-                    className="relative z-10 w-[65vw] sm:w-[45vw] md:w-[32vw] max-w-[420px] aspect-[3/4] mt-[5vh] cursor-pointer"
+                    className="relative z-20 w-[65vw] sm:w-[45vw] md:w-[32vw] max-w-[420px] aspect-[3/4] mt-[5vh] cursor-pointer"
                 >
                     <div style={{ perspective: "800px" }}>
                         <div
@@ -228,12 +228,13 @@ export function Hero() {
                                 <div className="absolute inset-0 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none bg-gradient-to-tr from-transparent via-white/6 to-white/12" />
                             )}
                             <Image
-                                src="/foto%20deigner.png"
+                                src="/foto deigner.png"
                                 alt="Fauzan Designer"
                                 fill
                                 className="object-cover scale-[1.15] group-hover:scale-100 transition-transform duration-1000 ease-out grayscale-[0.15]"
                                 priority
                                 sizes="(max-width: 768px) 65vw, 32vw"
+                                unoptimized
                             />
                         </div>
                     </div>
