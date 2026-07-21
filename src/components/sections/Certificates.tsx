@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
+import Image from "next/image";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 
 const certificates = [
@@ -33,24 +34,24 @@ const certificates = [
     }
 ];
 
-function CertCard({ cert, scrollYProgress, isMobile }: { cert: typeof certificates[0], scrollYProgress: any, isMobile: boolean }) {
+function CertCard({ cert, scrollYProgress, isMobile, prefersReducedMotion }: { cert: typeof certificates[0], scrollYProgress: any, isMobile: boolean, prefersReducedMotion: boolean }) {
     // 1. Menggunakan useSpring agar scroll parallax menjadi sangat halus (smooth)
     const smoothProgress = useSpring(scrollYProgress, { damping: 25, stiffness: 60, mass: 0.5 });
     const yScroll = useTransform(smoothProgress, [0, 1], cert.yOffset);
 
     return (
         // Layer 1: Parallax Scrolling Effect — disabled on mobile
-        <motion.div 
-            style={{ y: isMobile ? 0 : yScroll }}
+        <motion.div
+            style={{ y: isMobile || prefersReducedMotion ? 0 : yScroll, willChange: isMobile || prefersReducedMotion ? "auto" : "transform, opacity" }}
             className={`${isMobile ? 'relative mb-8' : 'absolute'} w-[90vw] md:w-[28vw] max-w-[400px] z-20 ${!isMobile ? cert.positionClasses : ''}`}
         >
             {/* Layer 2: Floating animation — disabled on mobile */}
             <motion.div
-                animate={!isMobile ? { y: [0, -20, 0] } : {}}
-                transition={!isMobile ? { 
-                    duration: cert.floatDuration, 
-                    repeat: Infinity, 
-                    ease: "easeInOut" 
+                animate={!isMobile && !prefersReducedMotion ? { y: [0, -20, 0] } : {}}
+                transition={!isMobile && !prefersReducedMotion ? {
+                    duration: cert.floatDuration,
+                    repeat: Infinity,
+                    ease: "easeInOut"
                 } : undefined}
                 className="w-full h-full bg-white rounded-[2rem] p-6 md:p-8 flex flex-col shadow-[0_20px_40px_rgba(0,0,0,0.06)] border border-black/5 hover:shadow-[0_40px_80px_rgba(0,0,0,0.15)] transition-shadow duration-700"
             >
@@ -61,12 +62,13 @@ function CertCard({ cert, scrollYProgress, isMobile }: { cert: typeof certificat
                 </div>
 
                 {/* Dynamic Image representing Certificate - No cropping */}
-                <div className="w-full bg-zinc-200/50 rounded-xl overflow-hidden mb-8 relative group cursor-pointer flex items-center justify-center">
-                    <img 
-                        src={cert.image} 
+                <div className="w-full bg-zinc-200/50 rounded-xl overflow-hidden mb-8 relative group cursor-pointer flex items-center justify-center aspect-[4/3]">
+                    <Image
+                        src={cert.image}
                         alt={cert.title}
-                        className="w-full h-auto object-contain grayscale-[0.2] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
-                        loading="lazy"
+                        fill
+                        className="object-contain grayscale-[0.2] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
+                        sizes="(max-width: 768px) 90vw, 28vw"
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
                 </div>
@@ -95,9 +97,11 @@ export function Certificates() {
     });
 
     const [isMobile, setIsMobile] = useState(false);
+    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
     useEffect(() => {
         setIsMobile("ontouchstart" in window || navigator.maxTouchPoints > 0);
+        setPrefersReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
     }, []);
 
     // Pelembut scroll untuk Teks besar agar gerakannya sangat smooth dan tidak patah-patah
@@ -134,7 +138,7 @@ export function Certificates() {
             {/* Floating Cards Container — stacked on mobile, absolute positioned on desktop */}
             <div className={`max-w-[1400px] mx-auto px-4 md:px-8 relative z-20 ${isMobile ? 'flex flex-col items-center' : 'h-[130vh]'}`}>
                 {certificates.map((cert, i) => (
-                    <CertCard key={i} cert={cert} scrollYProgress={scrollYProgress} isMobile={isMobile} />
+                    <CertCard key={i} cert={cert} scrollYProgress={scrollYProgress} isMobile={isMobile} prefersReducedMotion={prefersReducedMotion} />
                 ))}
             </div>
         </section>

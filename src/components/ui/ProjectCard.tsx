@@ -27,15 +27,18 @@ export function ProjectCard({
 }: ProjectCardProps) {
     const cardRef = useRef<HTMLDivElement>(null);
     const [isMobile, setIsMobile] = useState(false);
+    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
     useEffect(() => {
         setIsMobile("ontouchstart" in window || navigator.maxTouchPoints > 0);
+        setPrefersReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
     }, []);
 
     // ── ALL hooks at top level — no hooks inside JSX or conditionals ──
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
 
+    // Reduced stiffness and damping for better mobile performance
     const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [8, -8]), { stiffness: 300, damping: 30 });
     const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-8, 8]), { stiffness: 300, damping: 30 });
 
@@ -68,12 +71,12 @@ export function ProjectCard({
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
                 style={
-                    !isMobile
+                    !isMobile && !prefersReducedMotion
                         ? { rotateX, rotateY, transformStyle: "preserve-3d" }
                         : {}
                 }
-                whileHover={isMobile ? { y: -4 } : { scale: 1.02 }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                whileHover={isMobile || prefersReducedMotion ? { y: -4 } : { scale: 1.02 }}
+                transition={isMobile || prefersReducedMotion ? { duration: 0.2 } : { type: "spring", stiffness: 300, damping: 20 }}
                 className="group relative flex flex-col h-full rounded-xl border border-border/50 bg-card overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-primary/10 hover:border-primary/30 transition-shadow duration-500"
             >
                 {/* Animated top border glow */}
@@ -94,6 +97,7 @@ export function ProjectCard({
                         alt={title}
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-110"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 

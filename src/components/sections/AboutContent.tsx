@@ -32,9 +32,11 @@ const education = [
 
 export function AboutContent() {
     const [isMobile, setIsMobile] = useState(false);
+    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
     useEffect(() => {
         setIsMobile("ontouchstart" in window || navigator.maxTouchPoints > 0);
+        setPrefersReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
     }, []);
 
     return (
@@ -46,7 +48,8 @@ export function AboutContent() {
                 <motion.h1
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
+                    transition={{ duration: isMobile || prefersReducedMotion ? 0.4 : 0.5 }}
+                    style={{ willChange: isMobile || prefersReducedMotion ? "auto" : "transform, opacity" }}
                     className="text-3xl sm:text-4xl md:text-5xl font-display font-bold mb-6"
                 >
                     Tentang Saya
@@ -55,7 +58,8 @@ export function AboutContent() {
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
+                    transition={{ duration: isMobile || prefersReducedMotion ? 0.4 : 0.5, delay: isMobile || prefersReducedMotion ? 0.1 : 0.2 }}
+                    style={{ willChange: isMobile || prefersReducedMotion ? "auto" : "transform, opacity" }}
                     className="grid md:grid-cols-2 gap-12 items-start"
                 >
                     <div className="space-y-6 text-lg text-muted-foreground leading-relaxed">
@@ -79,7 +83,8 @@ export function AboutContent() {
                     <motion.div
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.5, delay: 0.3 }}
+                        transition={{ duration: isMobile || prefersReducedMotion ? 0.4 : 0.5, delay: isMobile || prefersReducedMotion ? 0.15 : 0.3 }}
+                        style={{ willChange: isMobile || prefersReducedMotion ? "auto" : "transform, opacity" }}
                         className="bg-secondary/30 p-6 sm:p-8 rounded-2xl border border-border/50 shadow-lg hover:shadow-xl hover:border-primary/20 transition-all duration-300"
                     >
                         <h3 className="text-xl font-bold mb-6">Filosofi Saya</h3>
@@ -93,7 +98,8 @@ export function AboutContent() {
                                     key={i}
                                     initial={{ opacity: 0, x: -10 }}
                                     animate={{ opacity: 1, x: 0 }}
-                                    transition={{ duration: 0.4, delay: 0.4 + i * 0.1 }}
+                                    transition={{ duration: isMobile || prefersReducedMotion ? 0.3 : 0.4, delay: isMobile || prefersReducedMotion ? 0.2 + i * 0.05 : 0.4 + i * 0.1 }}
+                                    style={{ willChange: isMobile || prefersReducedMotion ? "auto" : "transform, opacity" }}
                                     className="flex gap-4"
                                 >
                                     <span className="flex h-6 w-6 shrink-0 items-center justify-center text-primary text-lg font-light mt-0.5" aria-hidden>·</span>
@@ -114,7 +120,8 @@ export function AboutContent() {
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.5 }}
+                    transition={{ duration: isMobile || prefersReducedMotion ? 0.4 : 0.5 }}
+                    style={{ willChange: isMobile || prefersReducedMotion ? "auto" : "transform, opacity" }}
                     className="max-w-3xl relative"
                 >
                     <h2 className="text-2xl font-bold mb-8 text-foreground tracking-tight">Pengalaman Kerja</h2>
@@ -128,7 +135,8 @@ export function AboutContent() {
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.5 }}
+                    transition={{ duration: isMobile || prefersReducedMotion ? 0.4 : 0.5 }}
+                    style={{ willChange: isMobile || prefersReducedMotion ? "auto" : "transform, opacity" }}
                     className="max-w-3xl relative"
                 >
                     <h2 className="text-2xl font-bold mb-8 text-foreground tracking-tight">Pendidikan</h2>

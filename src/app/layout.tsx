@@ -5,15 +5,34 @@ import { ThemeProvider } from "./providers";
 import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { CursorGlow } from "@/components/ui/CursorGlow";
-import { ScrollToTop } from "@/components/ui/ScrollToTop";
-import { Preloader } from "@/components/ui/Preloader";
-import { ScrollProgress } from "@/components/ui/ScrollProgress";
-import { MusicToggle } from "@/components/ui/MusicToggle";
-import { WhatsAppFloat } from "@/components/ui/WhatsAppFloat";
-import { AudioInit } from "@/components/ui/AudioInit";
+import dynamic from "next/dynamic";
 
-import { SmoothScroll } from "@/components/ui/SmoothScroll";
+// Dynamic import heavy components for better mobile performance
+const CursorGlow = dynamic(() => import("@/components/ui/CursorGlow").then(mod => ({ default: mod.CursorGlow })), {
+    loading: () => null
+});
+
+const ScrollToTop = dynamic(() => import("@/components/ui/ScrollToTop").then(mod => ({ default: mod.ScrollToTop })), {
+    loading: () => null
+});
+
+const Preloader = dynamic(() => import("@/components/ui/Preloader").then(mod => ({ default: mod.Preloader })));
+
+const ScrollProgress = dynamic(() => import("@/components/ui/ScrollProgress").then(mod => ({ default: mod.ScrollProgress })), {
+    loading: () => null
+});
+
+const MusicToggle = dynamic(() => import("@/components/ui/MusicToggle").then(mod => ({ default: mod.MusicToggle })), {
+    loading: () => null
+});
+
+const WhatsAppFloat = dynamic(() => import("@/components/ui/WhatsAppFloat").then(mod => ({ default: mod.WhatsAppFloat })), {
+    loading: () => null
+});
+
+const AudioInit = dynamic(() => import("@/components/ui/AudioInit").then(mod => ({ default: mod.AudioInit })));
+
+const SmoothScroll = dynamic(() => import("@/components/ui/SmoothScroll").then(mod => ({ default: mod.SmoothScroll })));
 
 const inter = Inter({
   variable: "--font-inter",

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
+import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Code2, Cpu, Globe, Layers, Sparkles } from "lucide-react";
 
@@ -129,15 +130,16 @@ export function DynamicPhoto() {
                     </Badge>
 
                     {/* Main Photo Card */}
-                    <motion.div 
+                    <motion.div
                         style={{ y: photoY, scale: photoScale, opacity: photoOpacity }}
                         className="relative z-10 w-[80vw] max-w-[340px] md:max-w-[480px] aspect-[4/5] overflow-hidden rounded-[2.5rem] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.4)] bg-zinc-200 dark:bg-zinc-800 border-4 border-white dark:border-zinc-700 will-change-transform"
                     >
-                        <img 
-                            src="/fototengah.jpg" 
-                            alt="Fauzan Portfolio Portrait" 
-                            className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110"
-                            loading="lazy"
+                        <Image
+                            src="/foto%20linkedin.jpeg"
+                            alt="Fauzan Portfolio Portrait"
+                            fill
+                            className="object-cover transition-transform duration-1000 ease-out group-hover:scale-110"
+                            sizes="(max-width: 768px) 80vw, 480px"
                         />
                         
                         {/* Overlay Gradient */}

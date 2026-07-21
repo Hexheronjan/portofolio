@@ -55,10 +55,12 @@ function SkillCard3D({
     category,
     index,
     isMobile,
+    prefersReducedMotion,
 }: {
     category: SkillCategory;
     index: number;
     isMobile: boolean;
+    prefersReducedMotion: boolean;
 }) {
     const cardRef = useRef<HTMLDivElement>(null);
     const mouseX = useMotionValue(0);
@@ -68,7 +70,7 @@ function SkillCard3D({
     const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-6, 6]), { stiffness: 300, damping: 30 });
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (isMobile || !cardRef.current) return;
+        if (isMobile || prefersReducedMotion || !cardRef.current) return;
         const rect = cardRef.current.getBoundingClientRect();
         mouseX.set((e.clientX - rect.left) / rect.width - 0.5);
         mouseY.set((e.clientY - rect.top) / rect.height - 0.5);
@@ -83,17 +85,21 @@ function SkillCard3D({
         <div style={{ perspective: "1000px" }}>
             <motion.div
                 ref={cardRef}
-                initial={{ opacity: 0, y: 60, rotateX: isMobile ? 0 : 20 }}
+                initial={{ opacity: 0, y: isMobile || prefersReducedMotion ? 40 : 60, rotateX: isMobile || prefersReducedMotion ? 0 : 20 }}
                 whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{
-                    duration: 0.7,
-                    delay: index * 0.1,
+                    duration: isMobile || prefersReducedMotion ? 0.5 : 0.7,
+                    delay: isMobile || prefersReducedMotion ? index * 0.08 : index * 0.1,
                     ease: [0.22, 1, 0.36, 1],
                 }}
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
-                style={!isMobile ? { rotateX, rotateY, transformStyle: "preserve-3d" } : {}}
+                style={
+                    !isMobile && !prefersReducedMotion
+                        ? { rotateX, rotateY, transformStyle: "preserve-3d", willChange: "transform, opacity" }
+                        : { willChange: "auto" }
+                }
                 className="h-full"
             >
                 <Card className="relative h-full border-border/50 bg-card/50 backdrop-blur-sm hover:border-primary/40 hover:shadow-xl transition-all duration-300 overflow-hidden group">
@@ -137,10 +143,12 @@ function SkillCard3D({
 
 export function SkillsContent() {
     const [isMobile, setIsMobile] = useState(false);
+    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         setIsMobile("ontouchstart" in window || navigator.maxTouchPoints > 0);
+        setPrefersReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
     }, []);
 
     // Parallax scroll for the title section
@@ -185,6 +193,7 @@ export function SkillsContent() {
                             category={category}
                             index={index}
                             isMobile={isMobile}
+                            prefersReducedMotion={prefersReducedMotion}
                         />
                     ))}
                 </div>

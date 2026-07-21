@@ -145,9 +145,11 @@ export function Journey() {
     const desktopTimelineRef = useRef<HTMLDivElement>(null);
     const mobileLineRef = useRef<HTMLDivElement>(null);
     const isMobileRef = useRef(false);
+    const prefersReducedMotionRef = useRef(false);
 
     useEffect(() => {
         isMobileRef.current = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+        prefersReducedMotionRef.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     }, []);
 
     // Scroll-driven background color (white ↔ black)
@@ -160,7 +162,7 @@ export function Journey() {
         offset: ["start end", "end start"],
     });
     // Softer spring on mobile to reduce CPU work
-    const smoothBg = useSpring(bgProg, isMobileRef.current
+    const smoothBg = useSpring(bgProg, isMobileRef.current || prefersReducedMotionRef.current
         ? { stiffness: 30, damping: 25, mass: 0.8 }
         : { stiffness: 55, damping: 20, mass: 0.5 }
     );

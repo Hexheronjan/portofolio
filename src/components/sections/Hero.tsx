@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
+import Image from "next/image";
 import {
     motion, useScroll, useTransform, useSpring,
     AnimatePresence, useMotionValue,
@@ -9,9 +10,11 @@ import {
 export function Hero() {
     const [isEntered, setIsEntered] = useState(false);
     const [isMobile,  setIsMobile]  = useState(false);
+    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
     useEffect(() => {
         setIsMobile("ontouchstart" in window || navigator.maxTouchPoints > 0);
+        setPrefersReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
     }, []);
 
     const containerRef = useRef<HTMLDivElement>(null);
@@ -23,13 +26,13 @@ export function Hero() {
     });
 
     // ─── multi-layer parallax (visible difference between layers) ───────────
-    const yTextBg    = useTransform(scrollYProgress, [0, 1], ["0%",   isMobile ? "25%" : "65%"]);
-    const yPhoto     = useTransform(scrollYProgress, [0, 1], ["0%",   isMobile ? "10%" : "28%"]);
-    const yForeText  = useTransform(scrollYProgress, [0, 1], ["0%",   isMobile ? "5%"  : "10%"]);
+    const yTextBg    = useTransform(scrollYProgress, [0, 1], ["0%",   isMobile || prefersReducedMotion ? "25%" : "65%"]);
+    const yPhoto     = useTransform(scrollYProgress, [0, 1], ["0%",   isMobile || prefersReducedMotion ? "10%" : "28%"]);
+    const yForeText  = useTransform(scrollYProgress, [0, 1], ["0%",   isMobile || prefersReducedMotion ? "5%"  : "10%"]);
     const yBlob1     = useTransform(scrollYProgress, [0, 1], ["0%",   "-80%"]);
     const yBlob2     = useTransform(scrollYProgress, [0, 1], ["0%",    "50%"]);
-    const scalePhoto = useTransform(scrollYProgress, [0, 0.6], [1,     isMobile ? 1 : 0.82]);
-    const scaleText  = useTransform(scrollYProgress, [0, 0.6], [1,     isMobile ? 1 : 1.12]);
+    const scalePhoto = useTransform(scrollYProgress, [0, 0.6], [1,     isMobile || prefersReducedMotion ? 1 : 0.82]);
+    const scaleText  = useTransform(scrollYProgress, [0, 0.6], [1,     isMobile || prefersReducedMotion ? 1 : 1.12]);
     const opacity    = useTransform(scrollYProgress, [0, 0.55], [1, 0]);
 
     // ─── mouse parallax for intro screen ────────────────────────────────────
@@ -171,12 +174,12 @@ export function Hero() {
                 {!isMobile && (
                     <>
                         <motion.div
-                            style={{ y: yBlob1, background: "radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%)", filter: "blur(60px)" }}
-                            className="absolute top-[5%] left-[8%] w-[35vw] h-[35vw] min-w-[280px] min-h-[280px] rounded-full pointer-events-none will-change-transform"
+                            style={{ y: yBlob1, background: "radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%)", filter: "blur(60px)", willChange: "transform, opacity" }}
+                            className="absolute top-[5%] left-[8%] w-[35vw] h-[35vw] min-w-[280px] min-h-[280px] rounded-full pointer-events-none"
                         />
                         <motion.div
-                            style={{ y: yBlob2, background: "radial-gradient(circle, rgba(163,230,53,0.08) 0%, transparent 70%)", filter: "blur(80px)" }}
-                            className="absolute bottom-[5%] right-[3%] w-[45vw] h-[45vw] min-w-[360px] min-h-[360px] rounded-full pointer-events-none will-change-transform"
+                            style={{ y: yBlob2, background: "radial-gradient(circle, rgba(163,230,53,0.08) 0%, transparent 70%)", filter: "blur(80px)", willChange: "transform, opacity" }}
+                            className="absolute bottom-[5%] right-[3%] w-[45vw] h-[45vw] min-w-[360px] min-h-[360px] rounded-full pointer-events-none"
                         />
                     </>
                 )}
@@ -185,8 +188,8 @@ export function Hero() {
 
                 {/* ── Layer 2 (BACKGROUND text): moves 65% up on scroll ── */}
                 <motion.div
-                    style={{ y: yTextBg, scale: scaleText }}
-                    className="absolute inset-0 flex flex-col items-center justify-center z-0 pointer-events-none select-none w-full will-change-transform"
+                    style={{ y: yTextBg, scale: scaleText, willChange: isMobile ? "auto" : "transform, opacity" }}
+                    className="absolute inset-0 flex flex-col items-center justify-center z-0 pointer-events-none select-none w-full"
                 >
                     <div className="flex flex-col items-center justify-center -space-y-[4vw] md:-space-y-[2vw]">
                         <h1 className="text-[22vw] md:text-[18vw] font-black uppercase tracking-tighter text-[#eaeaea] leading-[0.8] scale-y-[1.6] origin-bottom opacity-90 cursor-default">
@@ -207,10 +210,11 @@ export function Hero() {
                     style={{
                         y: yPhoto, scale: scalePhoto,
                         ...(isMobile ? {} : { rotateX: photoRX, rotateY: photoRY, transformStyle: "preserve-3d" as const }),
+                        willChange: isMobile ? "auto" : "transform, opacity"
                     }}
                     onMouseMove={onPhotoMove}
                     onMouseLeave={onPhotoLeave}
-                    className="relative z-10 w-[65vw] sm:w-[45vw] md:w-[32vw] max-w-[420px] aspect-[3/4] mt-[5vh] cursor-pointer will-change-transform"
+                    className="relative z-10 w-[65vw] sm:w-[45vw] md:w-[32vw] max-w-[420px] aspect-[3/4] mt-[5vh] cursor-pointer"
                 >
                     <div style={{ perspective: "800px" }}>
                         <div
@@ -223,11 +227,13 @@ export function Hero() {
                             {!isMobile && (
                                 <div className="absolute inset-0 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none bg-gradient-to-tr from-transparent via-white/6 to-white/12" />
                             )}
-                            <img
-                                src="/foto deigner.png"
+                            <Image
+                                src="/foto%20deigner.png"
                                 alt="Fauzan Designer"
-                                className="w-full h-full object-cover scale-[1.15] group-hover:scale-100 transition-transform duration-1000 ease-out grayscale-[0.15]"
-                                loading="eager"
+                                fill
+                                className="object-cover scale-[1.15] group-hover:scale-100 transition-transform duration-1000 ease-out grayscale-[0.15]"
+                                priority
+                                sizes="(max-width: 768px) 65vw, 32vw"
                             />
                         </div>
                     </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { projects } from "@/constants/projects";
 import { ProjectCard } from "@/components/ui/ProjectCard";
@@ -11,13 +11,25 @@ import { ArrowRight } from "lucide-react";
 export function FeaturedProjects() {
     const featuredProjects = projects.filter((p) => p.featured).slice(0, 3);
     const sectionRef = useRef<HTMLDivElement>(null);
+    const [isMobile, setIsMobile] = useState(false);
+    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        setPrefersReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     const { scrollYProgress } = useScroll({
         target: sectionRef,
         offset: ["start end", "end start"],
     });
 
-    // Each card scrolls at a different vertical speed → strong depth illusion
+    // Each card scrolls at a different vertical speed → strong depth illusion (disabled on mobile)
     const y0 = useSpring(useTransform(scrollYProgress, [0, 1], [100, -80]),  { stiffness: 60, damping: 18 });
     const y1 = useSpring(useTransform(scrollYProgress, [0, 1], [160, -120]), { stiffness: 60, damping: 18 });
     const y2 = useSpring(useTransform(scrollYProgress, [0, 1], [80,  -60]),  { stiffness: 60, damping: 18 });
@@ -61,7 +73,7 @@ export function FeaturedProjects() {
 
                     {/* Header with 3D flip-in */}
                     <motion.div
-                        style={{ y: titleY }}
+                        style={{ y: isMobile || prefersReducedMotion ? 0 : titleY }}
                         className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6"
                     >
                         <div>
@@ -113,21 +125,24 @@ export function FeaturedProjects() {
                         </motion.div>
                     </motion.div>
 
-                    {/* Cards — different Y parallax per card = strong 3D depth */}
+                    {/* Cards — different Y parallax per card = strong 3D depth (disabled on mobile) */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                         {featuredProjects.map((project, index) => (
                             <motion.div
                                 key={index}
-                                style={{ y: yOffsets[index] ?? 0 }}
-                                initial={{ opacity: 0, y: 80, rotateX: 18 }}
+                                style={{
+                                    y: isMobile || prefersReducedMotion ? 0 : yOffsets[index] ?? 0,
+                                    willChange: isMobile || prefersReducedMotion ? "auto" : "transform, opacity"
+                                }}
+                                initial={{ opacity: 0, y: isMobile || prefersReducedMotion ? 40 : 80, rotateX: isMobile || prefersReducedMotion ? 0 : 18 }}
                                 whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
                                 viewport={{ once: true, margin: "-40px" }}
                                 transition={{
-                                    duration: 0.9,
-                                    delay: index * 0.14,
+                                    duration: isMobile || prefersReducedMotion ? 0.5 : 0.9,
+                                    delay: isMobile || prefersReducedMotion ? index * 0.08 : index * 0.14,
                                     ease: [0.22, 1, 0.36, 1],
                                 }}
-                                className="scene-3d"
+                                className={isMobile || prefersReducedMotion ? "" : "scene-3d"}
                             >
                                 <ProjectCard {...project} />
                             </motion.div>
