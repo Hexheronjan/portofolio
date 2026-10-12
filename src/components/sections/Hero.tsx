@@ -198,9 +198,9 @@ export function Hero() {
             </div>
 
             {/* STRIP GAMBAR BERGERAK (MARQUEE 2 BARIS, SLIDE UP) */}
-            <ScrollReveal direction="up" delay={0.3} className="mt-20 pt-10 relative overflow-hidden">
+            <ScrollReveal direction="up" delay={0.2} className="mt-14 sm:mt-20 pt-6 sm:pt-10 relative overflow-hidden">
                 <div
-                    className="relative -mx-10 py-6 transform -rotate-2 sm:-rotate-3 scale-105 pointer-events-auto"
+                    className="relative -mx-4 sm:-mx-10 py-4 sm:py-6 transform rotate-0 sm:-rotate-2 sm:scale-105 pointer-events-auto"
                 >
                     {/* Baris 1: Arah Kiri */}
                     <div className="marquee mb-4">

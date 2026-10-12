@@ -18,36 +18,67 @@ export function ScrollReveal({
     children,
     direction = "up",
     delay = 0,
-    duration = 0.7,
-    distance = 48,
+    duration = 0.6,
+    distance = 36,
     className = "",
-    viewportMargin = "-40px",
+    viewportMargin = "-20px",
     once = true,
 }: ScrollRevealProps) {
     const [reducedMotion, setReducedMotion] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
         const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
         setReducedMotion(mq.matches);
         const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
         mq.addEventListener("change", handler);
-        return () => mq.removeEventListener("change", handler);
+
+        // Deteksi apakah perangkat mobile / layar kecil
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+
+        return () => {
+            mq.removeEventListener("change", handler);
+            window.removeEventListener("resize", checkMobile);
+        };
     }, []);
 
     const getInitial = () => {
         if (reducedMotion) return { opacity: 0 };
 
+        // Di mobile, gunakan jarak pergeseran pendek (16px) agar tidak membebani GPU saat scroll
+        const activeDistance = isMobile ? Math.min(distance, 16) : distance;
+
+        // Di mobile, arahkan geseran horizontal ke geseran vertikal ringan agar tidak terjadi lag layout
+        if (isMobile) {
+            switch (direction) {
+                case "left":
+                case "right":
+                case "up":
+                    return { opacity: 0, y: activeDistance, x: 0 };
+                case "down":
+                    return { opacity: 0, y: -activeDistance, x: 0 };
+                case "center":
+                    return { opacity: 0, scale: 0.95, y: 0, x: 0 };
+                case "fade":
+                default:
+                    return { opacity: 0, y: 0, x: 0 };
+            }
+        }
+
+        // Di desktop (layar lebar), gunakan arah penuh
         switch (direction) {
             case "left":
-                return { opacity: 0, x: -distance, y: 0 };
+                return { opacity: 0, x: -activeDistance, y: 0 };
             case "right":
-                return { opacity: 0, x: distance, y: 0 };
+                return { opacity: 0, x: activeDistance, y: 0 };
             case "up":
-                return { opacity: 0, y: distance, x: 0 };
+                return { opacity: 0, y: activeDistance, x: 0 };
             case "down":
-                return { opacity: 0, y: -distance, x: 0 };
+                return { opacity: 0, y: -activeDistance, x: 0 };
             case "center":
-                return { opacity: 0, scale: 0.92, y: 0, x: 0 };
+                return { opacity: 0, scale: 0.94, y: 0, x: 0 };
             case "fade":
             default:
                 return { opacity: 0, y: 0, x: 0 };
@@ -67,16 +98,13 @@ export function ScrollReveal({
         <motion.div
             initial={getInitial()}
             whileInView={getAnimate()}
-            viewport={{ once, margin: viewportMargin }}
+            viewport={{ once, margin: isMobile ? "0px 0px -20px 0px" : viewportMargin }}
             transition={{
-                duration: reducedMotion ? 0.2 : duration,
-                delay: reducedMotion ? 0 : delay,
-                ease: [0.16, 1, 0.3, 1], // Smooth Apple-like spring cubic-bezier
+                duration: reducedMotion ? 0.2 : (isMobile ? 0.4 : duration),
+                delay: reducedMotion ? 0 : (isMobile ? Math.min(delay, 0.15) : delay),
+                ease: [0.22, 1, 0.36, 1], // Kurva performa tinggi, sangat halus dan responsif
             }}
             className={className}
-            style={{
-                willChange: reducedMotion ? "auto" : "transform, opacity",
-            }}
         >
             {children}
         </motion.div>
@@ -87,8 +115,8 @@ export function ScrollReveal({
 export function StaggerContainer({
     children,
     className = "",
-    staggerDelay = 0.1,
-    viewportMargin = "-40px",
+    staggerDelay = 0.08,
+    viewportMargin = "-20px",
 }: {
     children: ReactNode;
     className?: string;
@@ -115,21 +143,6 @@ export function StaggerContainer({
         },
     };
 
-    const itemVariants = {
-        hidden: {
-            opacity: 0,
-            ...(reducedMotion ? {} : { y: 32 }),
-        },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: {
-                duration: 0.65,
-                ease: [0.16, 1, 0.3, 1],
-            },
-        },
-    };
-
     return (
         <motion.div
             initial="hidden"
@@ -151,13 +164,13 @@ export function StaggerItem({
     className?: string;
 }) {
     const itemVariants = {
-        hidden: { opacity: 0, y: 32 },
+        hidden: { opacity: 0, y: 16 },
         visible: {
             opacity: 1,
             y: 0,
             transition: {
-                duration: 0.65,
-                ease: [0.16, 1, 0.3, 1],
+                duration: 0.45,
+                ease: [0.22, 1, 0.36, 1],
             },
         },
     };

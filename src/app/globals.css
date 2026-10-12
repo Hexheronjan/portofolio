@@ -147,12 +147,14 @@
     scroll-behavior: smooth;
     scroll-padding-top: calc(var(--header-h) + 1rem);
     -webkit-text-size-adjust: 100%;
+    overflow-x: clip;
   }
 
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "ss01", "cv11";
     text-rendering: optimizeLegibility;
+    overflow-x: clip;
   }
 
   h1, h2, h3, h4 {
@@ -315,6 +317,16 @@
   background-image: url("/noise.svg");
   background-size: 180px 180px;
   opacity: var(--grain-opacity);
+}
+
+@media (max-width: 768px) {
+  .aurora__blob {
+    animation: none !important;
+    will-change: auto !important;
+  }
+  .grain {
+    display: none !important;
+  }
 }
 
 .float-y {
