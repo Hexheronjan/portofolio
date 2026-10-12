@@ -133,39 +133,86 @@ export function Navbar() {
                 </div>
             </div>
 
-            {/* Menu Mobile Overlay */}
+            {/* Menu Mobile Overlay (Solid Fullscreen Drawer, tidak tembus pandang) */}
             {isOpen && (
                 <div
                     id="mobile-menu"
-                    className="md:hidden fixed inset-x-0 top-[61px] bottom-0 z-40 bg-background/95 backdrop-blur-xl border-t border-border px-6 py-8 flex flex-col justify-between"
+                    className="md:hidden fixed inset-0 z-50 bg-background dark:bg-[#0b0b0f] px-6 py-5 flex flex-col justify-between overflow-y-auto"
                 >
-                    <div className="flex flex-col gap-2">
+                    {/* Header di dalam Drawer Mobile */}
+                    <div className="flex items-center justify-between pb-4 border-b border-border">
+                        <Link
+                            href="/"
+                            onClick={() => setIsOpen(false)}
+                            className="flex items-center gap-2.5"
+                            aria-label={`Beranda ${site.name}`}
+                        >
+                            <div className="relative h-9 w-9 rounded-full overflow-hidden border border-border/60 bg-muted/50 p-0.5">
+                                <Image
+                                    src="/set.png"
+                                    alt=""
+                                    aria-hidden="true"
+                                    width={36}
+                                    height={36}
+                                    className="h-full w-full object-contain"
+                                />
+                            </div>
+                            <span className="font-display font-semibold text-base sm:text-lg tracking-tight">
+                                Fauzan<span className="text-primary">.</span>
+                            </span>
+                        </Link>
+
+                        <div className="flex items-center gap-2">
+                            <ThemeToggle />
+                            <button
+                                type="button"
+                                onClick={() => setIsOpen(false)}
+                                aria-label="Tutup menu navigasi"
+                                className="p-2 text-foreground rounded-lg border border-border/60 bg-card hover:bg-muted"
+                            >
+                                <X className="h-5 w-5" />
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Daftar Link Menu Navigasi */}
+                    <div className="flex flex-col gap-2 py-6 my-auto">
                         {navItems.map((item, idx) => {
                             const isActive = pathname === item.href;
                             return (
                                 <Link
                                     key={item.href}
                                     href={item.href}
+                                    onClick={() => setIsOpen(false)}
                                     aria-current={isActive ? "page" : undefined}
                                     className={cn(
                                         "flex items-center justify-between py-3.5 px-4 rounded-xl text-lg font-medium transition-colors",
                                         isActive
-                                            ? "bg-primary/10 text-primary font-semibold"
-                                            : "text-foreground/80 hover:bg-muted hover:text-foreground"
+                                            ? "bg-primary text-primary-foreground font-semibold shadow-soft"
+                                            : "text-foreground hover:bg-muted"
                                     )}
                                 >
                                     <span>{item.name}</span>
-                                    <span className="text-xs font-mono text-muted-foreground">0{idx + 1}</span>
+                                    <span
+                                        className={cn(
+                                            "text-xs font-mono",
+                                            isActive ? "text-primary-foreground/80 font-bold" : "text-muted-foreground"
+                                        )}
+                                    >
+                                        0{idx + 1}
+                                    </span>
                                 </Link>
                             );
                         })}
                     </div>
 
+                    {/* Bagian Bawah Drawer: Unduh CV & Role */}
                     <div className="pt-6 border-t border-border flex flex-col gap-3">
                         <Link
                             href={site.cvPath}
                             target="_blank"
                             rel="noopener noreferrer"
+                            onClick={() => setIsOpen(false)}
                             className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-sm shadow-soft"
                         >
                             <span>Unduh CV (PDF)</span>
