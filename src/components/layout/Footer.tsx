@@ -2,95 +2,105 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { Github, Linkedin, Mail } from "lucide-react";
-
-const socialLinks = [
-    { name: "GitHub", href: "https://github.com/Hexheronjan", icon: Github },
-    { name: "LinkedIn", href: "https://www.linkedin.com/in/fauzan-bagus-prasetyo-b8315738b/", icon: Linkedin },
-    { name: "Email", href: "mailto:fauzanbagusprasetyobisnis@gmail.com", icon: Mail },
-];
-
-import { Magnetic } from "@/components/ui/Magnetic";
+import { Github, Linkedin, Mail, ArrowUpRight } from "lucide-react";
+import { site, mailtoUrl, whatsappUrl } from "@/lib/site";
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
 
 export function Footer() {
     return (
-        <footer className="bg-background border-t border-border py-12 mt-20 relative overflow-hidden noise-bg">
-            {/* Animated gradient accent line */}
-            <motion.div
-                initial={{ scaleX: 0 }}
-                whileInView={{ scaleX: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1, ease: "easeOut" }}
-                style={{ originX: 0.5 }}
-                className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent"
-            />
-
-            {/* Background glow */}
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-96 h-32 bg-primary/5 blur-3xl rounded-full pointer-events-none" />
-
-            <div className="container mx-auto px-4 md:px-6 flex flex-col md:flex-row justify-between items-center gap-6 relative">
-                {/* Logo & copyright */}
-                <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5 }}
-                    className="flex flex-col items-center md:items-start gap-2"
-                >
-                    <Magnetic strength={0.2}>
-                        <Link href="/" className="flex items-center gap-2 group">
-                            <motion.div whileHover={{ rotate: 10, scale: 1.1 }} transition={{ type: "spring", stiffness: 300 }}>
-                                <Image
-                                    src="/set.png"
-                                    alt="Fauzan Digital Solutions"
-                                    width={36}
-                                    height={36}
-                                    className="h-9 w-9 object-contain"
-                                    unoptimized
-                                />
-                            </motion.div>
-                            <span className="font-display font-bold text-xl tracking-tight group-hover:text-primary transition-colors duration-300">
-                                Fauzan<span className="text-primary">.</span>
-                            </span>
+        <footer className="mt-20 border-t border-border bg-card/40 transition-colors">
+            {/* CTA Section singkat sebelum footer */}
+            <div className="border-b border-border/60 py-16">
+                <ScrollReveal direction="up" className="container-page flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+                    <div className="max-w-xl">
+                        <span className="text-xs font-semibold uppercase tracking-wider text-primary">
+                            Mari Berkolaborasi
+                        </span>
+                        <h2 className="text-2xl sm:text-3xl font-display font-bold tracking-tight text-foreground mt-2">
+                            Punya ide proyek web atau aplikasi mobile yang ingin diwujudkan?
+                        </h2>
+                        <p className="text-muted-foreground text-sm sm:text-base mt-2">
+                            Terbuka untuk kesempatan freelance, proyek baru, atau diskusi teknis. Hubungi saya langsung.
+                        </p>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+                        <Link
+                            href="/contact"
+                            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-primary text-primary-foreground font-semibold text-sm shadow-soft hover:opacity-95 transition-all"
+                        >
+                            <span>Hubungi Saya</span>
+                            <ArrowUpRight className="h-4 w-4" />
                         </Link>
-                    </Magnetic>
-                    <p className="text-muted-foreground text-sm">
-                        © {new Date().getFullYear()} Fauzan Digital Solutions. Hak cipta dilindungi.
-                    </p>
-                </motion.div>
+                        <a
+                            href={whatsappUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full border border-border bg-background hover:bg-muted text-foreground font-medium text-sm transition-all"
+                        >
+                            <span>WhatsApp</span>
+                        </a>
+                    </div>
+                </ScrollReveal>
+            </div>
 
-                {/* Social icons */}
-                <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: 0.1 }}
-                    className="flex items-center gap-4"
-                >
-                    {socialLinks.map((link, index) => (
-                        <Magnetic key={link.name} strength={0.5}>
-                            <motion.div
-                                initial={{ opacity: 0, y: 10 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.4, delay: 0.2 + index * 0.1 }}
-                                whileHover={{ y: -3, scale: 1.15 }}
-                                whileTap={{ scale: 0.9 }}
+            {/* Bagian bawah footer */}
+            <div className="py-10">
+                <div className="container-page flex flex-col sm:flex-row items-center justify-between gap-6">
+                    {/* Brand & Ringkasan (Slide dari Kiri) */}
+                    <ScrollReveal direction="left" className="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
+                        <div className="flex items-center gap-2">
+                            <Image
+                                src="/set.png"
+                                alt=""
+                                aria-hidden="true"
+                                width={28}
+                                height={28}
+                                className="h-7 w-7 object-contain"
+                            />
+                            <span className="font-display font-bold text-base tracking-tight">
+                                {site.name}
+                            </span>
+                        </div>
+                        <span className="hidden sm:inline text-muted-foreground/40">•</span>
+                        <p className="text-xs text-muted-foreground">
+                            © {new Date().getFullYear()} {site.shortName}. Seluruh hak cipta dilindungi.
+                        </p>
+                    </ScrollReveal>
+
+                    {/* Media Sosial dengan Ikon + Label (Slide dari Kanan) */}
+                    <ScrollReveal direction="right">
+                        <nav aria-label="Tautan Sosial Media" className="flex items-center gap-4">
+                            <a
+                                href={site.socials.github}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label="Kunjungi profil GitHub Fauzan"
+                                className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors p-1.5 rounded-md hover:bg-muted"
                             >
-                                <Link
-                                    href={link.href}
-                                    className="relative flex items-center justify-center w-10 h-10 rounded-full border border-border/50 bg-secondary/50 text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-colors duration-300"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    aria-label={link.name}
-                                >
-                                    <link.icon size={18} />
-                                </Link>
-                            </motion.div>
-                        </Magnetic>
-                    ))}
-                </motion.div>
+                                <Github className="h-4 w-4" />
+                                <span>GitHub</span>
+                            </a>
+                            <a
+                                href={site.socials.linkedin}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label="Kunjungi profil LinkedIn Fauzan"
+                                className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors p-1.5 rounded-md hover:bg-muted"
+                            >
+                                <Linkedin className="h-4 w-4" />
+                                <span>LinkedIn</span>
+                            </a>
+                            <a
+                                href={mailtoUrl}
+                                aria-label="Kirim email ke Fauzan"
+                                className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors p-1.5 rounded-md hover:bg-muted"
+                            >
+                                <Mail className="h-4 w-4" />
+                                <span>Email</span>
+                            </a>
+                        </nav>
+                    </ScrollReveal>
+                </div>
             </div>
         </footer>
     );

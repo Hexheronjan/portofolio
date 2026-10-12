@@ -1,146 +1,164 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
-
-const certificates = [
-    {
-        title: "FRONTEND EXPERT",
-        desc: "Advanced frontend architecture, performance optimization, and modern React patterns.",
-        hugeText: "REACT",
-        image: "/sertif1.jpeg", // Ganti dengan path gambar sertifikat 1 yang asli
-        yOffset: [50, -100], // Kecepatan parallax diperhalus
-        positionClasses: "left-[5%] md:left-[5%] top-[5%] md:top-[10%]",
-        floatDuration: 4
-    },
-    {
-        title: "FULL STACK WEB",
-        desc: "End-to-end development covering Next.js, Node.js, databases, and secure APIs.",
-        hugeText: "NEXT.JS",
-        image: "/sertif2.jpeg", // Ganti dengan path gambar sertifikat 2 yang asli
-        yOffset: [150, -250], // Kecepatan parallax diperhalus
-        positionClasses: "left-[5%] md:left-[36%] top-[35%] md:top-[25%]",
-        floatDuration: 5.5
-    },
-    {
-        title: "MOBILE APP DEV",
-        desc: "Cross-platform mobile application development with React Native and modern tools.",
-        hugeText: "MOBILE",
-        image: "/sertif3.jpeg", // Ganti dengan path gambar sertifikat 3 yang asli
-        yOffset: [250, -400], // Kecepatan parallax diperhalus
-        positionClasses: "left-[5%] md:left-[67%] top-[65%] md:top-[15%]",
-        floatDuration: 4.5
-    }
-];
-
-function CertCard({ cert, scrollYProgress, isMobile, prefersReducedMotion }: { cert: typeof certificates[0], scrollYProgress: any, isMobile: boolean, prefersReducedMotion: boolean }) {
-    // 1. Menggunakan useSpring agar scroll parallax menjadi sangat halus (smooth)
-    const smoothProgress = useSpring(scrollYProgress, { damping: 25, stiffness: 60, mass: 0.5 });
-    const yScroll = useTransform(smoothProgress, [0, 1], cert.yOffset);
-
-    return (
-        // Layer 1: Parallax Scrolling Effect — disabled on mobile
-        <motion.div
-            style={{ y: isMobile || prefersReducedMotion ? 0 : yScroll, willChange: isMobile || prefersReducedMotion ? "auto" : "transform, opacity" }}
-            className={`${isMobile ? 'relative mb-8' : 'absolute'} w-[90vw] md:w-[28vw] max-w-[400px] z-20 ${!isMobile ? cert.positionClasses : ''}`}
-        >
-            {/* Layer 2: Floating animation — disabled on mobile */}
-            <motion.div
-                animate={!isMobile && !prefersReducedMotion ? { y: [0, -20, 0] } : {}}
-                transition={!isMobile && !prefersReducedMotion ? {
-                    duration: cert.floatDuration,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                } : undefined}
-                className="w-full h-full bg-white rounded-[2rem] p-6 md:p-8 flex flex-col shadow-[0_20px_40px_rgba(0,0,0,0.06)] border border-black/5 hover:shadow-[0_40px_80px_rgba(0,0,0,0.15)] transition-shadow duration-700"
-            >
-                {/* Dot and Title */}
-                <div className="flex items-center gap-3 mb-6">
-                    <span className="w-2 h-2 rounded-full bg-[#111]" />
-                    <h3 className="font-display font-medium text-lg tracking-widest uppercase text-[#111]">{cert.title}</h3>
-                </div>
-
-                {/* Dynamic Image representing Certificate - No cropping */}
-                <div className="w-full bg-zinc-200/50 rounded-xl overflow-hidden mb-8 relative group cursor-pointer flex items-center justify-center aspect-[4/3]">
-                    <Image
-                        src={cert.image}
-                        alt={cert.title}
-                        fill
-                        className="object-contain grayscale-[0.2] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
-                        sizes="(max-width: 768px) 90vw, 28vw"
-                    />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
-                </div>
-
-                {/* Description */}
-                <p className="font-mono text-[10px] md:text-xs leading-relaxed uppercase text-zinc-500 mb-12">
-                    {cert.desc}
-                </p>
-
-                {/* Massive Text at Bottom of Card */}
-                <div className="mt-auto overflow-hidden pb-2">
-                    <h2 className="font-display font-black text-6xl md:text-7xl uppercase tracking-tighter scale-y-[1.5] origin-bottom leading-[0.8] text-[#111]">
-                        {cert.hugeText}
-                    </h2>
-                </div>
-            </motion.div>
-        </motion.div>
-    );
-}
+import { Award, ExternalLink, X, Eye } from "lucide-react";
+import { certificates, Certificate } from "@/constants/certificates";
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
 
 export function Certificates() {
-    const containerRef = useRef<HTMLDivElement>(null);
-    const { scrollYProgress } = useScroll({
-        target: containerRef,
-        offset: ["start end", "end start"],
-    });
-
-    const [isMobile, setIsMobile] = useState(false);
-    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
-    useEffect(() => {
-        setIsMobile("ontouchstart" in window || navigator.maxTouchPoints > 0);
-        setPrefersReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-    }, []);
-
-    // Pelembut scroll untuk Teks besar agar gerakannya sangat smooth dan tidak patah-patah
-    const smoothProgress = useSpring(scrollYProgress, { damping: 30, stiffness: 40 });
-    // Dibuat lebih lambat: dari 0% ke -15% saja (sebelumnya -50%)
-    const titleX = useTransform(smoothProgress, [0, 1], ["0%", isMobile ? "-5%" : "-15%"]);
+    const [selectedCert, setSelectedCert] = useState<Certificate | null>(null);
 
     return (
-        <section ref={containerRef} className="relative w-full py-20 md:py-32 bg-[#eaeaea] overflow-hidden text-[#111]">
-            
-            {/* Decorative Noise Background — desktop only */}
-            {!isMobile && (
-                <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.03] mix-blend-overlay pointer-events-none" />
-            )}
+        <section aria-label="Sertifikat & Pencapaian" className="section-y relative border-t border-border/60 bg-muted/20">
+            <div className="container-page">
+                {/* Header Section */}
+                <ScrollReveal direction="up" className="max-w-2xl mb-12">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-primary">
+                        Kualifikasi Resmi
+                    </span>
+                    <h2 className="text-h2 font-display font-bold tracking-tight text-foreground mt-2">
+                        Sertifikasi & Pencapaian
+                    </h2>
+                    <p className="text-muted-foreground text-sm sm:text-base mt-3">
+                        Bukti kompetensi terverifikasi melalui uji kompetensi resmi dan lembaga pelatihan industri terpercaya.
+                    </p>
+                </ScrollReveal>
 
-            {/* Massive Scrolling Title Banner - Slower and Smoother */}
-            <div className="w-full border-b border-[#111]/20 pb-4 mb-10 md:mb-20 overflow-hidden relative z-10">
-                <motion.div 
-                    style={{ x: titleX }}
-                    className="whitespace-nowrap font-display text-[15vw] md:text-[8vw] font-black uppercase tracking-tighter scale-y-[1.4] origin-top flex gap-8 items-center will-change-transform"
+                {/* Grid Sertifikat (Variasi Kiri, Tengah, Kanan) */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {certificates.map((cert, idx) => {
+                        const dir: "left" | "center" | "right" = idx % 3 === 0 ? "left" : idx % 3 === 1 ? "center" : "right";
+                        return (
+                            <ScrollReveal
+                                key={idx}
+                                direction={dir}
+                                delay={idx * 0.1}
+                                distance={35}
+                                className="h-full flex flex-col"
+                            >
+                                <div className="group flex flex-col h-full rounded-2xl border border-border/70 bg-card overflow-hidden shadow-soft hover:shadow-lift hover:border-primary/40 transition-all duration-300">
+                                    {/* Gambar Sertifikat dengan Tombol Lightbox */}
+                                    <div
+                                        onClick={() => setSelectedCert(cert)}
+                                        className="relative aspect-[4/3] w-full overflow-hidden bg-muted cursor-pointer"
+                                    >
+                                        <Image
+                                            src={cert.image}
+                                            alt={`Foto fisik ${cert.title}`}
+                                            fill
+                                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                        />
+                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white text-black text-xs font-semibold shadow-lg">
+                                                <Eye className="h-3.5 w-3.5" />
+                                                <span>Perbesar</span>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {/* Detail Sertifikat */}
+                                    <div className="flex flex-col flex-1 p-5 gap-2.5">
+                                        <div className="flex items-center justify-between text-xs text-muted-foreground">
+                                            <span className="font-mono">{cert.issuedAt}</span>
+                                            {cert.credentialId && (
+                                                <span className="font-mono text-[10px] bg-secondary px-2 py-0.5 rounded border border-border/50">
+                                                    {cert.year}
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        <h3 className="font-display font-bold text-base text-foreground leading-snug">
+                                            {cert.title}
+                                        </h3>
+
+                                        <p className="text-xs text-primary font-medium">
+                                            {cert.issuer}
+                                        </p>
+
+                                        {cert.note && (
+                                            <p className="text-xs text-muted-foreground leading-relaxed mt-1">
+                                                {cert.note}
+                                            </p>
+                                        )}
+
+                                        {/* Action Buttons */}
+                                        <div className="pt-3 border-t border-border/60 flex items-center justify-between mt-auto">
+                                            <button
+                                                type="button"
+                                                onClick={() => setSelectedCert(cert)}
+                                                className="text-xs font-semibold text-foreground hover:text-primary transition-colors"
+                                            >
+                                                Lihat Sertifikat
+                                            </button>
+
+                                            {cert.verifyUrl && (
+                                                <a
+                                                    href={cert.verifyUrl}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+                                                >
+                                                    <span>Verifikasi</span>
+                                                    <ExternalLink className="h-3 w-3" />
+                                                </a>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </ScrollReveal>
+                        );
+                    })}
+                </div>
+            </div>
+
+            {/* Lightbox Modal */}
+            {selectedCert && (
+                <div
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label={`Pratinjau sertifikat: ${selectedCert.title}`}
+                    className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8"
+                    onClick={() => setSelectedCert(null)}
                 >
-                    <span>CERTIFICATES & ACHIEVEMENTS</span>
-                    <span className="w-4 h-4 md:w-8 md:h-8 rounded-full bg-lime-500 shrink-0" />
-                    <span>PROFESSIONAL MILESTONES</span>
-                    {!isMobile && (
-                        <>
-                            <span className="w-4 h-4 md:w-8 md:h-8 rounded-full bg-[#111] shrink-0" />
-                            <span>CERTIFICATES & ACHIEVEMENTS</span>
-                        </>
-                    )}
-                </motion.div>
-            </div>
+                    <div
+                        className="relative max-w-4xl w-full bg-card rounded-2xl border border-border overflow-hidden shadow-2xl flex flex-col"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Header Modal */}
+                        <div className="flex items-center justify-between p-4 border-b border-border bg-muted/30">
+                            <div>
+                                <h3 className="font-display font-bold text-sm sm:text-base text-foreground">
+                                    {selectedCert.title}
+                                </h3>
+                                <p className="text-xs text-muted-foreground">
+                                    {selectedCert.issuer} • {selectedCert.issuedAt}
+                                </p>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => setSelectedCert(null)}
+                                aria-label="Tutup pratinjau"
+                                className="p-2 rounded-full hover:bg-muted text-foreground transition-colors"
+                            >
+                                <X className="h-5 w-5" />
+                            </button>
+                        </div>
 
-            {/* Floating Cards Container — stacked on mobile, absolute positioned on desktop */}
-            <div className={`max-w-[1400px] mx-auto px-4 md:px-8 relative z-20 ${isMobile ? 'flex flex-col items-center' : 'h-[130vh]'}`}>
-                {certificates.map((cert, i) => (
-                    <CertCard key={i} cert={cert} scrollYProgress={scrollYProgress} isMobile={isMobile} prefersReducedMotion={prefersReducedMotion} />
-                ))}
-            </div>
+                        {/* Gambar Sertifikat Asli di Lightbox */}
+                        <div className="relative aspect-[4/3] w-full max-h-[75vh] bg-black/10 flex items-center justify-center">
+                            <Image
+                                src={selectedCert.image}
+                                alt={selectedCert.title}
+                                fill
+                                className="object-contain p-2"
+                                sizes="100vw"
+                            />
+                        </div>
+                    </div>
+                </div>
+            )}
         </section>
     );
 }

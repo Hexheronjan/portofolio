@@ -1,148 +1,132 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Timeline } from "@/components/ui/Timeline";
-import { Section } from "@/components/ui/Section";
-
-const experience = [
-    {
-        year: "2025 – 2026",
-        title: "Full Stack Developer + WordPress",
-        description:
-            "Mengembangkan aplikasi web full stack menggunakan React/Vue + Node.js/Express + MySQL, PostgreSQL & Supabase. Membuat website WordPress dengan custom theme & plugin. Project: e-commerce, blog platform, website perusahaan.",
-    },
-    {
-        year: "2023 – 2024",
-        title: "Web Developer / Frontend Developer",
-        description:
-            "Membuat website statis & interaktif menggunakan HTML, CSS, dan JavaScript. Project: landing page, toko online, dan berbagai website klien.",
-    },
-];
-
-const education = [
-    {
-        year: "2026 – Lulusan",
-        title: "Rekayasa Perangkat Lunak",
-        organization: "SMK Negeri 1 Jenangan",
-        description:
-            "Jurusan Rekayasa Perangkat Lunak (RPL). Mempelajari dasar-dasar pemrograman, pengembangan web, dan rekayasa perangkat lunak secara profesional.",
-    },
-];
+import Link from "next/link";
+import { Download, ArrowUpRight } from "lucide-react";
+import { timeline } from "@/constants/experience";
+import { site } from "@/lib/site";
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
 
 export function AboutContent() {
-    const [isMobile, setIsMobile] = useState(false);
-    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
-    useEffect(() => {
-        setIsMobile("ontouchstart" in window || navigator.maxTouchPoints > 0);
-        setPrefersReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-    }, []);
-
     return (
-        <div className="flex flex-col">
-            <Section className="pb-8 relative">
-                {/* Decorative element */}
-                {!isMobile && <div className="absolute top-20 right-0 w-72 h-72 -z-10 rounded-full bg-primary/5 blur-3xl" />}
+        <div className="section-y relative">
+            <div className="container-page">
+                {/* Header (Slide Up) */}
+                <ScrollReveal direction="up" className="max-w-2xl mb-12">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-primary">
+                        Tentang Saya
+                    </span>
+                    <h1 className="text-display font-display font-bold tracking-tight text-foreground mt-2">
+                        {site.name}
+                    </h1>
+                    <p className="text-lg text-primary font-medium mt-1">
+                        {site.role} • {site.location}
+                    </p>
+                </ScrollReveal>
 
-                <motion.h1
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: isMobile || prefersReducedMotion ? 0.4 : 0.5 }}
-                    style={{ willChange: isMobile || prefersReducedMotion ? "auto" : "transform, opacity" }}
-                    className="text-3xl sm:text-4xl md:text-5xl font-display font-bold mb-6"
-                >
-                    Tentang Saya
-                </motion.h1>
+                {/* Grid Narasi & Profil (Slide Kiri & Kanan) */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start mb-20">
+                    <ScrollReveal direction="left" distance={40} className="lg:col-span-7 space-y-5 text-sm sm:text-base text-muted-foreground leading-relaxed">
+                        <p>
+                            Halo, saya Fauzan Bagus Prasetyo, seorang <strong className="text-foreground font-semibold">Full Stack & Mobile Developer</strong> yang berbasis di Ponorogo, Jawa Timur, Indonesia. Saya berfokus pada perancangan dan pembangunan aplikasi web modern serta aplikasi mobile yang efisien dan fungsional.
+                        </p>
+                        <p>
+                            Latar belakang pendidikan saya di bidang <strong className="text-foreground font-semibold">Rekayasa Perangkat Lunak (RPL) SMK Negeri 1 Jenangan (2023–2026)</strong> memberi fondasi komputasi yang kokoh dalam logika pemrograman, basis data relasional, dan arsitektur sistem.
+                        </p>
+                        <p>
+                            Selain menempuh pendidikan kejuruan, saya aktif mengerjakan proyek freelance untuk klien bisnis, mulai dari company profile berskala korporat, landing page promosi, hingga platform custom berbasis WordPress, React/Next.js, dan Node.js.
+                        </p>
+                        <div className="pt-4 flex flex-wrap gap-3">
+                            <Link
+                                href={site.cvPath}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-primary-foreground text-xs font-semibold shadow-soft hover:opacity-95 transition-all"
+                            >
+                                <Download className="h-4 w-4" />
+                                <span>Unduh CV (PDF)</span>
+                            </Link>
+                            <Link
+                                href="/contact"
+                                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border bg-background hover:bg-muted text-foreground text-xs font-semibold transition-all"
+                            >
+                                <span>Hubungi Langsung</span>
+                                <ArrowUpRight className="h-4 w-4" />
+                            </Link>
+                        </div>
+                    </ScrollReveal>
 
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: isMobile || prefersReducedMotion ? 0.4 : 0.5, delay: isMobile || prefersReducedMotion ? 0.1 : 0.2 }}
-                    style={{ willChange: isMobile || prefersReducedMotion ? "auto" : "transform, opacity" }}
-                    className="grid md:grid-cols-2 gap-12 items-start"
-                >
-                    <div className="space-y-6 text-lg text-muted-foreground leading-relaxed">
-                        <p>
-                            Saya adalah Software Engineer yang bersemangat dengan fokus kuat pada Pengembangan Frontend.
-                            Perjalanan saya di dunia teknologi dimulai dengan rasa ingin tahu tentang bagaimana
-                            situs web bekerja, yang membawa saya mendalami ekosistem web modern.
-                        </p>
-                        <p>
-                            Dengan keahlian di <span className="text-foreground font-medium">React, Next.js, dan TypeScript</span>,
-                            saya senang membangun aplikasi yang tidak hanya menarik secara visual tetapi juga
-                            aksesibel dan memiliki performa tinggi. Saya percaya pada penulisan kode yang bersih,
-                            mudah dikelola, dan tahan uji waktu.
-                        </p>
-                        <p>
-                            Saat tidak sedang coding, Anda bisa menemukan saya mengeksplorasi teknologi baru, berkontribusi
-                            pada open source, atau berbagi pengetahuan dengan komunitas.
-                        </p>
+                    <ScrollReveal direction="right" distance={40} className="lg:col-span-5 p-6 rounded-2xl border border-border/80 bg-card/60 shadow-soft">
+                        <h2 className="font-display font-bold text-base text-foreground mb-4">
+                            Ringkasan Profil
+                        </h2>
+                        <dl className="space-y-3 text-xs sm:text-sm">
+                            <div className="flex justify-between py-2 border-b border-border/50">
+                                <dt className="text-muted-foreground">Status</dt>
+                                <dd className="font-medium text-foreground">Tersedia untuk Freelance & Kontrak</dd>
+                            </div>
+                            <div className="flex justify-between py-2 border-b border-border/50">
+                                <dt className="text-muted-foreground">Pendidikan</dt>
+                                <dd className="font-medium text-foreground">SMKN 1 Jenangan (RPL, 2023–2026)</dd>
+                            </div>
+                            <div className="flex justify-between py-2 border-b border-border/50">
+                                <dt className="text-muted-foreground">Lokasi</dt>
+                                <dd className="font-medium text-foreground">{site.location}</dd>
+                            </div>
+                            <div className="flex justify-between py-2">
+                                <dt className="text-muted-foreground">Bahasa</dt>
+                                <dd className="font-medium text-foreground">Bahasa Indonesia, English (Technical)</dd>
+                            </div>
+                        </dl>
+                    </ScrollReveal>
+                </div>
+
+                {/* Section Linimasa Riwayat Hidup */}
+                <div className="border-t border-border/60 pt-16">
+                    <ScrollReveal direction="up">
+                        <h2 className="text-h2 font-display font-bold text-foreground mb-10">
+                            Linimasa Pengalaman & Pendidikan
+                        </h2>
+                    </ScrollReveal>
+
+                    <div className="relative border-l border-border/80 ml-3 sm:ml-6 space-y-10 py-2 max-w-3xl">
+                        {timeline.map((item, idx) => (
+                            <ScrollReveal
+                                key={idx}
+                                direction="left"
+                                distance={30}
+                                delay={idx * 0.1}
+                                className="relative pl-6 sm:pl-8 group"
+                            >
+                                <div
+                                    aria-hidden="true"
+                                    className="absolute -left-[5px] top-1.5 h-2.5 w-2.5 rounded-full border border-background bg-primary ring-4 ring-background"
+                                />
+                                <div className="flex flex-wrap items-center gap-2 mb-2">
+                                    <span className="font-mono text-xs font-semibold text-primary">
+                                        {item.period}
+                                    </span>
+                                    <span className="text-muted-foreground/40">•</span>
+                                    <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground border border-border/50">
+                                        {item.type}
+                                    </span>
+                                </div>
+                                <h3 className="font-display font-bold text-lg text-foreground">
+                                    {item.position}
+                                </h3>
+                                <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-3">
+                                    {item.institution}
+                                </p>
+                                <ul className="space-y-1.5 text-xs sm:text-sm text-muted-foreground">
+                                    {item.points.map((pt, pIdx) => (
+                                        <li key={pIdx} className="flex items-start gap-2">
+                                            <span className="text-primary mt-1" aria-hidden="true">▸</span>
+                                            <span>{pt}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </ScrollReveal>
+                        ))}
                     </div>
-
-                    <motion.div
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: isMobile || prefersReducedMotion ? 0.4 : 0.5, delay: isMobile || prefersReducedMotion ? 0.15 : 0.3 }}
-                        style={{ willChange: isMobile || prefersReducedMotion ? "auto" : "transform, opacity" }}
-                        className="bg-secondary/30 p-6 sm:p-8 rounded-2xl border border-border/50 shadow-lg hover:shadow-xl hover:border-primary/20 transition-all duration-300"
-                    >
-                        <h3 className="text-xl font-bold mb-6">Filosofi Saya</h3>
-                        <ul className="space-y-6">
-                            {[
-                                { title: "Utamakan Performa", desc: "Waktu muat yang cepat dan interaksi yang halus adalah hal yang tidak bisa ditawar." },
-                                { title: "Aksesibel untuk Semua", desc: "Membangun pengalaman inklusif untuk pengguna dengan segala kemampuan." },
-                                { title: "Detail Sempurna", desc: "Perhatian terhadap detail di setiap komponen dan interaksi." },
-                            ].map((item, i) => (
-                                <motion.li
-                                    key={i}
-                                    initial={{ opacity: 0, x: -10 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ duration: isMobile || prefersReducedMotion ? 0.3 : 0.4, delay: isMobile || prefersReducedMotion ? 0.2 + i * 0.05 : 0.4 + i * 0.1 }}
-                                    style={{ willChange: isMobile || prefersReducedMotion ? "auto" : "transform, opacity" }}
-                                    className="flex gap-4"
-                                >
-                                    <span className="flex h-6 w-6 shrink-0 items-center justify-center text-primary text-lg font-light mt-0.5" aria-hidden>·</span>
-                                    <div>
-                                        <h4 className="font-semibold text-foreground">{item.title}</h4>
-                                        <p className="text-sm text-muted-foreground mt-1">{item.desc}</p>
-                                    </div>
-                                </motion.li>
-                            ))}
-                        </ul>
-                    </motion.div>
-                </motion.div>
-            </Section>
-
-            <Section className="bg-secondary/20 py-16 relative overflow-hidden">
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808006_1px,transparent_1px),linear-gradient(to_bottom,#80808006_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_40%,transparent_100%)]" />
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: isMobile || prefersReducedMotion ? 0.4 : 0.5 }}
-                    style={{ willChange: isMobile || prefersReducedMotion ? "auto" : "transform, opacity" }}
-                    className="max-w-3xl relative"
-                >
-                    <h2 className="text-2xl font-bold mb-8 text-foreground tracking-tight">Pengalaman Kerja</h2>
-                    <Timeline items={experience} />
-                </motion.div>
-            </Section>
-
-            <Section className="py-16 relative">
-                {!isMobile && <div className="absolute top-0 left-1/2 w-96 h-96 -z-10 rounded-full bg-primary/5 blur-3xl -translate-x-1/2" />}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: isMobile || prefersReducedMotion ? 0.4 : 0.5 }}
-                    style={{ willChange: isMobile || prefersReducedMotion ? "auto" : "transform, opacity" }}
-                    className="max-w-3xl relative"
-                >
-                    <h2 className="text-2xl font-bold mb-8 text-foreground tracking-tight">Pendidikan</h2>
-                    <Timeline items={education} />
-                </motion.div>
-            </Section>
+                </div>
+            </div>
         </div>
     );
 }

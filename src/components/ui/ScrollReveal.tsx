@@ -5,76 +5,76 @@ import { motion } from "framer-motion";
 
 interface ScrollRevealProps {
     children: ReactNode;
-    direction?: "up" | "down" | "left" | "right" | "fade";
+    direction?: "up" | "down" | "left" | "right" | "center" | "fade";
     delay?: number;
     duration?: number;
+    distance?: number;
     className?: string;
     viewportMargin?: string;
     once?: boolean;
 }
 
-// Check for reduced motion preference
-const useReducedMotion = () => {
-    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
-    useEffect(() => {
-        const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-        setPrefersReducedMotion(mediaQuery.matches);
-
-        const handler = (e: MediaQueryListEvent) => {
-            setPrefersReducedMotion(e.matches);
-        };
-
-        mediaQuery.addEventListener("change", handler);
-        return () => mediaQuery.removeEventListener("change", handler);
-    }, []);
-
-    return prefersReducedMotion;
-};
-
 export function ScrollReveal({
     children,
     direction = "up",
     delay = 0,
-    duration = 0.6,
+    duration = 0.7,
+    distance = 48,
     className = "",
-    viewportMargin = "-50px",
+    viewportMargin = "-40px",
     once = true,
 }: ScrollRevealProps) {
-    const reducedMotion = useReducedMotion();
+    const [reducedMotion, setReducedMotion] = useState(false);
 
-    // Animation variants - only transform and opacity for performance
-    const variants = {
-        hidden: {
-            opacity: 0,
-            ...(reducedMotion
-                ? {}
-                : {
-                    y: direction === "up" ? 40 : direction === "down" ? -40 : 0,
-                    x: direction === "left" ? 40 : direction === "right" ? -40 : 0,
-                }),
-        },
-        visible: {
+    useEffect(() => {
+        const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+        setReducedMotion(mq.matches);
+        const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
+        mq.addEventListener("change", handler);
+        return () => mq.removeEventListener("change", handler);
+    }, []);
+
+    const getInitial = () => {
+        if (reducedMotion) return { opacity: 0 };
+
+        switch (direction) {
+            case "left":
+                return { opacity: 0, x: -distance, y: 0 };
+            case "right":
+                return { opacity: 0, x: distance, y: 0 };
+            case "up":
+                return { opacity: 0, y: distance, x: 0 };
+            case "down":
+                return { opacity: 0, y: -distance, x: 0 };
+            case "center":
+                return { opacity: 0, scale: 0.92, y: 0, x: 0 };
+            case "fade":
+            default:
+                return { opacity: 0, y: 0, x: 0 };
+        }
+    };
+
+    const getAnimate = () => {
+        return {
             opacity: 1,
-            y: 0,
             x: 0,
-        },
+            y: 0,
+            scale: 1,
+        };
     };
 
     return (
         <motion.div
-            initial="hidden"
-            whileInView="visible"
+            initial={getInitial()}
+            whileInView={getAnimate()}
             viewport={{ once, margin: viewportMargin }}
-            variants={variants}
             transition={{
-                duration: reducedMotion ? 0.3 : duration,
+                duration: reducedMotion ? 0.2 : duration,
                 delay: reducedMotion ? 0 : delay,
-                ease: [0.22, 1, 0.36, 1],
+                ease: [0.16, 1, 0.3, 1], // Smooth Apple-like spring cubic-bezier
             }}
             className={className}
             style={{
-                // Only add will-change if not reduced motion
                 willChange: reducedMotion ? "auto" : "transform, opacity",
             }}
         >
@@ -83,17 +83,27 @@ export function ScrollReveal({
     );
 }
 
-// Staggered children variant for lists/grids
+// Container dengan staggered delay untuk grid atau list
 export function StaggerContainer({
     children,
     className = "",
     staggerDelay = 0.1,
+    viewportMargin = "-40px",
 }: {
     children: ReactNode;
     className?: string;
     staggerDelay?: number;
+    viewportMargin?: string;
 }) {
-    const reducedMotion = useReducedMotion();
+    const [reducedMotion, setReducedMotion] = useState(false);
+
+    useEffect(() => {
+        const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+        setReducedMotion(mq.matches);
+        const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
+        mq.addEventListener("change", handler);
+        return () => mq.removeEventListener("change", handler);
+    }, []);
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -108,11 +118,15 @@ export function StaggerContainer({
     const itemVariants = {
         hidden: {
             opacity: 0,
-            ...(reducedMotion ? {} : { y: 20 }),
+            ...(reducedMotion ? {} : { y: 32 }),
         },
         visible: {
             opacity: 1,
             y: 0,
+            transition: {
+                duration: 0.65,
+                ease: [0.16, 1, 0.3, 1],
+            },
         },
     };
 
@@ -120,17 +134,37 @@ export function StaggerContainer({
         <motion.div
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
+            viewport={{ once: true, margin: viewportMargin }}
             variants={containerVariants}
             className={className}
         >
-            {Array.isArray(children)
-                ? children.map((child, i) => (
-                    <motion.div key={i} variants={itemVariants}>
-                        {child}
-                    </motion.div>
-                ))
-                : children}
+            {children}
+        </motion.div>
+    );
+}
+
+export function StaggerItem({
+    children,
+    className = "",
+}: {
+    children: ReactNode;
+    className?: string;
+}) {
+    const itemVariants = {
+        hidden: { opacity: 0, y: 32 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: 0.65,
+                ease: [0.16, 1, 0.3, 1],
+            },
+        },
+    };
+
+    return (
+        <motion.div variants={itemVariants} className={`h-full ${className}`}>
+            {children}
         </motion.div>
     );
 }

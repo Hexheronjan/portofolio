@@ -6,20 +6,44 @@ import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 
 export function ThemeToggle({ className }: { className?: string }) {
-    const { setTheme, theme } = useTheme();
+    const { setTheme, resolvedTheme } = useTheme();
+    const [mounted, setMounted] = React.useState(false);
+
+    React.useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    // Placeholder statis saat SSR agar tidak layout shift
+    if (!mounted) {
+        return (
+            <div
+                className={cn(
+                    "inline-flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground opacity-50",
+                    className
+                )}
+                aria-hidden="true"
+            />
+        );
+    }
+
+    const isDark = resolvedTheme === "dark";
 
     return (
         <button
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            type="button"
+            onClick={() => setTheme(isDark ? "light" : "dark")}
             className={cn(
-                "relative inline-flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring transition-colors",
+                "relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-border/80 bg-background/80 hover:bg-muted text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                 className
             )}
-            aria-label="Toggle theme"
+            aria-label={isDark ? "Beralih ke mode terang" : "Beralih ke mode gelap"}
+            title={isDark ? "Mode terang" : "Mode gelap"}
         >
-            <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            <span className="sr-only">Toggle theme</span>
+            {isDark ? (
+                <Sun className="h-4 w-4 text-amber-400 transition-transform hover:rotate-45" />
+            ) : (
+                <Moon className="h-4 w-4 text-zinc-700 transition-transform hover:-rotate-12" />
+            )}
         </button>
     );
 }

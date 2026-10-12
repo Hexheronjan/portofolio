@@ -1,12 +1,14 @@
 import { MetadataRoute } from "next";
+import { site } from "@/lib/site";
+import { projects } from "@/constants/projects";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-    const baseUrl = "https://fauzan.dev"; // Replace with actual domain
-    return [
+    const baseUrl = site.url;
+    const staticPages: MetadataRoute.Sitemap = [
         {
             url: baseUrl,
             lastModified: new Date(),
-            changeFrequency: "monthly",
+            changeFrequency: "weekly",
             priority: 1,
         },
         {
@@ -25,13 +27,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
             url: `${baseUrl}/projects`,
             lastModified: new Date(),
             changeFrequency: "weekly",
-            priority: 0.8,
+            priority: 0.9,
         },
         {
             url: `${baseUrl}/contact`,
             lastModified: new Date(),
-            changeFrequency: "yearly",
-            priority: 0.5,
+            changeFrequency: "monthly",
+            priority: 0.7,
         },
     ];
+
+    const projectPages: MetadataRoute.Sitemap = projects.map((p) => ({
+        url: `${baseUrl}/projects/${p.slug}`,
+        lastModified: new Date(),
+        changeFrequency: "monthly",
+        priority: 0.6,
+    }));
+
+    return [...staticPages, ...projectPages];
 }

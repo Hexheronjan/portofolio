@@ -1,177 +1,138 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
-import { Github, ExternalLink, ArrowUpRight } from "lucide-react";
-import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
-import { useRef, useState, useEffect } from "react";
-
-interface ProjectCardProps {
-    title: string;
-    description: string;
-    tags: string[];
-    image: string;
-    githubUrl?: string;
-    liveUrl?: string;
-}
+import { ArrowUpRight, ExternalLink, ArrowRight } from "lucide-react";
+import { Project } from "@/constants/projects";
 
 export function ProjectCard({
+    slug,
     title,
     description,
     tags,
     image,
-    githubUrl,
     liveUrl,
-}: ProjectCardProps) {
-    const cardRef = useRef<HTMLDivElement>(null);
-    const [isMobile, setIsMobile] = useState(false);
-    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
-    useEffect(() => {
-        setIsMobile("ontouchstart" in window || navigator.maxTouchPoints > 0);
-        setPrefersReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-    }, []);
-
-    // ── ALL hooks at top level — no hooks inside JSX or conditionals ──
-    const mouseX = useMotionValue(0);
-    const mouseY = useMotionValue(0);
-
-    // Reduced stiffness and damping for better mobile performance
-    const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [8, -8]), { stiffness: 300, damping: 30 });
-    const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-8, 8]), { stiffness: 300, damping: 30 });
-
-    const glareX = useTransform(mouseX, [-0.5, 0.5], ["0%", "100%"]);
-    const glareY = useTransform(mouseY, [-0.5, 0.5], ["0%", "100%"]);
-
-    // Must be at top level — NOT inside JSX style prop
-    const glareBackground = useTransform(
-        [glareX, glareY],
-        ([x, y]: string[]) =>
-            `radial-gradient(circle at ${x} ${y}, rgba(255,255,255,0.12) 0%, transparent 60%)`
-    );
+    role,
+    isOffline,
+}: Project) {
+    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+    const [isHovered, setIsHovered] = useState(false);
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (isMobile || !cardRef.current) return;
-        const rect = cardRef.current.getBoundingClientRect();
-        mouseX.set((e.clientX - rect.left) / rect.width - 0.5);
-        mouseY.set((e.clientY - rect.top) / rect.height - 0.5);
-    };
-
-    const handleMouseLeave = () => {
-        mouseX.set(0);
-        mouseY.set(0);
+        const rect = e.currentTarget.getBoundingClientRect();
+        setMousePos({
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top,
+        });
     };
 
     return (
-        <div style={{ perspective: "1000px" }} className="h-full">
-            <motion.div
-                ref={cardRef}
-                onMouseMove={handleMouseMove}
-                onMouseLeave={handleMouseLeave}
-                style={
-                    !isMobile && !prefersReducedMotion
-                        ? { rotateX, rotateY, transformStyle: "preserve-3d" }
-                        : {}
-                }
-                whileHover={isMobile || prefersReducedMotion ? { y: -4 } : { scale: 1.02 }}
-                transition={isMobile || prefersReducedMotion ? { duration: 0.2 } : { type: "spring", stiffness: 300, damping: 20 }}
-                className="group relative flex flex-col h-full rounded-xl border border-border/50 bg-card overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-primary/10 hover:border-primary/30 transition-shadow duration-500"
-            >
-                {/* Animated top border glow */}
-                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/0 to-transparent group-hover:via-primary/60 transition-all duration-700" />
+        <article
+            onMouseMove={handleMouseMove}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            className="group relative flex flex-col h-full rounded-2xl border border-border/70 bg-card overflow-hidden shadow-soft hover:shadow-lift hover:border-primary/40 transition-all duration-300"
+        >
+            {/* Dynamic Spotlight Glow mengikuti kursor */}
+            {isHovered && (
+                <div
+                    className="pointer-events-none absolute -inset-px rounded-2xl opacity-100 transition-opacity duration-300 -z-0"
+                    style={{
+                        background: `radial-gradient(400px circle at ${mousePos.x}px ${mousePos.y}px, rgba(99, 102, 241, 0.12), transparent 80%)`,
+                    }}
+                />
+            )}
 
-                {/* 3D Glare — glareBackground is now a top-level MotionValue (safe) */}
-                {!isMobile && (
-                    <motion.div
-                        className="absolute inset-0 z-20 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"
-                        style={{ background: glareBackground }}
-                    />
+            {/* Area Gambar dengan Rasio 16:9 dan Sizes Spesifik */}
+            <Link
+                href={`/projects/${slug}`}
+                className="relative aspect-video w-full overflow-hidden bg-muted block cursor-pointer"
+                title={`Lihat detail studi kasus ${title}`}
+            >
+                <Image
+                    src={image}
+                    alt={`Tampilan antarmuka website ${title}`}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                />
+
+                {/* Overlay Subtle Gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-black/60 backdrop-blur-md px-3 py-1 rounded-full">
+                        <span>Buka Studi Kasus</span>
+                        <ArrowRight className="h-3.5 w-3.5" />
+                    </span>
+                </div>
+
+                {/* Indikator Status Situs Jika Offline */}
+                {isOffline && (
+                    <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-amber-500/90 text-black text-[10px] font-bold tracking-wider uppercase backdrop-blur-sm shadow-sm">
+                        Domain Kedaluwarsa
+                    </div>
+                )}
+            </Link>
+
+            {/* Isi Konten Kartu */}
+            <div className="flex flex-col flex-1 p-5 sm:p-6 gap-3 relative z-10">
+                <div className="flex items-start justify-between gap-2">
+                    <div>
+                        <span className="text-[11px] font-semibold tracking-wider text-primary uppercase font-mono">
+                            {role}
+                        </span>
+                        <Link href={`/projects/${slug}`}>
+                            <h3 className="font-display font-bold text-lg text-foreground group-hover:text-primary transition-colors mt-0.5 line-clamp-1">
+                                {title}
+                            </h3>
+                        </Link>
+                    </div>
+                </div>
+
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                    {description}
+                </p>
+
+                {/* Tech Stack Chips */}
+                {tags && tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mt-auto pt-2">
+                        {tags.map((tag) => (
+                            <span
+                                key={tag}
+                                className="inline-flex items-center text-[11px] px-2.5 py-0.5 rounded-full bg-secondary text-secondary-foreground font-medium border border-border/50"
+                            >
+                                {tag}
+                            </span>
+                        ))}
+                    </div>
                 )}
 
-                {/* Image area */}
-                <div className="relative aspect-video overflow-hidden bg-muted">
-                    <Image
-                        src={image}
-                        alt={title}
-                        fill
-                        className="object-cover transition-transform duration-700 group-hover:scale-110"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div className="absolute inset-0 animate-shimmer" />
-                    </div>
-
-                    {liveUrl && (
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            whileHover={{ scale: 1.05 }}
-                            className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300"
+                {/* Tombol Aksi */}
+                <div className="pt-3 border-t border-border/60 flex items-center justify-between mt-2">
+                    {liveUrl ? (
+                        <a
+                            href={liveUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`Buka website live ${title}`}
+                            className="inline-flex items-center gap-1.5 text-xs font-semibold text-foreground hover:text-primary transition-colors py-1 group/btn"
                         >
-                            <Link
-                                href={liveUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-2 bg-white/90 dark:bg-black/80 backdrop-blur-sm text-foreground text-sm font-semibold px-4 py-2 rounded-full shadow-lg hover:bg-white dark:hover:bg-black transition-colors"
-                            >
-                                <ArrowUpRight className="h-4 w-4" />
-                                Buka Website
-                            </Link>
-                        </motion.div>
+                            <span>Buka Live</span>
+                            <ExternalLink className="h-3.5 w-3.5 transition-transform group-hover/btn:translate-x-0.5" />
+                        </a>
+                    ) : (
+                        <span className="text-xs text-muted-foreground italic">Proyek Internal</span>
                     )}
+
+                    <Link
+                        href={`/projects/${slug}`}
+                        className="inline-flex items-center gap-1 text-xs text-primary font-semibold hover:underline"
+                    >
+                        <span>Detail</span>
+                        <ArrowUpRight className="h-3.5 w-3.5" />
+                    </Link>
                 </div>
-
-                {/* Content */}
-                <div
-                    className="flex flex-col flex-grow p-5 gap-3"
-                    style={!isMobile ? { transform: "translateZ(20px)" } : {}}
-                >
-                    <div>
-                        <h3 className="font-semibold text-lg leading-tight line-clamp-1 group-hover:text-primary transition-colors duration-300">
-                            {title}
-                        </h3>
-                        <p className="text-sm text-muted-foreground mt-1.5 line-clamp-2 leading-relaxed">
-                            {description}
-                        </p>
-                    </div>
-
-                    {tags && tags.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 mt-auto">
-                            {tags.slice(0, 4).map((tag) => (
-                                <Badge key={tag} variant="secondary" className="text-xs px-2 py-0.5">
-                                    {tag}
-                                </Badge>
-                            ))}
-                        </div>
-                    )}
-
-                    {(githubUrl || liveUrl) && (
-                        <div className="flex gap-2 pt-2 border-t border-border/50 mt-1">
-                            {githubUrl && (
-                                <Button variant="outline" size="sm" className="flex-1 gap-2 h-8 text-xs hover:border-primary/50 transition-all" asChild>
-                                    <Link href={githubUrl} target="_blank" rel="noopener noreferrer">
-                                        <Github className="h-3.5 w-3.5" />
-                                        Code
-                                    </Link>
-                                </Button>
-                            )}
-                            {liveUrl && (
-                                <Button size="sm" className="flex-1 gap-2 h-8 text-xs shine-effect" asChild>
-                                    <Link href={liveUrl} target="_blank" rel="noopener noreferrer">
-                                        <ExternalLink className="h-3.5 w-3.5" />
-                                        Demo
-                                    </Link>
-                                </Button>
-                            )}
-                        </div>
-                    )}
-                </div>
-
-                <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/0 to-transparent group-hover:via-primary/40 transition-all duration-700" />
-            </motion.div>
-        </div>
+            </div>
+        </article>
     );
 }

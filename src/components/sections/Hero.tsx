@@ -2,279 +2,275 @@
 
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
-import {
-    motion, useScroll, useTransform, useSpring,
-    AnimatePresence, useMotionValue,
-} from "framer-motion";
+import Link from "next/link";
+import { ArrowUpRight, Download, Sparkles, Code2, Smartphone } from "lucide-react";
+import { site, whatsappUrl } from "@/lib/site";
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
 
 export function Hero() {
-    const [isEntered, setIsEntered] = useState(false);
-    const [isMobile,  setIsMobile]  = useState(false);
+    const photoContainerRef = useRef<HTMLDivElement>(null);
+    const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 });
+    const [isTouchDevice, setIsTouchDevice] = useState(false);
     const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
     useEffect(() => {
-        setIsMobile("ontouchstart" in window || navigator.maxTouchPoints > 0);
-        setPrefersReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+        setIsTouchDevice("ontouchstart" in window || navigator.maxTouchPoints > 0);
+        const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+        setPrefersReducedMotion(mediaQuery.matches);
+
+        const handleMotionChange = (e: MediaQueryListEvent) => {
+            setPrefersReducedMotion(e.matches);
+        };
+        mediaQuery.addEventListener("change", handleMotionChange);
+        return () => mediaQuery.removeEventListener("change", handleMotionChange);
     }, []);
 
-    const containerRef = useRef<HTMLDivElement>(null);
-    const photoRef     = useRef<HTMLDivElement>(null);
+    // Parallax mouse effect (maksimal ±12px, hanya di desktop non-touch & tanpa reduced-motion)
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (isTouchDevice || prefersReducedMotion || !photoContainerRef.current) return;
+        const rect = photoContainerRef.current.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const deltaX = (e.clientX - centerX) / (rect.width / 2);
+        const deltaY = (e.clientY - centerY) / (rect.height / 2);
 
-    const { scrollYProgress } = useScroll({
-        target: containerRef,
-        offset: ["start start", "end start"],
-    });
-
-    // ─── multi-layer parallax (visible difference between layers) ───────────
-    const yTextBg    = useTransform(scrollYProgress, [0, 1], ["0%",   isMobile || prefersReducedMotion ? "25%" : "65%"]);
-    const yPhoto     = useTransform(scrollYProgress, [0, 1], ["0%",   isMobile || prefersReducedMotion ? "10%" : "28%"]);
-    const yForeText  = useTransform(scrollYProgress, [0, 1], ["0%",   isMobile || prefersReducedMotion ? "5%"  : "10%"]);
-    const yBlob1     = useTransform(scrollYProgress, [0, 1], ["0%",   "-80%"]);
-    const yBlob2     = useTransform(scrollYProgress, [0, 1], ["0%",    "50%"]);
-    const scalePhoto = useTransform(scrollYProgress, [0, 0.6], [1,     isMobile || prefersReducedMotion ? 1 : 0.82]);
-    const scaleText  = useTransform(scrollYProgress, [0, 0.6], [1,     isMobile || prefersReducedMotion ? 1 : 1.12]);
-    const opacity    = useTransform(scrollYProgress, [0, 0.55], [1, 0]);
-
-    // ─── mouse parallax for intro screen ────────────────────────────────────
-    const mouseX = useMotionValue(0);
-    const mouseY = useMotionValue(0);
-    const sp     = { damping: 18, stiffness: 90 };
-    const blob1X = useSpring(useTransform(mouseX, [-50, 50], [ 50, -50]), sp);
-    const blob1Y = useSpring(useTransform(mouseY, [-50, 50], [ 50, -50]), sp);
-    const blob2X = useSpring(useTransform(mouseX, [-50, 50], [-70,  70]), sp);
-    const blob2Y = useSpring(useTransform(mouseY, [-50, 50], [-70,  70]), sp);
-    const textX  = useSpring(useTransform(mouseX, [-50, 50], [-14,  14]), sp);
-    const textY  = useSpring(useTransform(mouseY, [-50, 50], [-14,  14]), sp);
-
-    // ─── 3D photo tilt on mouse hover ───────────────────────────────────────
-    const photoMX = useMotionValue(0);
-    const photoMY = useMotionValue(0);
-    const spFast  = { damping: 22, stiffness: 250 };
-    const photoRX = useSpring(useTransform(photoMY, [-0.5, 0.5], [ 14, -14]), spFast);
-    const photoRY = useSpring(useTransform(photoMX, [-0.5, 0.5], [-14,  14]), spFast);
-
-    const onPhotoMove = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (isMobile || !photoRef.current) return;
-        const r = photoRef.current.getBoundingClientRect();
-        photoMX.set((e.clientX - r.left) / r.width  - 0.5);
-        photoMY.set((e.clientY - r.top)  / r.height - 0.5);
+        setMouseOffset({
+            x: Math.max(-12, Math.min(12, deltaX * 12)),
+            y: Math.max(-12, Math.min(12, deltaY * 12)),
+        });
     };
-    const onPhotoLeave = () => { photoMX.set(0); photoMY.set(0); };
 
-    const onMouseMove = (e: React.MouseEvent) => {
-        if (isMobile) return;
-        mouseX.set((e.clientX / window.innerWidth  - 0.5) * 50);
-        mouseY.set((e.clientY / window.innerHeight - 0.5) * 50);
+    const handleMouseLeave = () => {
+        setMouseOffset({ x: 0, y: 0 });
     };
 
     return (
         <section
-            ref={containerRef}
-            className="relative w-full h-[100svh] min-h-[100svh] overflow-hidden font-sans selection:bg-lime-400 selection:text-black bg-[#0f0f0f]"
+            aria-label="Hero Pengenalan"
+            className="relative w-full overflow-hidden section-y min-h-[calc(100svh-4rem)] flex flex-col justify-center"
         >
-            {/* ── INTRO / COVER SCREEN ───────────────────────────────── */}
-            <AnimatePresence>
-                {!isEntered && (
-                    <motion.div
-                        key="intro"
-                        exit={{ y: "-100%", transition: { duration: isMobile ? 0.7 : 1.1, ease: [0.76, 0, 0.24, 1] } }}
-                        onMouseMove={!isMobile ? onMouseMove : undefined}
-                        onMouseEnter={() => setIsEntered(true)}
-                        onClick={() => setIsEntered(true)}
-                        onWheel={() => setIsEntered(true)}
-                        onTouchStart={() => setIsEntered(true)}
-                        className="absolute inset-0 z-50 cursor-pointer bg-[#050505] overflow-hidden flex flex-col justify-between p-6 sm:p-10 select-none"
-                    >
-                        {/* Mouse-driven blobs */}
-                        {!isMobile && (
-                            <>
-                                <motion.div
-                                    style={{ x: blob1X, y: blob1Y, background: "radial-gradient(circle, rgba(163,230,53,0.07) 0%, transparent 70%)", filter: "blur(40px)" }}
-                                    className="absolute top-[-15%] left-[5%] w-[55vw] h-[55vw] rounded-full pointer-events-none will-change-transform"
-                                />
-                                <motion.div
-                                    style={{ x: blob2X, y: blob2Y, background: "radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%)", filter: "blur(60px)" }}
-                                    className="absolute bottom-[-15%] right-[0%] w-[65vw] h-[65vw] rounded-full pointer-events-none will-change-transform"
-                                />
-                            </>
-                        )}
-                        {!isMobile && <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.03] pointer-events-none" />}
+            {/* Latar Belakang Aurora Mesh Sangat Halus + Grain */}
+            <div className="aurora" aria-hidden="true">
+                <div className="aurora__blob aurora__blob--1" />
+                <div className="aurora__blob aurora__blob--2" />
+                <div className="aurora__blob aurora__blob--3" />
+                <div className="grain" />
+            </div>
 
-                        {/* Text layer with mouse parallax */}
-                        <motion.div
-                            style={!isMobile ? { x: textX, y: textY } : undefined}
-                            className="relative z-10 w-full h-full flex flex-col justify-center gap-6 md:gap-10"
-                        >
-                            <div className="flex flex-col items-start gap-4 overflow-hidden py-2">
-                                <motion.h2
-                                    initial={{ y: "110%" }} animate={{ y: "0%" }}
-                                    transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1], delay: 0.1 }}
-                                    className="text-4xl md:text-6xl font-display font-medium tracking-tighter scale-y-[1.4] origin-top-left text-white"
-                                >FAUZAN</motion.h2>
+            <div className="container-page relative z-10">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+                    
+                    {/* KOLOM KIRI: Teks & Identitas (Slide-in dari Kiri) */}
+                    <div className="lg:col-span-7">
+                        <ScrollReveal direction="left" delay={0.1} distance={50} className="flex flex-col items-start">
+                            {/* Status Badge */}
+                            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-border/80 bg-background/80 backdrop-blur-sm text-xs font-medium text-foreground mb-6 shadow-sm">
+                                <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true" />
+                                <span>Tersedia untuk proyek freelance & kontrak</span>
                             </div>
 
-                            <div className="w-full border-t border-zinc-800/80 pt-2 md:pt-4 overflow-hidden">
-                                <motion.h1
-                                    initial={{ y: "120%" }} animate={{ y: "0%" }}
-                                    transition={{ duration: 1, ease: [0.76, 0, 0.24, 1], delay: 0.2 }}
-                                    className="text-[13vw] md:text-[11vw] font-black uppercase tracking-tighter text-white scale-y-[1.6] origin-top leading-[0.75]"
-                                >FOLIO OF FAUZAN</motion.h1>
-                            </div>
+                            {/* Nama & Posisi */}
+                            <h1 className="text-display font-display font-bold tracking-tight text-foreground leading-[1.05]">
+                                {site.name}
+                            </h1>
 
-                            <div className="w-full border-t border-zinc-800/80 pt-2 md:pt-4 flex flex-col md:flex-row items-start md:items-end justify-between gap-8 md:gap-4 overflow-hidden">
-                                <motion.h1
-                                    initial={{ y: "120%" }} animate={{ y: "0%" }}
-                                    transition={{ duration: 1, ease: [0.76, 0, 0.24, 1], delay: 0.3 }}
-                                    className="text-[15vw] md:text-[12vw] font-black uppercase tracking-tighter text-transparent scale-y-[1.6] origin-top leading-[0.75] hover:text-white transition-colors"
-                                    style={{ WebkitTextStroke: "1px rgba(255,255,255,0.8)" }}
-                                >28/MAY.2026</motion.h1>
-                                <motion.div
-                                    initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-                                    transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1], delay: 0.6 }}
-                                    className="flex flex-col items-center justify-center border border-zinc-700 rounded-full px-6 py-2 md:px-10 md:py-4 hover:bg-white hover:text-black transition-colors duration-500"
+                            <p className="mt-3 text-h3 font-medium text-primary">
+                                {site.role}
+                            </p>
+
+                            {/* Kalimat Value Proposition */}
+                            <p className="mt-5 text-lead text-muted-foreground max-w-xl">
+                                {site.tagline}
+                            </p>
+
+                            {/* Call To Actions Nyata (Slide-in dari Bawah) */}
+                            <div className="mt-8 flex flex-wrap items-center gap-3 w-full sm:w-auto">
+                                <Link
+                                    href="/projects"
+                                    className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-primary text-primary-foreground font-semibold text-sm shadow-lift hover:opacity-95 transition-all"
                                 >
-                                    <span className="font-display text-sm md:text-2xl uppercase scale-y-[1.4] origin-bottom tracking-widest">( BASED IN INDONESIA )</span>
-                                </motion.div>
+                                    <span>Lihat Proyek</span>
+                                    <ArrowUpRight className="h-4 w-4" />
+                                </Link>
+
+                                <Link
+                                    href="/contact"
+                                    className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full border border-border bg-background hover:bg-muted text-foreground font-medium text-sm transition-all shadow-sm"
+                                >
+                                    <span>Hubungi Saya</span>
+                                </Link>
+
+                                <Link
+                                    href={site.cvPath}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-full border border-border/70 hover:border-primary/40 bg-secondary/60 hover:bg-secondary text-foreground font-medium text-sm transition-all"
+                                >
+                                    <Download className="h-4 w-4 text-muted-foreground" />
+                                    <span>Unduh CV</span>
+                                </Link>
                             </div>
 
-                            <div className="w-full border-t border-zinc-800/80 pt-2 md:pt-4 mt-auto overflow-hidden">
-                                <motion.h1
-                                    initial={{ y: "120%" }} animate={{ y: "0%" }}
-                                    transition={{ duration: 1, ease: [0.76, 0, 0.24, 1], delay: 0.4 }}
-                                    className="text-[11vw] md:text-[9vw] font-black uppercase tracking-tighter text-white scale-y-[1.6] origin-bottom leading-[0.75] opacity-90"
-                                >FULL STACK DEVELOPER</motion.h1>
+                            {/* Meta singkat */}
+                            <div className="mt-10 pt-6 border-t border-border/60 flex items-center gap-6 text-xs text-muted-foreground font-mono">
+                                <span>PORTFOLIO 2026</span>
+                                <span>•</span>
+                                <span>{site.location}</span>
                             </div>
-                        </motion.div>
-
-                        {/* Click indicator */}
-                        <motion.div
-                            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                            transition={{ delay: 1.5, duration: 1 }}
-                            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-                        >
-                            <motion.div
-                                animate={{ scale: [1, 1.06, 1] }}
-                                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                                className="bg-zinc-900/80 text-white border border-white/20 px-8 py-4 rounded-full font-mono text-xs md:text-sm uppercase tracking-widest flex items-center gap-3 backdrop-blur-xl hover:bg-white hover:text-black transition-colors duration-300"
-                            >
-                                <span className="w-2.5 h-2.5 rounded-full bg-white animate-pulse" />
-                                CLICK TO REVEAL
-                            </motion.div>
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-
-            {/* ── MAIN HERO — 3D layered scene ─────────────────────── */}
-            <motion.div
-                style={{ opacity }}
-                className="absolute inset-0 w-full h-full flex flex-col items-center justify-center z-10 overflow-hidden"
-            >
-                {/* ── Layer 1 (FARTHEST): blobs, move fastest upward ── */}
-                {!isMobile && (
-                    <>
-                        <motion.div
-                            style={{ y: yBlob1, background: "radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%)", filter: "blur(60px)", willChange: "transform, opacity" }}
-                            className="absolute top-[5%] left-[8%] w-[35vw] h-[35vw] min-w-[280px] min-h-[280px] rounded-full pointer-events-none"
-                        />
-                        <motion.div
-                            style={{ y: yBlob2, background: "radial-gradient(circle, rgba(163,230,53,0.08) 0%, transparent 70%)", filter: "blur(80px)", willChange: "transform, opacity" }}
-                            className="absolute bottom-[5%] right-[3%] w-[45vw] h-[45vw] min-w-[360px] min-h-[360px] rounded-full pointer-events-none"
-                        />
-                    </>
-                )}
-
-                {!isMobile && <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.04] mix-blend-overlay pointer-events-none z-50" />}
-
-                {/* ── Layer 2 (BACKGROUND text): moves 65% up on scroll ── */}
-                <motion.div
-                    style={{ y: yTextBg, scale: scaleText, willChange: isMobile ? "auto" : "transform, opacity" }}
-                    className="absolute inset-0 flex flex-col items-center justify-center z-0 pointer-events-none select-none w-full"
-                >
-                    <div className="flex flex-col items-center justify-center -space-y-[4vw] md:-space-y-[2vw]">
-                        <h1 className="text-[22vw] md:text-[18vw] font-black uppercase tracking-tighter text-[#eaeaea] leading-[0.8] scale-y-[1.6] origin-bottom opacity-90 cursor-default">
-                            FAUZAN
-                        </h1>
-                        <h1
-                            className="text-[22vw] md:text-[18vw] font-black uppercase tracking-tighter text-transparent leading-[0.8] scale-y-[1.6] origin-top cursor-default"
-                            style={{ WebkitTextStroke: "2px rgba(234,234,234,0.15)" }}
-                        >
-                            STUDIO
-                        </h1>
+                        </ScrollReveal>
                     </div>
-                </motion.div>
 
-                {/* ── Layer 3 (MIDDLE): photo, moves 28% up ── */}
-                <motion.div
-                    ref={photoRef}
-                    style={{
-                        y: yPhoto, scale: scalePhoto,
-                        ...(isMobile ? {} : { rotateX: photoRX, rotateY: photoRY, transformStyle: "preserve-3d" as const }),
-                        willChange: isMobile ? "auto" : "transform, opacity"
-                    }}
-                    onMouseMove={onPhotoMove}
-                    onMouseLeave={onPhotoLeave}
-                    className="relative z-20 w-[65vw] sm:w-[45vw] md:w-[32vw] max-w-[420px] aspect-[3/4] mt-[5vh] cursor-pointer"
-                >
-                    <div style={{ perspective: "800px" }}>
-                        <div
-                            className={`w-full h-full overflow-hidden border border-white/10 relative group ${
-                                isMobile ? "rounded-[30%_70%_70%_30%/30%_30%_70%_70%]" : "animate-morph"
-                            }`}
-                            style={{ boxShadow: "0 40px 100px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.05) inset" }}
+                    {/* KOLOM KANAN: Foto Hero (Slide-in dari Kanan) */}
+                    <div
+                        ref={photoContainerRef}
+                        onMouseMove={handleMouseMove}
+                        onMouseLeave={handleMouseLeave}
+                        className="lg:col-span-5 flex justify-center lg:justify-end relative"
+                    >
+                        <ScrollReveal
+                            direction="right"
+                            delay={0.2}
+                            distance={50}
+                            className="relative w-full max-w-[340px] sm:max-w-[380px] aspect-[4/5] mx-auto lg:mx-0"
                         >
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent z-10" />
-                            {!isMobile && (
-                                <div className="absolute inset-0 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none bg-gradient-to-tr from-transparent via-white/6 to-white/12" />
-                            )}
-                            <Image
-                                src="/foto deigner.png"
-                                alt="Fauzan Designer"
-                                fill
-                                className="object-cover scale-[1.15] group-hover:scale-100 transition-transform duration-1000 ease-out grayscale-[0.15]"
-                                priority
-                                sizes="(max-width: 768px) 65vw, 32vw"
-                                unoptimized
+                            {/* Frame Geometri / Gradient Di Belakang Foto */}
+                            <div
+                                aria-hidden="true"
+                                className="absolute -inset-3 rounded-[2.5rem] bg-gradient-to-tr from-primary/30 via-indigo-500/20 to-sky-400/20 blur-xl -z-10"
                             />
+                            <div
+                                aria-hidden="true"
+                                className="absolute -inset-1 rounded-[2rem] border border-primary/20 bg-gradient-to-b from-card to-muted -z-10 shadow-lift"
+                            />
+
+                            {/* Kontainer Foto dengan Rasio 4:5, Border Halus, Shadow Lembut */}
+                            <div
+                                className="relative w-full h-full rounded-[1.75rem] overflow-hidden border border-border/80 bg-muted/40 shadow-lift transition-transform duration-200 ease-out flex items-end justify-center"
+                                style={
+                                    !prefersReducedMotion && !isTouchDevice
+                                        ? {
+                                              transform: `translate3d(${mouseOffset.x}px, ${mouseOffset.y}px, 0)`,
+                                          }
+                                        : undefined
+                                }
+                            >
+                                {/* Foto Hero dengan Priority LCP & sizes responsif */}
+                                <Image
+                                    src="/portrait-hero.png"
+                                    alt={`Foto potret ${site.name}, ${site.role}`}
+                                    fill
+                                    priority
+                                    sizes="(max-width: 640px) 90vw, (max-width: 1024px) 380px, 420px"
+                                    className="object-cover object-top select-none"
+                                />
+                            </div>
+
+                            {/* Badge Melayang 1: Available for projects */}
+                            <div
+                                className="absolute -top-3 -left-3 sm:-left-6 px-3.5 py-1.5 rounded-full border border-border/90 bg-background/90 backdrop-blur-md text-xs font-semibold text-foreground shadow-lift flex items-center gap-1.5 float-y z-20"
+                                style={{ "--d": "0ms" } as React.CSSProperties}
+                            >
+                                <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+                                <span>Available for projects</span>
+                            </div>
+
+                            {/* Badge Melayang 2: Next.js */}
+                            <div
+                                className="absolute top-1/2 -right-4 sm:-right-6 px-3.5 py-1.5 rounded-full border border-border/90 bg-background/90 backdrop-blur-md text-xs font-semibold text-foreground shadow-lift flex items-center gap-1.5 float-y z-20"
+                                style={{ "--d": "1200ms" } as React.CSSProperties}
+                            >
+                                <Code2 className="h-3.5 w-3.5 text-indigo-500" />
+                                <span>Next.js Full Stack</span>
+                            </div>
+
+                            {/* Badge Melayang 3: React Native */}
+                            <div
+                                className="absolute -bottom-3 left-4 sm:left-6 px-3.5 py-1.5 rounded-full border border-border/90 bg-background/90 backdrop-blur-md text-xs font-semibold text-foreground shadow-lift flex items-center gap-1.5 float-y z-20"
+                                style={{ "--d": "2400ms" } as React.CSSProperties}
+                            >
+                                <Smartphone className="h-3.5 w-3.5 text-sky-500" />
+                                <span>React Native</span>
+                            </div>
+                        </ScrollReveal>
+                    </div>
+
+                </div>
+            </div>
+
+            {/* STRIP GAMBAR BERGERAK (MARQUEE 2 BARIS, SLIDE UP) */}
+            <ScrollReveal direction="up" delay={0.3} className="mt-20 pt-10 relative overflow-hidden">
+                <div
+                    className="relative -mx-10 py-6 transform -rotate-2 sm:-rotate-3 scale-105 pointer-events-auto"
+                >
+                    {/* Baris 1: Arah Kiri */}
+                    <div className="marquee mb-4">
+                        <div className="marquee__track gap-4 pr-4">
+                            {[
+                                { title: "NALARA AI Learning", img: "/itxlearning.png" },
+                                { title: "Rempang Melayu Perkasa", img: "/rempang.png" },
+                                { title: "Bernardus Insight", img: "/bernadus.png" },
+                                { title: "Peminjaman Alat UKK", img: "/peminjaman.png" },
+                                { title: "Dealer Hino Jakarta", img: "/hino.png" },
+                                { title: "Gibran CCTV", img: "/gibrancctv.png" },
+                                { title: "NALARA AI Learning", img: "/itxlearning.png" },
+                                { title: "Rempang Melayu Perkasa", img: "/rempang.png" },
+                            ].map((p, idx) => (
+                                <div
+                                    key={`m1-${idx}`}
+                                    className="relative w-64 sm:w-80 aspect-video rounded-xl overflow-hidden border border-border/80 bg-card shadow-soft shrink-0 group"
+                                >
+                                    <Image
+                                        src={p.img}
+                                        alt={p.title}
+                                        fill
+                                        sizes="(max-width: 640px) 256px, 320px"
+                                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex items-end p-3">
+                                        <span className="text-white text-xs font-medium tracking-tight">
+                                            {p.title}
+                                        </span>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
 
-                    {/* DEV badge — floats above photo in 3D */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0 }}
-                        animate={isEntered ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0 }}
-                        transition={{ delay: 1, type: "spring", bounce: 0.5 }}
-                        style={!isMobile ? { transform: "translateZ(50px)" } : {}}
-                        className="absolute -bottom-6 -right-6 z-20 px-6 py-6 bg-lime-400 text-black rounded-full flex items-center justify-center font-black tracking-tighter text-xl shadow-2xl rotate-12"
-                    >
-                        DEV
-                    </motion.div>
-                </motion.div>
-
-                {/* ── Layer 4 (NEAREST): foreground text, moves only 10% ── */}
-                <motion.div style={{ y: yForeText }}
-                    className="absolute bottom-8 left-6 md:left-12 z-20 font-mono text-[10px] md:text-xs text-white/50 uppercase flex flex-col gap-1 tracking-widest will-change-transform"
-                >
-                    <p>Portfolio <span className="text-lime-400">©2026</span></p>
-                    <p>Location: Indonesia</p>
-                </motion.div>
-
-                <motion.div style={{ y: yForeText }}
-                    className="absolute bottom-8 right-6 md:right-12 z-20 font-mono text-[10px] md:text-xs text-white/50 uppercase flex flex-col gap-1 tracking-widest text-right will-change-transform"
-                >
-                    <p>Role: Mobile & Full Stack</p>
-                    <p>Scroll to explore ↓</p>
-                </motion.div>
-
-                <motion.div
-                    style={{ y: yForeText }}
-                    className={`absolute z-30 top-1/2 left-4 md:left-12 -translate-y-1/2 pointer-events-none will-change-transform ${!isMobile ? "mix-blend-difference" : ""} hidden sm:block`}
-                >
-                    <p className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-[0.9] cursor-default">
-                        Mobile<br />Developer.<br />Full Stack<br />Developer.
-                    </p>
-                </motion.div>
-            </motion.div>
+                    {/* Baris 2: Arah Kanan (Berlawanan) */}
+                    <div className="marquee">
+                        <div className="marquee__track marquee__track--reverse gap-4 pr-4">
+                            {[
+                                { title: "NALARA AI Learning", img: "/itxlearning.png" },
+                                { title: "Gibran CCTV", img: "/gibrancctv.png" },
+                                { title: "Peminjaman Alat UKK", img: "/peminjaman.png" },
+                                { title: "Dealer Hino Jakarta", img: "/hino.png" },
+                                { title: "Bernardus Insight", img: "/bernadus.png" },
+                                { title: "Rempang Melayu Perkasa", img: "/rempang.png" },
+                                { title: "Batu Alam Bekasi", img: "/batualam.png" },
+                                { title: "NALARA AI Learning", img: "/itxlearning.png" },
+                            ].map((p, idx) => (
+                                <div
+                                    key={`m2-${idx}`}
+                                    className="relative w-64 sm:w-80 aspect-video rounded-xl overflow-hidden border border-border/80 bg-card shadow-soft shrink-0 group"
+                                >
+                                    <Image
+                                        src={p.img}
+                                        alt={p.title}
+                                        fill
+                                        sizes="(max-width: 640px) 256px, 320px"
+                                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex items-end p-3">
+                                        <span className="text-white text-xs font-medium tracking-tight">
+                                            {p.title}
+                                        </span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </ScrollReveal>
         </section>
     );
 }
