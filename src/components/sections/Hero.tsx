@@ -71,7 +71,7 @@ export function Hero() {
                             {/* Status Badge */}
                             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-border/80 bg-background/80 backdrop-blur-sm text-xs font-medium text-foreground mb-6 shadow-sm">
                                 <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true" />
-                                <span>Full Stack Developer di Oke Web Indonesia • Terbuka Rekrutmen</span>
+                                <span>Full Stack Developer</span>
                             </div>
 
                             {/* Nama & Posisi */}
