@@ -145,9 +145,9 @@ export function StaggerContainer({
 
     return (
         <motion.div
-            initial="hidden"
+            initial={reducedMotion ? "visible" : "hidden"}
             whileInView="visible"
-            viewport={{ once: true, margin: viewportMargin }}
+            viewport={{ once: true, amount: 0.02 }}
             variants={containerVariants}
             className={className}
         >

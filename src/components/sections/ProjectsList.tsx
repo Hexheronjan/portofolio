@@ -3,13 +3,14 @@
 import { useState } from "react";
 import { projects } from "@/constants/projects";
 import { ProjectCard } from "@/components/ui/ProjectCard";
-import { ScrollReveal, StaggerContainer, StaggerItem } from "@/components/ui/ScrollReveal";
+import { motion, AnimatePresence } from "framer-motion";
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
 
 export function ProjectsList() {
     const [selectedTag, setSelectedTag] = useState<string>("Semua");
 
     // Ambil tag unik
-    const allTags = ["Semua", "WordPress", "Next.js", "React", "Tailwind CSS"];
+    const allTags = ["Semua", "Next.js", "React Native", "WordPress", "React", "Tailwind CSS"];
 
     const filteredProjects = selectedTag === "Semua"
         ? projects
@@ -40,14 +41,31 @@ export function ProjectsList() {
                 </div>
             </ScrollReveal>
 
-            {/* Grid Kartu Proyek (Staggered Animation Up) */}
-            <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" staggerDelay={0.06}>
-                {filteredProjects.map((project) => (
-                    <StaggerItem key={project.slug}>
-                        <ProjectCard {...project} />
-                    </StaggerItem>
-                ))}
-            </StaggerContainer>
+            {/* Grid Kartu Proyek dengan Animasi Fluid */}
+            <motion.div
+                layout
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            >
+                <AnimatePresence mode="popLayout">
+                    {filteredProjects.map((project, idx) => (
+                        <motion.div
+                            key={project.slug}
+                            layout
+                            initial={{ opacity: 0, y: 15 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            transition={{
+                                duration: 0.35,
+                                delay: Math.min(idx * 0.04, 0.2),
+                                ease: [0.22, 1, 0.36, 1],
+                            }}
+                            className="h-full flex flex-col"
+                        >
+                            <ProjectCard {...project} />
+                        </motion.div>
+                    ))}
+                </AnimatePresence>
+            </motion.div>
         </div>
     );
 }
