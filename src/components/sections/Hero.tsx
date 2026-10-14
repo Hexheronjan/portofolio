@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, Sparkles, Code2, Smartphone } from "lucide-react";
 import { site, whatsappUrl } from "@/lib/site";
-import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { motion } from "framer-motion";
 
 export function Hero() {
     const photoContainerRef = useRef<HTMLDivElement>(null);
@@ -60,9 +60,14 @@ export function Hero() {
             <div className="container-page relative z-10">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
                     
-                    {/* KOLOM KIRI: Teks & Identitas (Slide-in dari Kiri) */}
+                    {/* KOLOM KIRI: Teks & Identitas (Masuk Langsung) */}
                     <div className="lg:col-span-7">
-                        <ScrollReveal direction="left" delay={0.1} distance={50} className="flex flex-col items-start">
+                        <motion.div
+                            initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                            className="flex flex-col items-start"
+                        >
                             {/* Status Badge */}
                             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-border/80 bg-background/80 backdrop-blur-sm text-xs font-medium text-foreground mb-6 shadow-sm">
                                 <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true" />
@@ -107,20 +112,20 @@ export function Hero() {
                                 <span>•</span>
                                 <span>{site.location}</span>
                             </div>
-                        </ScrollReveal>
+                        </motion.div>
                     </div>
 
-                    {/* KOLOM KANAN: Foto Hero (Slide-in dari Kanan) */}
+                    {/* KOLOM KANAN: Foto Hero (Masuk Langsung) */}
                     <div
                         ref={photoContainerRef}
                         onMouseMove={handleMouseMove}
                         onMouseLeave={handleMouseLeave}
                         className="lg:col-span-5 flex justify-center lg:justify-end relative"
                     >
-                        <ScrollReveal
-                            direction="right"
-                            delay={0.2}
-                            distance={50}
+                        <motion.div
+                            initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, scale: 0.96, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            transition={{ duration: 0.55, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
                             className="relative w-full max-w-[340px] sm:max-w-[380px] aspect-[4/5] mx-auto lg:mx-0"
                         >
                             {/* Frame Geometri / Gradient Di Belakang Foto */}
@@ -181,14 +186,20 @@ export function Hero() {
                                 <Smartphone className="h-3.5 w-3.5 text-sky-500" />
                                 <span>React Native</span>
                             </div>
-                        </ScrollReveal>
+                        </motion.div>
                     </div>
 
                 </div>
             </div>
 
-            {/* STRIP GAMBAR BERGERAK (MARQUEE 2 BARIS, SLIDE UP) */}
-            <ScrollReveal direction="up" delay={0.2} className="mt-14 sm:mt-20 pt-6 sm:pt-10 relative overflow-hidden" aria-hidden="true">
+            {/* STRIP GAMBAR BERGERAK (MARQUEE 2 BARIS) */}
+            <motion.div
+                initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+                className="mt-14 sm:mt-20 pt-6 sm:pt-10 relative overflow-hidden"
+                aria-hidden="true"
+            >
                 <div
                     className="relative -mx-4 sm:-mx-10 py-4 sm:py-6 transform -rotate-2 sm:-rotate-3 lg:-rotate-6 sm:scale-105 pointer-events-auto hover:[&_.marquee__track]:[animation-play-state:paused]"
                 >
@@ -262,7 +273,7 @@ export function Hero() {
                         </div>
                     </div>
                 </div>
-            </ScrollReveal>
+            </motion.div>
         </section>
     );
 }
