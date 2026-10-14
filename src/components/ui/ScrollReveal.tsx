@@ -47,10 +47,10 @@ export function ScrollReveal({
     const getInitial = () => {
         if (reducedMotion) return { opacity: 0 };
 
-        // Di mobile, gunakan jarak pergeseran pendek (16px) agar tidak membebani GPU saat scroll
-        const activeDistance = isMobile ? Math.min(distance, 16) : distance;
+        // Di mobile, gunakan jarak slide yang proporsional (28-34px) agar efek pergeseran terlihat jelas saat di-scroll
+        const activeDistance = isMobile ? Math.max(Math.min(distance, 34), 26) : distance;
 
-        // Di mobile, arahkan geseran horizontal ke geseran vertikal ringan agar tidak terjadi lag layout
+        // Di mobile, arahkan geseran horizontal ke geseran vertikal halus agar tidak memicu overflow horizontal
         if (isMobile) {
             switch (direction) {
                 case "left":
@@ -60,10 +60,10 @@ export function ScrollReveal({
                 case "down":
                     return { opacity: 0, y: -activeDistance, x: 0 };
                 case "center":
-                    return { opacity: 0, scale: 0.95, y: 0, x: 0 };
+                    return { opacity: 0, scale: 0.94, y: activeDistance * 0.5, x: 0 };
                 case "fade":
                 default:
-                    return { opacity: 0, y: 0, x: 0 };
+                    return { opacity: 0, y: 16, x: 0 };
             }
         }
 
@@ -98,11 +98,15 @@ export function ScrollReveal({
         <motion.div
             initial={getInitial()}
             whileInView={getAnimate()}
-            viewport={{ once, margin: isMobile ? "0px 0px -20px 0px" : viewportMargin }}
+            viewport={{
+                once,
+                amount: isMobile ? 0.2 : 0.15,
+                margin: isMobile ? "0px 0px -40px 0px" : viewportMargin,
+            }}
             transition={{
-                duration: reducedMotion ? 0.2 : (isMobile ? 0.4 : duration),
-                delay: reducedMotion ? 0 : (isMobile ? Math.min(delay, 0.15) : delay),
-                ease: [0.22, 1, 0.36, 1], // Kurva performa tinggi, sangat halus dan responsif
+                duration: reducedMotion ? 0.2 : (isMobile ? 0.6 : duration),
+                delay: reducedMotion ? 0 : delay,
+                ease: [0.16, 1, 0.3, 1], // Kurva expo ease-out yang sangat halus dan smooth
             }}
             className={className}
         >
@@ -147,7 +151,7 @@ export function StaggerContainer({
         <motion.div
             initial={reducedMotion ? "visible" : "hidden"}
             whileInView="visible"
-            viewport={{ once: true, amount: 0.02 }}
+            viewport={{ once: true, amount: 0.15, margin: "0px 0px -30px 0px" }}
             variants={containerVariants}
             className={className}
         >
@@ -164,13 +168,13 @@ export function StaggerItem({
     className?: string;
 }) {
     const itemVariants = {
-        hidden: { opacity: 0, y: 16 },
+        hidden: { opacity: 0, y: 28 },
         visible: {
             opacity: 1,
             y: 0,
             transition: {
-                duration: 0.45,
-                ease: [0.22, 1, 0.36, 1],
+                duration: 0.55,
+                ease: [0.16, 1, 0.3, 1],
             },
         },
     };
