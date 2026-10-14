@@ -6,6 +6,11 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { site } from "@/lib/site";
 import dynamic from "next/dynamic";
+import { GlobalBackground } from "@/components/layout/GlobalBackground";
+import { ScrollProgressBar } from "@/components/ui/ScrollProgressBar";
+import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
+
+import { PageTransition } from "@/components/layout/PageTransition";
 
 const ScrollToTop = dynamic(
   () => import("@/components/ui/ScrollToTop").then((mod) => ({ default: mod.ScrollToTop })),
@@ -141,25 +146,33 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {/* Audio latar: default pause, tanpa autoplay paksaan */}
-          <audio
-            id="bg-music"
-            src="/music.mp3"
-            loop
-            preload="none"
-          />
+          {/* Scroll Progress Bar 2px Warna Aksen di Paling Atas */}
+          <ScrollProgressBar />
 
-          <div className="flex flex-col min-h-screen">
-            <Navbar />
-            <main id="content" className="flex-grow pt-16">
-              {children}
-            </main>
-            <Footer />
-          </div>
+          {/* Latar Belakang Global: Flowing Lines + Light Beams di Seluruh Halaman */}
+          <GlobalBackground />
 
-          <MusicToggle />
-          <WhatsAppFloat />
-          <ScrollToTop />
+          <SmoothScrollProvider>
+            {/* Audio latar: default pause, tanpa autoplay paksaan */}
+            <audio
+              id="bg-music"
+              src="/music.mp3"
+              loop
+              preload="none"
+            />
+
+            <div className="flex flex-col min-h-screen">
+              <Navbar />
+              <main id="content" className="flex-grow pt-16">
+                <PageTransition>{children}</PageTransition>
+              </main>
+              <Footer />
+            </div>
+
+            <MusicToggle />
+            <WhatsAppFloat />
+            <ScrollToTop />
+          </SmoothScrollProvider>
         </ThemeProvider>
       </body>
     </html>

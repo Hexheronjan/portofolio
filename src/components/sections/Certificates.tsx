@@ -5,21 +5,25 @@ import Image from "next/image";
 import { Award, ExternalLink, X, Eye } from "lucide-react";
 import { certificates, Certificate } from "@/constants/certificates";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { BorderBeam } from "@/components/ui/BorderBeam";
+import { HeadingReveal } from "@/components/ui/HeadingReveal";
 
 export function Certificates() {
     const [selectedCert, setSelectedCert] = useState<Certificate | null>(null);
 
     return (
-        <section aria-label="Sertifikat & Pencapaian" className="section-y relative border-t border-border/60 bg-muted/20">
+        <section aria-label="Sertifikat & Pencapaian" data-bg-intensity="0.38" className="section-y relative border-t border-border/60 bg-muted/20">
             <div className="container-page">
                 {/* Header Section */}
                 <ScrollReveal direction="up" className="max-w-2xl mb-12">
                     <span className="text-xs font-semibold uppercase tracking-wider text-primary">
                         Kualifikasi Resmi
                     </span>
-                    <h2 className="text-h2 font-display font-bold tracking-tight text-foreground mt-2">
-                        Sertifikasi & Pencapaian
-                    </h2>
+                    <HeadingReveal delay={0.05} className="mt-2">
+                        <h2 className="text-h2 font-display font-bold tracking-tight text-foreground">
+                            Sertifikasi & Pencapaian
+                        </h2>
+                    </HeadingReveal>
                     <p className="text-muted-foreground text-sm sm:text-base mt-3">
                         Dokumentasi kualifikasi resmi pemrograman dan pelatihan keahlian yang telah diselesaikan.
                     </p>
@@ -37,7 +41,9 @@ export function Certificates() {
                                 distance={35}
                                 className="h-full flex flex-col"
                             >
-                                <div className="group flex flex-col h-full rounded-2xl border border-border/70 bg-card overflow-hidden shadow-soft hover:shadow-lift hover:border-primary/40 transition-all duration-300">
+                                <div className="group relative flex flex-col h-full rounded-2xl border border-border/70 bg-card overflow-hidden shadow-soft hover:shadow-lift hover:-translate-y-1 hover:border-primary/50 transition-all duration-300">
+                                    {/* Border beam halus pada sertifikat resmi */}
+                                    {cert.verifyUrl && <BorderBeam duration={10} beamLength={130} />}
                                     {/* Gambar Sertifikat dengan Tombol Lightbox */}
                                     <div
                                         onClick={() => setSelectedCert(cert)}

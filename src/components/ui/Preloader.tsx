@@ -15,8 +15,8 @@ import { motion, AnimatePresence, useMotionValue, animate } from "framer-motion"
  */
 export const PRELOADER_CONFIG = {
     ENABLED: true,
-    MIN_DURATION: 0.9,
-    MAX_DURATION: 1.8,
+    MIN_DURATION: 1.8,
+    MAX_DURATION: 4.0,
     TEXT_LINE_1: "Selamat datang di",
     TEXT_LINE_2: "Portofolio Fauzan",
     TEXT_LINE_3: "Full Stack & Mobile Developer",
@@ -49,7 +49,7 @@ export function Preloader({ onComplete }: PreloaderProps) {
         setTimeout(() => {
             setIsVisible(false);
             if (onComplete) onComplete();
-        }, 550);
+        }, 800);
     }, [onComplete]);
 
     useEffect(() => {
@@ -110,10 +110,10 @@ export function Preloader({ onComplete }: PreloaderProps) {
             setTimeout(resolve, PRELOADER_CONFIG.MIN_DURATION * 1000)
         );
 
-        // Animasi angka dari 0 ke 100 dengan cubic-bezier lincah
+        // Animasi angka dari 0 ke 100 dengan easeInOut
         const controls = animate(progressMotion, 100, {
             duration: PRELOADER_CONFIG.MIN_DURATION,
-            ease: [0.16, 1, 0.3, 1],
+            ease: [0.42, 0, 0.58, 1],
         });
 
         // Timer pengaman batas maksimal (fallback)
@@ -124,10 +124,10 @@ export function Preloader({ onComplete }: PreloaderProps) {
         // Setelah minimal waktu dan aset siap, transisi keluar
         Promise.all([criticalAssetsPromise, minTimerPromise, controls]).then(() => {
             clearTimeout(maxTimer);
-            // Tahan sejenak di angka 100 sebelum slide up
+            // Tahan sejenak di angka 100 sebelum slide up (2.2s - 2.5s)
             setTimeout(() => {
                 finishIntro();
-            }, 120);
+            }, 300);
         });
 
         // Handler tombol Esc untuk melewati
@@ -162,7 +162,7 @@ export function Preloader({ onComplete }: PreloaderProps) {
                         y: "-100%",
                         opacity: 0.95,
                         transition: {
-                            duration: 0.55,
+                            duration: 0.8,
                             ease: [0.76, 0, 0.24, 1],
                         },
                     }}

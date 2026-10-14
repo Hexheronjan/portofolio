@@ -10,7 +10,7 @@ export function Footer() {
     return (
         <footer className="mt-20 border-t border-border bg-card/40 transition-colors">
             {/* CTA Section singkat sebelum footer */}
-            <div className="border-b border-border/60 py-16">
+            <div data-bg-intensity="0.75" className="border-b border-border/60 py-16">
                 <ScrollReveal direction="up" className="container-page flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
                     <div className="max-w-xl">
                         <span className="text-xs font-semibold uppercase tracking-wider text-primary">

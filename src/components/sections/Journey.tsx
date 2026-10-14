@@ -2,19 +2,22 @@
 
 import { timeline } from "@/constants/experience";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { HeadingReveal } from "@/components/ui/HeadingReveal";
 
 export function Journey() {
     return (
-        <section aria-label="Riwayat Pengalaman & Pendidikan" className="section-y relative border-t border-border/60">
+        <section aria-label="Riwayat Pengalaman & Pendidikan" data-bg-intensity="0.38" className="section-y relative border-t border-border/60">
             <div className="container-page">
                 {/* Header */}
                 <ScrollReveal direction="up" className="max-w-2xl mb-12">
                     <span className="text-xs font-semibold uppercase tracking-wider text-primary">
                         Perjalanan Karier
                     </span>
-                    <h2 className="text-h2 font-display font-bold tracking-tight text-foreground mt-2">
-                        Pengalaman & Pendidikan
-                    </h2>
+                    <HeadingReveal delay={0.05} className="mt-2">
+                        <h2 className="text-h2 font-display font-bold tracking-tight text-foreground">
+                            Pengalaman & Pendidikan
+                        </h2>
+                    </HeadingReveal>
                     <p className="text-muted-foreground text-sm sm:text-base mt-3">
                         Linimasa tahapan belajar, sertifikasi, serta kontribusi dalam proyek web nyata.
                     </p>
