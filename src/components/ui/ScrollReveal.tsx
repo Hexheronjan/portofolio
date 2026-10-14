@@ -50,33 +50,35 @@ export function ScrollReveal({
         // Di mobile, gunakan jarak slide yang proporsional (28-34px) agar efek pergeseran terlihat jelas saat di-scroll
         const activeDistance = isMobile ? Math.max(Math.min(distance, 34), 26) : distance;
 
-        // Di mobile, arahkan geseran horizontal ke geseran vertikal halus agar tidak memicu overflow horizontal
+        // Di mobile: slide kiri (-24px), kanan (24px), atas (24px) yang halus dan aman
         if (isMobile) {
             switch (direction) {
                 case "left":
+                    return { opacity: 0, x: -24, y: 0 };
                 case "right":
+                    return { opacity: 0, x: 24, y: 0 };
                 case "up":
-                    return { opacity: 0, y: activeDistance, x: 0 };
+                    return { opacity: 0, y: 24, x: 0 };
                 case "down":
-                    return { opacity: 0, y: -activeDistance, x: 0 };
+                    return { opacity: 0, y: -24, x: 0 };
                 case "center":
-                    return { opacity: 0, scale: 0.94, y: activeDistance * 0.5, x: 0 };
+                    return { opacity: 0, scale: 0.95, y: 0, x: 0 };
                 case "fade":
                 default:
-                    return { opacity: 0, y: 16, x: 0 };
+                    return { opacity: 0, y: 0, x: 0 };
             }
         }
 
         // Di desktop (layar lebar), gunakan arah penuh
         switch (direction) {
             case "left":
-                return { opacity: 0, x: -activeDistance, y: 0 };
+                return { opacity: 0, x: -distance, y: 0 };
             case "right":
-                return { opacity: 0, x: activeDistance, y: 0 };
+                return { opacity: 0, x: distance, y: 0 };
             case "up":
-                return { opacity: 0, y: activeDistance, x: 0 };
+                return { opacity: 0, y: distance, x: 0 };
             case "down":
-                return { opacity: 0, y: -activeDistance, x: 0 };
+                return { opacity: 0, y: -distance, x: 0 };
             case "center":
                 return { opacity: 0, scale: 0.94, y: 0, x: 0 };
             case "fade":
@@ -94,23 +96,19 @@ export function ScrollReveal({
         };
     };
 
-    if (isMobile) {
-        return <div className={className}>{children}</div>;
-    }
-
     return (
         <motion.div
             initial={getInitial()}
             whileInView={getAnimate()}
             viewport={{
                 once,
-                amount: 0.15,
-                margin: viewportMargin,
+                amount: 0.1,
+                margin: "0px",
             }}
             transition={{
-                duration: reducedMotion ? 0.2 : duration,
-                delay: reducedMotion ? 0 : delay,
-                ease: [0.16, 1, 0.3, 1],
+                duration: reducedMotion ? 0.2 : (isMobile ? 0.5 : duration),
+                delay: reducedMotion ? 0 : (isMobile ? Math.min(delay, 0.1) : delay),
+                ease: [0.16, 1, 0.3, 1], // Kurva expo ease-out yang super mulus
             }}
             className={className}
         >
@@ -124,7 +122,7 @@ export function StaggerContainer({
     children,
     className = "",
     staggerDelay = 0.08,
-    viewportMargin = "-20px",
+    viewportMargin = "0px",
 }: {
     children: ReactNode;
     className?: string;
@@ -133,27 +131,13 @@ export function StaggerContainer({
 }) {
     const [reducedMotion, setReducedMotion] = useState(false);
 
-    const [isMobile, setIsMobile] = useState(false);
-
     useEffect(() => {
         const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
         setReducedMotion(mq.matches);
         const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
         mq.addEventListener("change", handler);
-
-        const checkMobile = () => setIsMobile(window.innerWidth < 768);
-        checkMobile();
-        window.addEventListener("resize", checkMobile);
-
-        return () => {
-            mq.removeEventListener("change", handler);
-            window.removeEventListener("resize", checkMobile);
-        };
+        return () => mq.removeEventListener("change", handler);
     }, []);
-
-    if (isMobile) {
-        return <div className={className}>{children}</div>;
-    }
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -169,7 +153,7 @@ export function StaggerContainer({
         <motion.div
             initial={reducedMotion ? "visible" : "hidden"}
             whileInView="visible"
-            viewport={{ once: true, amount: 0.15, margin: viewportMargin }}
+            viewport={{ once: true, amount: 0.1, margin: viewportMargin }}
             variants={containerVariants}
             className={className}
         >
@@ -185,26 +169,13 @@ export function StaggerItem({
     children: ReactNode;
     className?: string;
 }) {
-    const [isMobile, setIsMobile] = useState(false);
-
-    useEffect(() => {
-        const checkMobile = () => setIsMobile(window.innerWidth < 768);
-        checkMobile();
-        window.addEventListener("resize", checkMobile);
-        return () => window.removeEventListener("resize", checkMobile);
-    }, []);
-
-    if (isMobile) {
-        return <div className={`h-full ${className}`}>{children}</div>;
-    }
-
     const itemVariants = {
-        hidden: { opacity: 0, y: 28 },
+        hidden: { opacity: 0, y: 20 },
         visible: {
             opacity: 1,
             y: 0,
             transition: {
-                duration: 0.55,
+                duration: 0.45,
                 ease: [0.16, 1, 0.3, 1],
             },
         },
