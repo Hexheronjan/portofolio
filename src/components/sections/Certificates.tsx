@@ -21,7 +21,7 @@ export function Certificates() {
                         Sertifikasi & Pencapaian
                     </h2>
                     <p className="text-muted-foreground text-sm sm:text-base mt-3">
-                        Bukti kompetensi terverifikasi melalui uji kompetensi resmi dan lembaga pelatihan industri terpercaya.
+                        Dokumentasi kualifikasi resmi pemrograman dan pelatihan keahlian yang telah diselesaikan.
                     </p>
                 </ScrollReveal>
 
@@ -60,11 +60,15 @@ export function Certificates() {
 
                                     {/* Detail Sertifikat */}
                                     <div className="flex flex-col flex-1 p-5 gap-2.5">
-                                        <div className="flex items-center justify-between text-xs text-muted-foreground">
+                                        <div className="flex items-center justify-between text-xs text-muted-foreground gap-2">
                                             <span className="font-mono">{cert.issuedAt}</span>
-                                            {cert.credentialId && (
-                                                <span className="font-mono text-[10px] bg-secondary px-2 py-0.5 rounded border border-border/50">
-                                                    {cert.year}
+                                            {cert.verifyUrl ? (
+                                                <span className="font-mono text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20 font-medium">
+                                                    Online Terverifikasi
+                                                </span>
+                                            ) : (
+                                                <span className="font-mono text-[10px] bg-secondary/80 text-muted-foreground px-2 py-0.5 rounded border border-border/50">
+                                                    Dokumen Fisik
                                                 </span>
                                             )}
                                         </div>

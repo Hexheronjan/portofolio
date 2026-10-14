@@ -6,6 +6,29 @@ import { Volume2, VolumeX } from "lucide-react";
 export function MusicToggle() {
     const [isPlaying, setIsPlaying] = useState(false);
     const [hasInteracted, setHasInteracted] = useState(false);
+    const [introDone, setIntroDone] = useState(false);
+
+    useEffect(() => {
+        // Cek apakah intro sudah selesai atau tidak perlu
+        const isIntroSkipped = typeof window !== "undefined" && (
+            sessionStorage.getItem("portfolio_intro_shown") === "true" ||
+            document.documentElement.getAttribute("data-intro") === "skip" ||
+            window.location.pathname !== "/"
+        );
+
+        if (isIntroSkipped) {
+            setIntroDone(true);
+        } else {
+            const handleIntroEnd = () => setIntroDone(true);
+            window.addEventListener("portfolio_intro_finished", handleIntroEnd);
+            // Pengaman batas waktu jika event tidak terdeteksi
+            const timer = setTimeout(() => setIntroDone(true), 4000);
+            return () => {
+                window.removeEventListener("portfolio_intro_finished", handleIntroEnd);
+                clearTimeout(timer);
+            };
+        }
+    }, []);
 
     useEffect(() => {
         // Cek preferensi dari localStorage (default: MATI / false)
@@ -46,7 +69,7 @@ export function MusicToggle() {
         }
     };
 
-    if (!hasInteracted) return null;
+    if (!hasInteracted || !introDone) return null;
 
     return (
         <button

@@ -20,7 +20,7 @@ export const developer = {
   stack: {
     frontend: ["Next.js 16", "React", "TypeScript", "Tailwind CSS v4"],
     mobile: ["React Native", "Expo"],
-    backend: ["Node.js", "Express", "PostgreSQL", "Supabase", "Laravel"],
+    backend: ["Node.js", "Express", "PostgreSQL", "Supabase", "MySQL"], // TODO: tambahkan Laravel jika proyek publik sudah tersedia
     cloud: ["Vercel", "Turbopack", "Edge Network"]
   },
   availableForHire: true
@@ -143,7 +143,7 @@ export function LiveTechShowcase() {
                                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                             </span>
                             <span className="text-xs font-mono font-medium text-foreground">
-                                Active Production
+                                Interactive Sandbox (Demo)
                             </span>
                         </div>
                     </div>
@@ -261,8 +261,8 @@ export function LiveTechShowcase() {
                             </div>
 
                             <div className="pt-3 mt-auto border-t border-white/10 flex items-center justify-between text-[11px] font-mono text-zinc-500">
-                                <span>Host: Vercel Edge Node</span>
-                                <span>Ping: 12ms</span>
+                                <span>Environment: Browser Sandbox</span>
+                                <span>Latensi Demo: ~12ms</span>
                             </div>
                         </div>
 

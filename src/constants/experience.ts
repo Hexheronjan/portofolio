@@ -17,7 +17,7 @@ export const timeline: TimelineEntry[] = [
         institution: "Proyek klien", // TODO: profil LinkedIn menyebut "Oke Web Indonesia". Isi nama perusahaan/klien jika ingin ditampilkan.
         type: "Freelance",
         points: [
-            "Mengembangkan aplikasi web full stack dengan React/Vue, Node.js/Express, serta MySQL, PostgreSQL, dan Supabase.",
+            "Mengembangkan aplikasi web full stack modern dengan Next.js, React, Node.js, Express, serta basis data PostgreSQL, Supabase, dan MySQL.",
             "Membangun website WordPress dengan custom theme & plugin untuk e-commerce, blog, dan website perusahaan.",
             // TODO: tambahkan 1 pencapaian terukur (mis. jumlah klien, kecepatan muat, hasil SEO) jika datanya ada.
         ],

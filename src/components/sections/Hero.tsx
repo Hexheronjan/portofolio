@@ -3,7 +3,7 @@
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, Download, Sparkles, Code2, Smartphone } from "lucide-react";
+import { ArrowUpRight, Sparkles, Code2, Smartphone } from "lucide-react";
 import { site, whatsappUrl } from "@/lib/site";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 
@@ -99,16 +99,6 @@ export function Hero() {
                                 >
                                     <span>Hubungi Saya</span>
                                 </Link>
-
-                                <Link
-                                    href={site.cvPath}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-full border border-border/70 hover:border-primary/40 bg-secondary/60 hover:bg-secondary text-foreground font-medium text-sm transition-all"
-                                >
-                                    <Download className="h-4 w-4 text-muted-foreground" />
-                                    <span>Unduh CV</span>
-                                </Link>
                             </div>
 
                             {/* Meta singkat */}
@@ -165,13 +155,13 @@ export function Hero() {
                                 />
                             </div>
 
-                            {/* Badge Melayang 1: Available for projects */}
+                            {/* Badge Melayang 1: TypeScript & Tailwind */}
                             <div
                                 className="absolute -top-3 -left-3 sm:-left-6 px-3.5 py-1.5 rounded-full border border-border/90 bg-background/90 backdrop-blur-md text-xs font-semibold text-foreground shadow-lift flex items-center gap-1.5 float-y z-20"
                                 style={{ "--d": "0ms" } as React.CSSProperties}
                             >
                                 <Sparkles className="h-3.5 w-3.5 text-amber-500" />
-                                <span>Available for projects</span>
+                                <span>TypeScript & Tailwind</span>
                             </div>
 
                             {/* Badge Melayang 2: Next.js */}
@@ -198,9 +188,9 @@ export function Hero() {
             </div>
 
             {/* STRIP GAMBAR BERGERAK (MARQUEE 2 BARIS, SLIDE UP) */}
-            <ScrollReveal direction="up" delay={0.2} className="mt-14 sm:mt-20 pt-6 sm:pt-10 relative overflow-hidden">
+            <ScrollReveal direction="up" delay={0.2} className="mt-14 sm:mt-20 pt-6 sm:pt-10 relative overflow-hidden" aria-hidden="true">
                 <div
-                    className="relative -mx-4 sm:-mx-10 py-4 sm:py-6 transform rotate-0 sm:-rotate-2 sm:scale-105 pointer-events-auto"
+                    className="relative -mx-4 sm:-mx-10 py-4 sm:py-6 transform -rotate-2 sm:-rotate-3 lg:-rotate-6 sm:scale-105 pointer-events-auto hover:[&_.marquee__track]:[animation-play-state:paused]"
                 >
                     {/* Baris 1: Arah Kiri */}
                     <div className="marquee mb-4">
@@ -221,7 +211,8 @@ export function Hero() {
                                 >
                                     <Image
                                         src={p.img}
-                                        alt={p.title}
+                                        alt={idx < 4 ? p.title : ""}
+                                        aria-hidden={idx >= 4 ? true : undefined}
                                         fill
                                         sizes="(max-width: 640px) 256px, 320px"
                                         className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -255,7 +246,8 @@ export function Hero() {
                                 >
                                     <Image
                                         src={p.img}
-                                        alt={p.title}
+                                        alt={idx < 4 ? p.title : ""}
+                                        aria-hidden={idx >= 4 ? true : undefined}
                                         fill
                                         sizes="(max-width: 640px) 256px, 320px"
                                         className="object-cover transition-transform duration-500 group-hover:scale-105"

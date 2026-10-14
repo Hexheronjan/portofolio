@@ -15,6 +15,20 @@ export interface Project {
 }
 
 export const projects: Project[] = [
+    // TODO: Masukkan proyek mobile nyata (screenshot APK, link Expo Go, atau repositori GitHub) jika sudah tersedia.
+    // SARAN KREDIBILITAS: Jika belum ada aplikasi mobile yang live/siap dicoba, pertimbangkan menyesuaikan title menjadi "Full Stack Web Developer" dengan sub-fokus Mobile.
+    {
+        slug: "mobile-expo-showcase",
+        title: "Aplikasi Mobile Multiplatform (React Native & Expo)",
+        description: "Showcase arsitektur aplikasi mobile berbasis React Native & Expo dengan antarmuka native, animasi fluid, dan manajemen state offline.",
+        tags: ["React Native", "Expo", "TypeScript", "Mobile UI", "Offline Cache"],
+        image: "/peminjaman.png", // TODO: Ganti dengan screenshot aplikasi mobile asli saat rilis
+        featured: true,
+        role: "Mobile Developer",
+        problem: "Kebutuhan antarmuka seluler yang responsif di berbagai resolusi layar smartphone dengan konsumsi memori ringan dan alur pengguna yang mulus.",
+        solution: "Mengembangkan kerangka antarmuka mobile menggunakan Expo SDK dan React Native, mengintegrasikan navigasi berbasis rute file dan caching lokal.",
+        result: "Pipeline pengujian internal & prototype (// TODO: cantumkan link APK / demo video interaktif di sini).",
+    },
     {
         slug: "itx-learning-nalara",
         title: "NALARA AI Learning (ITX Learning)",
