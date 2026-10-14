@@ -327,6 +327,9 @@
   .grain {
     display: none !important;
   }
+  .reveal {
+    animation: none !important;
+  }
 }
 
 .float-y {

@@ -115,7 +115,7 @@ export function LiveTechShowcase() {
     };
 
     return (
-        <section aria-label="Showcase Teknologi Interaktif" data-bg-intensity="0.45" className="section-y relative border-t border-border/60 bg-muted/10 overflow-hidden">
+        <section aria-label="Showcase Teknologi Interaktif" className="section-y relative border-t border-border/60 bg-muted/10 overflow-hidden">
             {/* Latar Belakang Lingkaran Cahaya Halus */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-primary/5 blur-[120px] rounded-full pointer-events-none -z-10" />
 

@@ -5,14 +5,13 @@ import { ArrowRight } from "lucide-react";
 import { projects } from "@/constants/projects";
 import { ProjectCard } from "@/components/ui/ProjectCard";
 import { ScrollReveal, StaggerContainer } from "@/components/ui/ScrollReveal";
-import { HeadingReveal } from "@/components/ui/HeadingReveal";
 
 export function FeaturedProjects() {
     // Ambil proyek unggulan teratas (termasuk NALARA AI)
     const featuredList = projects.filter((p) => p.featured).slice(0, 4);
 
     return (
-        <section aria-label="Proyek Pilihan" data-bg-intensity="0.4" className="section-y relative border-t border-border/60">
+        <section aria-label="Proyek Pilihan" className="section-y relative border-t border-border/60">
             <div className="container-page">
                 {/* Header Section: Teks dari KIRI, Tombol dari KANAN */}
                 <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6 mb-12">
@@ -20,11 +19,9 @@ export function FeaturedProjects() {
                         <span className="text-xs font-semibold uppercase tracking-wider text-primary font-mono">
                             Karya Nyata
                         </span>
-                        <HeadingReveal delay={0.05} className="mt-2">
-                            <h2 className="text-h2 font-display font-bold tracking-tight text-foreground">
-                                Proyek Pilihan
-                            </h2>
-                        </HeadingReveal>
+                        <h2 className="text-h2 font-display font-bold tracking-tight text-foreground mt-2">
+                            Proyek Pilihan
+                        </h2>
                         <p className="text-muted-foreground text-sm sm:text-base mt-3">
                             Daftar pekerjaan web profesional dan aplikasi yang dibangun dengan fokus pada kecepatan akses, kegunaan nyata, serta kemudahan bagi pengguna.
                         </p>

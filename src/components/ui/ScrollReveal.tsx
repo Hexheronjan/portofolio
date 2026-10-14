@@ -94,19 +94,23 @@ export function ScrollReveal({
         };
     };
 
+    if (isMobile) {
+        return <div className={className}>{children}</div>;
+    }
+
     return (
         <motion.div
             initial={getInitial()}
             whileInView={getAnimate()}
             viewport={{
                 once,
-                amount: isMobile ? 0.2 : 0.15,
-                margin: isMobile ? "0px 0px -40px 0px" : viewportMargin,
+                amount: 0.15,
+                margin: viewportMargin,
             }}
             transition={{
-                duration: reducedMotion ? 0.2 : (isMobile ? 0.6 : duration),
+                duration: reducedMotion ? 0.2 : duration,
                 delay: reducedMotion ? 0 : delay,
-                ease: [0.16, 1, 0.3, 1], // Kurva expo ease-out yang sangat halus dan smooth
+                ease: [0.16, 1, 0.3, 1],
             }}
             className={className}
         >
@@ -129,13 +133,27 @@ export function StaggerContainer({
 }) {
     const [reducedMotion, setReducedMotion] = useState(false);
 
+    const [isMobile, setIsMobile] = useState(false);
+
     useEffect(() => {
         const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
         setReducedMotion(mq.matches);
         const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
         mq.addEventListener("change", handler);
-        return () => mq.removeEventListener("change", handler);
+
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+
+        return () => {
+            mq.removeEventListener("change", handler);
+            window.removeEventListener("resize", checkMobile);
+        };
     }, []);
+
+    if (isMobile) {
+        return <div className={className}>{children}</div>;
+    }
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -151,7 +169,7 @@ export function StaggerContainer({
         <motion.div
             initial={reducedMotion ? "visible" : "hidden"}
             whileInView="visible"
-            viewport={{ once: true, amount: 0.15, margin: "0px 0px -30px 0px" }}
+            viewport={{ once: true, amount: 0.15, margin: viewportMargin }}
             variants={containerVariants}
             className={className}
         >
@@ -167,6 +185,19 @@ export function StaggerItem({
     children: ReactNode;
     className?: string;
 }) {
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
+
+    if (isMobile) {
+        return <div className={`h-full ${className}`}>{children}</div>;
+    }
+
     const itemVariants = {
         hidden: { opacity: 0, y: 28 },
         visible: {

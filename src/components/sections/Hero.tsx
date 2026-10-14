@@ -8,9 +8,13 @@ import { site, whatsappUrl } from "@/lib/site";
 import { motion } from "framer-motion";
 
 export function Hero() {
+    const photoContainerRef = useRef<HTMLDivElement>(null);
+    const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 });
+    const [isTouchDevice, setIsTouchDevice] = useState(false);
     const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
     useEffect(() => {
+        setIsTouchDevice("ontouchstart" in window || navigator.maxTouchPoints > 0);
         const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
         setPrefersReducedMotion(mediaQuery.matches);
 
@@ -21,14 +25,32 @@ export function Hero() {
         return () => mediaQuery.removeEventListener("change", handleMotionChange);
     }, []);
 
+    // Parallax mouse effect (maksimal ±12px, hanya di desktop non-touch & tanpa reduced-motion)
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (isTouchDevice || prefersReducedMotion || !photoContainerRef.current) return;
+        const rect = photoContainerRef.current.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const deltaX = (e.clientX - centerX) / (rect.width / 2);
+        const deltaY = (e.clientY - centerY) / (rect.height / 2);
+
+        setMouseOffset({
+            x: Math.max(-12, Math.min(12, deltaX * 12)),
+            y: Math.max(-12, Math.min(12, deltaY * 12)),
+        });
+    };
+
+    const handleMouseLeave = () => {
+        setMouseOffset({ x: 0, y: 0 });
+    };
+
     return (
         <section
             aria-label="Hero Pengenalan"
-            data-bg-intensity="1.0"
             className="relative w-full overflow-hidden section-y min-h-[calc(100svh-4rem)] flex flex-col justify-center"
         >
             {/* Latar Belakang Aurora Mesh Sangat Halus + Grain */}
-            <div className="aurora opacity-40" aria-hidden="true">
+            <div className="aurora" aria-hidden="true">
                 <div className="aurora__blob aurora__blob--1" />
                 <div className="aurora__blob aurora__blob--2" />
                 <div className="aurora__blob aurora__blob--3" />
@@ -94,7 +116,12 @@ export function Hero() {
                     </div>
 
                     {/* KOLOM KANAN: Foto Hero (Masuk Langsung) */}
-                    <div className="lg:col-span-5 flex justify-center lg:justify-end relative">
+                    <div
+                        ref={photoContainerRef}
+                        onMouseMove={handleMouseMove}
+                        onMouseLeave={handleMouseLeave}
+                        className="lg:col-span-5 flex justify-center lg:justify-end relative"
+                    >
                         <motion.div
                             initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, scale: 0.96, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -112,7 +139,16 @@ export function Hero() {
                             />
 
                             {/* Kontainer Foto dengan Rasio 4:5, Border Halus, Shadow Lembut */}
-                            <div className="relative w-full h-full rounded-[1.75rem] overflow-hidden border border-border/80 bg-muted/40 shadow-lift flex items-end justify-center">
+                            <div
+                                className="relative w-full h-full rounded-[1.75rem] overflow-hidden border border-border/80 bg-muted/40 shadow-lift transition-transform duration-200 ease-out flex items-end justify-center"
+                                style={
+                                    !prefersReducedMotion && !isTouchDevice
+                                        ? {
+                                              transform: `translate3d(${mouseOffset.x}px, ${mouseOffset.y}px, 0)`,
+                                          }
+                                        : undefined
+                                }
+                            >
                                 {/* Foto Hero dengan Priority LCP & sizes responsif */}
                                 <Image
                                     src="/portrait-hero.png"
@@ -161,12 +197,8 @@ export function Hero() {
                 initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                className="mt-14 sm:mt-20 pt-6 sm:pt-10 relative overflow-hidden opacity-90 transition-opacity"
+                className="mt-14 sm:mt-20 pt-6 sm:pt-10 relative overflow-hidden"
                 aria-hidden="true"
-                style={{
-                    maskImage: "linear-gradient(to bottom, transparent 0%, black 16%, black 88%, transparent 100%)",
-                    WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 16%, black 88%, transparent 100%)",
-                }}
             >
                 <div
                     className="relative -mx-4 sm:-mx-10 py-4 sm:py-6 transform -rotate-2 sm:-rotate-3 lg:-rotate-6 sm:scale-105 pointer-events-auto hover:[&_.marquee__track]:[animation-play-state:paused]"

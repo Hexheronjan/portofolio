@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowUpRight, ExternalLink, ArrowRight } from "lucide-react";
 import { Project } from "@/constants/projects";
-import { BorderBeam } from "@/components/ui/BorderBeam";
 
 export function ProjectCard({
     slug,
@@ -16,14 +15,34 @@ export function ProjectCard({
     liveUrl,
     role,
     isOffline,
-    featured,
 }: Project) {
+    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+    const [isHovered, setIsHovered] = useState(false);
+
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        setMousePos({
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top,
+        });
+    };
+
     return (
         <article
-            className="group relative flex flex-col h-full rounded-2xl border border-border/70 bg-card overflow-hidden shadow-soft hover:shadow-lift hover:-translate-y-1 hover:border-primary/50 transition-all duration-300"
+            onMouseMove={handleMouseMove}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            className="group relative flex flex-col h-full rounded-2xl border border-border/70 bg-card overflow-hidden shadow-soft hover:shadow-lift hover:border-primary/40 transition-all duration-300"
         >
-            {/* Border beam otomatis pada proyek unggulan */}
-            {featured && <BorderBeam duration={9} beamLength={140} />}
+            {/* Dynamic Spotlight Glow mengikuti kursor */}
+            {isHovered && (
+                <div
+                    className="pointer-events-none absolute -inset-px rounded-2xl opacity-100 transition-opacity duration-300 -z-0"
+                    style={{
+                        background: `radial-gradient(400px circle at ${mousePos.x}px ${mousePos.y}px, rgba(99, 102, 241, 0.12), transparent 80%)`,
+                    }}
+                />
+            )}
 
             {/* Area Gambar dengan Rasio 16:9 dan Sizes Spesifik */}
             <Link
