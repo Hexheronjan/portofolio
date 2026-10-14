@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowUpRight, Sparkles, Code2, Smartphone } from "lucide-react";
 import { site, whatsappUrl } from "@/lib/site";
 import { motion } from "framer-motion";
+import { BackgroundBeams } from "@/components/ui/BackgroundBeams";
 
 export function Hero() {
     const photoContainerRef = useRef<HTMLDivElement>(null);
@@ -49,8 +50,11 @@ export function Hero() {
             aria-label="Hero Pengenalan"
             className="relative w-full overflow-hidden section-y min-h-[calc(100svh-4rem)] flex flex-col justify-center"
         >
+            {/* Latar Belakang Animated Beams (Mengalir Halus Mengikuti Warna Portofolio) */}
+            <BackgroundBeams lineCount={18} speed={1} intensity={1} />
+
             {/* Latar Belakang Aurora Mesh Sangat Halus + Grain */}
-            <div className="aurora" aria-hidden="true">
+            <div className="aurora opacity-60" aria-hidden="true">
                 <div className="aurora__blob aurora__blob--1" />
                 <div className="aurora__blob aurora__blob--2" />
                 <div className="aurora__blob aurora__blob--3" />
@@ -197,8 +201,12 @@ export function Hero() {
                 initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                className="mt-14 sm:mt-20 pt-6 sm:pt-10 relative overflow-hidden"
+                className="mt-14 sm:mt-20 pt-6 sm:pt-10 relative overflow-hidden opacity-90 transition-opacity"
                 aria-hidden="true"
+                style={{
+                    maskImage: "linear-gradient(to bottom, transparent 0%, black 16%, black 88%, transparent 100%)",
+                    WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 16%, black 88%, transparent 100%)",
+                }}
             >
                 <div
                     className="relative -mx-4 sm:-mx-10 py-4 sm:py-6 transform -rotate-2 sm:-rotate-3 lg:-rotate-6 sm:scale-105 pointer-events-auto hover:[&_.marquee__track]:[animation-play-state:paused]"
