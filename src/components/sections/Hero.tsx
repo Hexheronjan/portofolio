@@ -71,7 +71,7 @@ export function Hero() {
                             {/* Status Badge */}
                             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-border/80 bg-background/80 backdrop-blur-sm text-xs font-medium text-foreground mb-6 shadow-sm">
                                 <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true" />
-                                <span>Tersedia untuk proyek freelance & kontrak</span>
+                                <span>Full Stack Developer di Oke Web Indonesia • Terbuka Rekrutmen</span>
                             </div>
 
                             {/* Nama & Posisi */}
@@ -106,11 +106,34 @@ export function Hero() {
                                 </Link>
                             </div>
 
-                            {/* Meta singkat */}
-                            <div className="mt-10 pt-6 border-t border-border/60 flex items-center gap-6 text-xs text-muted-foreground font-mono">
-                                <span>PORTFOLIO 2026</span>
-                                <span>•</span>
-                                <span>{site.location}</span>
+                            {/* Kesiapan Skema Kerja Perusahaan */}
+                            <div className="mt-7 pt-5 border-t border-border/60 w-full max-w-xl">
+                                <p className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground mb-2">
+                                    Kesiapan Kerja & Penempatan:
+                                </p>
+                                <div className="flex flex-wrap gap-1.5 text-[11px]">
+                                    <span className="px-2.5 py-1 rounded-full bg-secondary/80 text-foreground font-medium border border-border/50">
+                                        Remote / WFH
+                                    </span>
+                                    <span className="px-2.5 py-1 rounded-full bg-secondary/80 text-foreground font-medium border border-border/50">
+                                        WFO
+                                    </span>
+                                    <span className="px-2.5 py-1 rounded-full bg-secondary/80 text-foreground font-medium border border-border/50">
+                                        Full Time (PKWTT / PKWT)
+                                    </span>
+                                    <span className="px-2.5 py-1 rounded-full bg-secondary/80 text-foreground font-medium border border-border/50">
+                                        Part Time / Shift
+                                    </span>
+                                    <span className="px-2.5 py-1 rounded-full bg-secondary/80 text-foreground font-medium border border-border/50">
+                                        Magang
+                                    </span>
+                                    <span className="px-2.5 py-1 rounded-full bg-secondary/80 text-foreground font-medium border border-border/50">
+                                        Freelance
+                                    </span>
+                                    <span className="px-2.5 py-1 rounded-full bg-secondary/80 text-foreground font-medium border border-border/50">
+                                        Outsourcing (Alih Daya)
+                                    </span>
+                                </div>
                             </div>
                         </motion.div>
                     </div>

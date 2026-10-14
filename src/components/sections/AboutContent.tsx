@@ -28,10 +28,10 @@ export function AboutContent() {
                             Halo, saya Fauzan Bagus Prasetyo, seorang <strong className="text-foreground font-semibold">Full Stack & Mobile Developer</strong> yang berbasis di Ponorogo, Jawa Timur, Indonesia. Saya berfokus pada perancangan dan pembangunan aplikasi web modern serta aplikasi mobile yang efisien dan fungsional.
                         </p>
                         <p>
-                            Latar belakang pendidikan saya di bidang <strong className="text-foreground font-semibold">Rekayasa Perangkat Lunak (RPL) SMK Negeri 1 Jenangan (2023–2026)</strong> memberi fondasi komputasi yang kokoh dalam logika pemrograman, basis data relasional, dan arsitektur sistem.
+                            Saat ini saya bekerja aktif sebagai <strong className="text-foreground font-semibold">Full Stack Developer di Oke Web Indonesia</strong>, merancang dan mengembangkan aplikasi web berskala produksi. Latar belakang pendidikan saya di bidang <strong className="text-foreground font-semibold">Rekayasa Perangkat Lunak (RPL) SMK Negeri 1 Jenangan (2023–2026)</strong> memberi fondasi komputasi yang kokoh dalam logika pemrograman, basis data relasional, dan arsitektur sistem.
                         </p>
                         <p>
-                            Selain menempuh pendidikan kejuruan, saya aktif mengerjakan proyek freelance untuk klien bisnis, mulai dari company profile berskala korporat, landing page promosi, hingga platform custom berbasis WordPress, React/Next.js, dan Node.js.
+                            Bagi perusahaan maupun klien yang membutuhkan talenta engineering berdedikasi tinggi, saya siap dan terbuka untuk berbagai skema penempatan kerja yang fleksibel: mulai dari posisi <strong className="text-foreground font-semibold">Karyawan Tetap (PKWTT), Karyawan Kontrak (PKWT), Magang (Internship), Freelance</strong>, hingga <strong className="text-foreground font-semibold">Outsourcing (Alih Daya)</strong> dengan sistem kerja <strong className="text-foreground font-semibold">Remote/WFH, WFO</strong>, maupun format <strong className="text-foreground font-semibold">Full-time, Part-time, dan Shift</strong>.
                         </p>
                         <div className="pt-4 flex flex-wrap gap-3">
                             <Link
@@ -55,24 +55,40 @@ export function AboutContent() {
 
                     <ScrollReveal direction="right" distance={40} className="lg:col-span-5 p-6 rounded-2xl border border-border/80 bg-card/60 shadow-soft">
                         <h2 className="font-display font-bold text-base text-foreground mb-4">
-                            Ringkasan Profil
+                            Ringkasan Profil & Status
                         </h2>
                         <dl className="space-y-3 text-xs sm:text-sm">
                             <div className="flex justify-between py-2 border-b border-border/50">
-                                <dt className="text-muted-foreground">Status</dt>
-                                <dd className="font-medium text-foreground">Tersedia untuk Freelance & Kontrak</dd>
+                                <dt className="text-muted-foreground">Pekerjaan Saat Ini</dt>
+                                <dd className="font-semibold text-primary">Full Stack di Oke Web Indonesia</dd>
                             </div>
                             <div className="flex justify-between py-2 border-b border-border/50">
                                 <dt className="text-muted-foreground">Pendidikan</dt>
                                 <dd className="font-medium text-foreground">SMKN 1 Jenangan (RPL, 2023–2026)</dd>
                             </div>
                             <div className="flex justify-between py-2 border-b border-border/50">
-                                <dt className="text-muted-foreground">Lokasi</dt>
+                                <dt className="text-muted-foreground">Lokasi Domisili</dt>
                                 <dd className="font-medium text-foreground">{site.location}</dd>
                             </div>
-                            <div className="flex justify-between py-2">
-                                <dt className="text-muted-foreground">Bahasa</dt>
-                                <dd className="font-medium text-foreground">Bahasa Indonesia, English (Technical)</dd>
+                            <div className="py-2 border-b border-border/50">
+                                <dt className="text-muted-foreground mb-1.5">Metode & Format Kerja Siap Diambil</dt>
+                                <dd className="flex flex-wrap gap-1">
+                                    <span className="text-[10px] px-2 py-0.5 rounded bg-primary/10 text-primary font-medium">Remote / WFH</span>
+                                    <span className="text-[10px] px-2 py-0.5 rounded bg-primary/10 text-primary font-medium">WFO</span>
+                                    <span className="text-[10px] px-2 py-0.5 rounded bg-secondary text-foreground font-medium">Full Time</span>
+                                    <span className="text-[10px] px-2 py-0.5 rounded bg-secondary text-foreground font-medium">Part Time</span>
+                                    <span className="text-[10px] px-2 py-0.5 rounded bg-secondary text-foreground font-medium">Shift</span>
+                                </dd>
+                            </div>
+                            <div className="py-2">
+                                <dt className="text-muted-foreground mb-1.5">Skema Hubungan Kerja Perusahaan</dt>
+                                <dd className="flex flex-wrap gap-1">
+                                    <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-medium">Karyawan Tetap (PKWTT)</span>
+                                    <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-medium">Karyawan Kontrak (PKWT)</span>
+                                    <span className="text-[10px] px-2 py-0.5 rounded bg-secondary text-foreground font-medium">Magang (Internship)</span>
+                                    <span className="text-[10px] px-2 py-0.5 rounded bg-secondary text-foreground font-medium">Freelance</span>
+                                    <span className="text-[10px] px-2 py-0.5 rounded bg-secondary text-foreground font-medium">Outsourcing (Alih Daya)</span>
+                                </dd>
                             </div>
                         </dl>
                     </ScrollReveal>

@@ -76,6 +76,29 @@ export function ContactContent() {
                                 Jam aktif komunikasi: Senin – Sabtu, 08:00 – 21:00 WIB. Saya biasanya merespons pesan WhatsApp dalam kurun waktu kurang dari 2 jam.
                             </p>
                         </div>
+
+                        {/* Box Penawaran Rekrutmen Perusahaan */}
+                        <div className="p-6 rounded-2xl border border-primary/30 bg-primary/5 shadow-soft space-y-2.5">
+                            <h3 className="font-display font-bold text-sm text-foreground flex items-center gap-2">
+                                <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                                <span>Terbuka Rekrutmen Perusahaan</span>
+                            </h3>
+                            <p className="text-xs text-muted-foreground leading-relaxed">
+                                Bekerja aktif sebagai Full Stack di Oke Web Indonesia, serta terbuka untuk peluang kerja sama dan penempatan kerja baru:
+                            </p>
+                            <div className="flex flex-wrap gap-1 text-[11px] pt-1">
+                                <span className="px-2 py-0.5 rounded bg-card border border-border/60 text-foreground font-medium">Remote / WFH</span>
+                                <span className="px-2 py-0.5 rounded bg-card border border-border/60 text-foreground font-medium">WFO</span>
+                                <span className="px-2 py-0.5 rounded bg-card border border-border/60 text-foreground font-medium">Full Time</span>
+                                <span className="px-2 py-0.5 rounded bg-card border border-border/60 text-foreground font-medium">Part Time</span>
+                                <span className="px-2 py-0.5 rounded bg-card border border-border/60 text-foreground font-medium">Shift</span>
+                                <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-medium">PKWTT (Tetap)</span>
+                                <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-medium">PKWT (Kontrak)</span>
+                                <span className="px-2 py-0.5 rounded bg-card border border-border/60 text-foreground font-medium">Magang</span>
+                                <span className="px-2 py-0.5 rounded bg-card border border-border/60 text-foreground font-medium">Freelance</span>
+                                <span className="px-2 py-0.5 rounded bg-card border border-border/60 text-foreground font-medium">Outsourcing</span>
+                            </div>
+                        </div>
                     </ScrollReveal>
 
                     {/* Formulir Kontak Nyata (Slide dari Kanan) */}

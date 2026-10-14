@@ -2,24 +2,24 @@ export interface TimelineEntry {
     period: string;
     position: string;
     institution: string;
-    type: "Freelance" | "Sekolah";
+    type: "Pekerjaan" | "Freelance" | "Sekolah";
     points: string[];
 }
 
 /*
- * Sumber: konten pengalaman yang sudah ada di situs lama + data yang tercetak di sertifikat.
+ * Sumber: riwayat karier profesional & pendidikan resmi Fauzan Bagus Prasetyo.
  * Diurutkan dari yang terbaru.
  */
 export const timeline: TimelineEntry[] = [
     {
         period: "2025 – Sekarang",
         position: "Full Stack Developer",
-        institution: "Proyek klien", // TODO: profil LinkedIn menyebut "Oke Web Indonesia". Isi nama perusahaan/klien jika ingin ditampilkan.
-        type: "Freelance",
+        institution: "Oke Web Indonesia",
+        type: "Pekerjaan",
         points: [
-            "Mengembangkan aplikasi web full stack modern dengan Next.js, React, Node.js, Express, serta basis data PostgreSQL, Supabase, dan MySQL.",
-            "Membangun website WordPress dengan custom theme & plugin untuk e-commerce, blog, dan website perusahaan.",
-            // TODO: tambahkan 1 pencapaian terukur (mis. jumlah klien, kecepatan muat, hasil SEO) jika datanya ada.
+            "Bekerja aktif mengembangkan dan memelihara aplikasi web modern berbasis Next.js, React, Node.js, Express, serta basis data PostgreSQL, Supabase, dan MySQL.",
+            "Merancang website bisnis dan custom web application dengan performa tinggi, struktur kode terstandarisasi, dan integrasi API yang handal.",
+            "Siap untuk kesempatan baru: Remote, WFH, WFO, Full time, Part time, Shift, Karyawan tetap (PKWTT), Karyawan kontrak (PKWT), Magang (internship), Freelance, maupun Outsourcing (alih daya).",
         ],
     },
     {
