@@ -230,14 +230,14 @@ export function Hero() {
                     <div className="marquee mb-4">
                         <div className="marquee__track gap-4 pr-4">
                             {[
+                                { title: "Ponorogo Phone", img: "/ponorogophone.png" },
                                 { title: "NALARA AI Learning", img: "/itxlearning.png" },
                                 { title: "Rempang Melayu Perkasa", img: "/rempang.png" },
                                 { title: "Bernardus Insight", img: "/bernadus.png" },
                                 { title: "Peminjaman Alat UKK", img: "/peminjaman.png" },
                                 { title: "Dealer Hino Jakarta", img: "/hino.png" },
                                 { title: "Gibran CCTV", img: "/gibrancctv.png" },
-                                { title: "NALARA AI Learning", img: "/itxlearning.png" },
-                                { title: "Rempang Melayu Perkasa", img: "/rempang.png" },
+                                { title: "Ponorogo Phone", img: "/ponorogophone.png" },
                             ].map((p, idx) => (
                                 <div
                                     key={`m1-${idx}`}
@@ -265,14 +265,14 @@ export function Hero() {
                     <div className="marquee">
                         <div className="marquee__track marquee__track--reverse gap-4 pr-4">
                             {[
+                                { title: "Ponorogo Phone", img: "/ponorogophone.png" },
                                 { title: "NALARA AI Learning", img: "/itxlearning.png" },
                                 { title: "Gibran CCTV", img: "/gibrancctv.png" },
                                 { title: "Peminjaman Alat UKK", img: "/peminjaman.png" },
                                 { title: "Dealer Hino Jakarta", img: "/hino.png" },
                                 { title: "Bernardus Insight", img: "/bernadus.png" },
                                 { title: "Rempang Melayu Perkasa", img: "/rempang.png" },
-                                { title: "Batu Alam Bekasi", img: "/batualam.png" },
-                                { title: "NALARA AI Learning", img: "/itxlearning.png" },
+                                { title: "Ponorogo Phone", img: "/ponorogophone.png" },
                             ].map((p, idx) => (
                                 <div
                                     key={`m2-${idx}`}

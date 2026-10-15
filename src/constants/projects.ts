@@ -15,6 +15,19 @@ export interface Project {
 }
 
 export const projects: Project[] = [
+    {
+        slug: "ponorogo-phone",
+        title: "Ponorogo Phone — E-Commerce & Service Tracker",
+        description: "Platform katalog smartphone baru & bekas bergaransi resmi di Ponorogo, dilengkapi modul cek status servis online, simulasi tukar tambah, dan pemesanan direct WhatsApp COD.",
+        tags: ["Next.js", "React", "TypeScript", "Tailwind CSS", "E-Commerce", "WhatsApp API"],
+        image: "/ponorogophone.png",
+        liveUrl: "https://phone-puce-kappa.vercel.app/",
+        featured: true,
+        role: "Full Stack Developer",
+        problem: "Toko ponsel fisik di Ponorogo membutuhkan katalog digital responsif untuk memamerkan unit smartphone second bergaransi & baru, menangani kalkulasi tukar tambah, serta mempermudah pelanggan melacak progres servis unit tanpa perlu bolak-balik datang ke toko.",
+        solution: "Membangun website e-commerce modern berbasis Next.js App Router dengan multi-filter kategori harga dan brand, fitur pencarian nota servis online (/cek-servis), serta otomasi konsultasi dan pemesanan langsung melalui WhatsApp.",
+        result: "Platform terdeploy aktif di Vercel (phone-puce-kappa.vercel.app) dengan navigasi mobile-first cepat, UI clean bertema dark-amber, dan mempermudah alur transaksi pelanggan lokal.",
+    },
     // TODO: Masukkan proyek mobile nyata (screenshot APK, link Expo Go, atau repositori GitHub) jika sudah tersedia.
     // SARAN KREDIBILITAS: Jika belum ada aplikasi mobile yang live/siap dicoba, pertimbangkan menyesuaikan title menjadi "Full Stack Web Developer" dengan sub-fokus Mobile.
     {
