@@ -14,14 +14,18 @@ const files = [
 export const developer = {
   name: "Fauzan Bagus Prasetyo",
   role: "Full Stack & Mobile Developer",
-  education: "SMK Negeri 1 Jenangan (RPL, 2023-2026)",
+  work: ["Oke Web Indonesia", "PrajaLinks (Freelance)"],
+  award: "Juara 2 — ITX 2026 Web Development (UNIDA Gontor)",
   location: "Ponorogo, Jawa Timur, Indonesia",
-  activeProject: "NALARA AI Learning Intelligence",
+  languages: [
+    "TypeScript", "JavaScript", "Go (Golang)",
+    "Kotlin", "Java", "C++", "C", "PHP"
+  ],
   stack: {
-    frontend: ["Next.js 16", "React", "TypeScript", "Tailwind CSS v4"],
-    mobile: ["React Native", "Expo"],
-    backend: ["Node.js", "Express", "PostgreSQL", "Supabase", "MySQL"], // TODO: tambahkan Laravel jika proyek publik sudah tersedia
-    cloud: ["Vercel", "Turbopack", "Edge Network"]
+    frontend: ["Next.js 16", "React", "Tailwind CSS v4"],
+    mobile: ["React Native", "Expo", "Kotlin Android"],
+    backend: ["Node.js", "Express", "Go API", "Laravel"],
+    database: ["PostgreSQL", "MySQL", "Supabase", "Prisma"]
   },
   availableForHire: true
 };`,
@@ -54,13 +58,13 @@ export async function evaluateStudentMastery(studentId: string, topic: string) {
         language: "bash",
         code: `#!/bin/bash
 # Pipeline build & validasi kualitas
-echo "🚀 Memulai kompilasi Next.js 16 (Turbopack)..."
-pnpm run lint --max-warnings 0
-pnpm run build:ssg
+echo "Memulai kompilasi Next.js 16 (Turbopack)..."
+npm run lint
+npm run build
 
 # Menghasilkan rute statis teroptimasi
-# ✓ 18/18 halaman proyek terkompilasi
-# Status performa: 100/100 Core Web Vitals
+# ✓ 26 proyek live terindeks & terkompilasi
+# Status performa: Optimal Core Web Vitals
 echo "✨ Deploy berhasil ke Vercel Edge Network!"`,
     },
 ];
@@ -74,8 +78,8 @@ export function LiveTechShowcase() {
     useEffect(() => {
         setTerminalOutput([
             "system: Fauzan Development Environment v2.6 ready.",
-            "status: All test suites passed [18 projects indexed].",
-            "ready: Click 'Jalankan Perintah' untuk simulasi pengujian.",
+            "status: All test suites passed [26 projects indexed].",
+            "ready: Klik 'Jalankan Tes' untuk simulasi pengujian.",
         ]);
     }, []);
 
@@ -123,9 +127,9 @@ export function LiveTechShowcase() {
                 {/* Header Section */}
                 <ScrollReveal direction="up" className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 mb-12">
                     <div className="max-w-2xl">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold mb-3">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-mono font-semibold uppercase tracking-[0.12em] mb-3">
                             <Sparkles className="h-3.5 w-3.5" />
-                            <span>Workspace Rekayasa Perangkat Lunak</span>
+                            <span>02 // Workspace Rekayasa</span>
                         </div>
                         <h2 className="text-h2 font-display font-bold tracking-tight text-foreground">
                             Interaksi Kode & Ekosistem Nyata
@@ -137,10 +141,10 @@ export function LiveTechShowcase() {
 
                     {/* Metrik Bergerak */}
                     <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-card border border-border/80 shadow-soft">
+                        <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-card border border-border shadow-soft">
                             <span className="relative flex h-2.5 w-2.5">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-65"></span>
+                                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
                             </span>
                             <span className="text-xs font-mono font-medium text-foreground">
                                 Interactive Sandbox (Demo)
@@ -152,16 +156,16 @@ export function LiveTechShowcase() {
                 {/* Grid Interaktif: Jendela Code Editor (Kiri) & Live Simulator (Kanan) */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
                     
-                    {/* JENDELA CODE EDITOR MAC-STYLE (7 Kolom - Slide dari Kiri) */}
-                    <ScrollReveal direction="left" distance={40} className="lg:col-span-7 flex flex-col h-full">
-                        <div className="flex flex-col h-full rounded-2xl border border-border/80 bg-card overflow-hidden shadow-lift transition-all duration-300">
+                    {/* JENDELA CODE EDITOR MAC-STYLE (7 Kolom) */}
+                    <ScrollReveal direction="left" className="lg:col-span-7 flex flex-col h-full">
+                        <div className="flex flex-col h-full rounded-2xl border border-border bg-card overflow-hidden shadow-lift transition-all duration-300">
                         {/* Title Bar Editor */}
                         <div className="flex items-center justify-between px-4 py-3 bg-muted/60 border-b border-border/80">
                             {/* Window control buttons */}
                             <div className="flex items-center gap-2">
-                                <span className="w-3 h-3 rounded-full bg-rose-500/80 inline-block" />
-                                <span className="w-3 h-3 rounded-full bg-amber-500/80 inline-block" />
-                                <span className="w-3 h-3 rounded-full bg-emerald-500/80 inline-block" />
+                                <span className="w-2.5 h-2.5 rounded-full bg-primary/75 inline-block" />
+                                <span className="w-2.5 h-2.5 rounded-full bg-brass/75 inline-block" />
+                                <span className="w-2.5 h-2.5 rounded-full bg-muted-foreground/35 inline-block" />
                                 <span className="text-xs font-mono text-muted-foreground ml-2 hidden sm:inline">
                                     fauzan-workspace / src
                                 </span>
@@ -174,7 +178,7 @@ export function LiveTechShowcase() {
                                 className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded hover:bg-muted"
                                 title="Salin kode"
                             >
-                                {copied ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
+                                {copied ? <Check className="h-3.5 w-3.5 text-primary" /> : <Copy className="h-3.5 w-3.5" />}
                                 <span className="text-[11px] font-mono">{copied ? "Tersalin!" : "Salin"}</span>
                             </button>
                         </div>
@@ -211,15 +215,15 @@ export function LiveTechShowcase() {
                     </div>
                 </ScrollReveal>
 
-                    {/* INTERACTIVE TERMINAL & LIVE METRICS (5 Kolom - Slide dari Kanan) */}
-                    <ScrollReveal direction="right" distance={40} className="lg:col-span-5 flex flex-col gap-6 justify-between">
+                    {/* INTERACTIVE TERMINAL & LIVE METRICS (5 Kolom) */}
+                    <ScrollReveal direction="right" delay={0.1} className="lg:col-span-5 flex flex-col gap-6 justify-between">
                         
                         {/* Terminal Box */}
-                        <div className="rounded-2xl border border-border/80 bg-[#0d1117] text-[#c9d1d9] p-5 shadow-lift flex flex-col flex-1">
+                        <div className="rounded-2xl border border-border/80 bg-[#141210] text-[#e8e2d9] p-5 shadow-lift flex flex-col flex-1">
                             <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
                                 <div className="flex items-center gap-2">
-                                    <Terminal className="h-4 w-4 text-emerald-400" />
-                                    <span className="text-xs font-mono font-semibold text-white">
+                                    <Terminal className="h-4 w-4 text-[#e07a52]" />
+                                    <span className="text-xs font-mono font-semibold text-[#f4efe8]">
                                         Developer Console
                                     </span>
                                 </div>
@@ -228,7 +232,7 @@ export function LiveTechShowcase() {
                                     type="button"
                                     onClick={handleRunCommand}
                                     disabled={isRunning}
-                                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 text-xs font-mono font-medium transition-all disabled:opacity-50"
+                                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#e07a52]/20 hover:bg-[#e07a52]/30 text-[#f2a684] text-xs font-mono font-medium transition-all disabled:opacity-50"
                                 >
                                     <Play className="h-3 w-3 fill-current" />
                                     <span>{isRunning ? "Menjalankan..." : "Jalankan Tes"}</span>
@@ -242,37 +246,38 @@ export function LiveTechShowcase() {
                                         key={lIdx}
                                         className={
                                             line.startsWith("✓")
-                                                ? "text-emerald-400"
+                                                ? "text-[#e07a52]"
                                                 : line.startsWith("$")
-                                                ? "text-sky-300 font-semibold"
+                                                ? "text-[#f4efe8] font-semibold"
                                                 : line.startsWith("✨")
-                                                ? "text-amber-300 font-semibold"
-                                                : "text-zinc-400"
+                                                ? "text-[#d4af72] font-semibold"
+                                                : "text-[#a49b91]"
                                         }
                                     >
                                         {line}
                                     </p>
                                 ))}
                                 {isRunning && (
-                                    <p className="text-zinc-500 animate-pulse">
+                                    <p className="text-[#8a8177] animate-pulse">
                                         Sedang mengeksekusi suite pengujian...
                                     </p>
                                 )}
                             </div>
 
-                            <div className="pt-3 mt-auto border-t border-white/10 flex items-center justify-between text-[11px] font-mono text-zinc-500">
+                            <div className="pt-3 mt-auto border-t border-white/10 flex items-center justify-between text-[11px] font-mono text-[#8a8177]">
                                 <span>Environment: Browser Sandbox</span>
                                 <span>Latensi Demo: ~12ms</span>
                             </div>
                         </div>
 
                         {/* Kartu Ringkasan Proyek Terbaru: NALARA */}
-                        <div className="p-5 rounded-2xl border border-primary/30 bg-gradient-to-br from-card via-card to-primary/5 shadow-soft">
+                        <div className="relative p-5 rounded-2xl border border-border bg-card shadow-soft overflow-hidden">
+                            <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-primary via-brass to-transparent" aria-hidden="true" />
                             <div className="flex items-center justify-between mb-2">
                                 <span className="text-[11px] font-mono font-semibold text-primary uppercase">
                                     Proyek Terbaru
                                 </span>
-                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold">
+                                <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 font-semibold">
                                     Live di Vercel
                                 </span>
                             </div>

@@ -47,17 +47,17 @@ export function CustomCursor() {
 
     return (
         <motion.div
-            className="fixed top-0 left-0 w-8 h-8 rounded-full border-2 border-lime-400 pointer-events-none z-[100] mix-blend-difference hidden md:flex items-center justify-center backdrop-blur-[1px]"
+            className="fixed top-0 left-0 w-8 h-8 rounded-full border-2 border-primary pointer-events-none z-[100] mix-blend-difference hidden md:flex items-center justify-center backdrop-blur-[1px]"
             style={{ x: cursorXSpring, y: cursorYSpring }}
             animate={{ 
                 scale: isClicking ? 0.7 : 1,
-                borderColor: isClicking ? "#ffffff" : "#BEF264",
+                borderColor: isClicking ? "#ffffff" : "#E07A52",
                 borderWidth: isClicking ? "4px" : "2px"
             }}
             transition={{ duration: 0.15 }}
         >
             <motion.div 
-                className="w-1.5 h-1.5 bg-lime-400 rounded-full"
+                className="w-1.5 h-1.5 bg-primary rounded-full"
                 animate={{ scale: isClicking ? 0 : 1 }}
             />
         </motion.div>

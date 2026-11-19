@@ -3,9 +3,15 @@ import "./globals.css";
 import { ThemeProvider } from "./providers";
 import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/layout/Navbar";
+import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Footer } from "@/components/layout/Footer";
 import { site } from "@/lib/site";
 import dynamic from "next/dynamic";
+
+const ScrollProgress = dynamic(
+  () => import("@/components/ui/ScrollProgress").then((mod) => ({ default: mod.ScrollProgress })),
+  { loading: () => null }
+);
 
 const ScrollToTop = dynamic(
   () => import("@/components/ui/ScrollToTop").then((mod) => ({ default: mod.ScrollToTop })),
@@ -150,6 +156,7 @@ export default function RootLayout({
           />
 
           <div className="flex flex-col min-h-screen">
+            <ScrollProgress />
             <Navbar />
             <main id="content" className="flex-grow pt-16">
               {children}
@@ -160,6 +167,7 @@ export default function RootLayout({
           <MusicToggle />
           <WhatsAppFloat />
           <ScrollToTop />
+          <MobileBottomNav />
         </ThemeProvider>
       </body>
     </html>

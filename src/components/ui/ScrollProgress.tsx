@@ -5,14 +5,15 @@ import { motion, useScroll, useSpring } from "framer-motion";
 export function ScrollProgress() {
     const { scrollYProgress } = useScroll();
     const scaleX = useSpring(scrollYProgress, {
-        stiffness: 100,
-        damping: 30,
-        restDelta: 0.001
+        stiffness: 120,
+        damping: 32,
+        restDelta: 0.001,
     });
 
     return (
         <motion.div
-            className="fixed top-0 left-0 right-0 h-1 bg-primary z-[100] shadow-lg shadow-primary/20"
+            aria-hidden="true"
+            className="fixed top-0 left-0 right-0 h-[2.5px] bg-gradient-to-r from-primary via-brass to-primary z-[60] pointer-events-none"
             style={{ scaleX, transformOrigin: "left" }}
         />
     );

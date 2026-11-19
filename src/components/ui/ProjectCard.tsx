@@ -32,14 +32,19 @@ export function ProjectCard({
             onMouseMove={handleMouseMove}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            className="group relative flex flex-col h-full rounded-2xl border border-border/70 bg-card overflow-hidden shadow-soft hover:shadow-lift hover:border-primary/40 transition-all duration-300"
+            className="group relative flex flex-col h-full rounded-2xl border border-border bg-card overflow-hidden shadow-soft hover:shadow-lift hover:border-primary/45 transition-all duration-300"
         >
+            {/* Garis aksen copper-brass di atas kartu saat hover */}
+            <div
+                aria-hidden="true"
+                className="pointer-events-none absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-primary via-brass to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20"
+            />
             {/* Dynamic Spotlight Glow mengikuti kursor */}
             {isHovered && (
                 <div
                     className="pointer-events-none absolute -inset-px rounded-2xl opacity-100 transition-opacity duration-300 -z-0"
                     style={{
-                        background: `radial-gradient(400px circle at ${mousePos.x}px ${mousePos.y}px, rgba(99, 102, 241, 0.12), transparent 80%)`,
+                        background: `radial-gradient(400px circle at ${mousePos.x}px ${mousePos.y}px, var(--primary-soft), transparent 80%)`,
                     }}
                 />
             )}

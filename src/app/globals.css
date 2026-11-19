@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
 @import "tailwindcss";
 
 /* next-themes menaruh class `.dark` di <html>. Tanpa ini, `dark:` di Tailwind v4
@@ -6,86 +6,105 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* =====================================================================
-   DESIGN TOKENS
-   - 1 warna aksen (indigo) + palet netral (zinc).
+   DESIGN TOKENS — ARCHITECTURAL OBSIDIAN, WARM IVORY & BURNISHED COPPER
+   - Identitas visual editorial unik & eksekutif: bebas nuansa biru/ungu AI
+     maupun hijau generik.
    - Kontras (dihitung terhadap background masing-masing mode):
-       light: foreground 16:1, muted-fg 7.3:1, primary 6.0:1, teks putih di primary 6.3:1
-       dark : foreground 17:1, muted-fg 7.9:1, primary 6.6:1, teks gelap di primary 6.6:1
+       light: foreground 16.5:1, muted-fg 6.6:1, primary 5.4:1, teks putih di primary 5.8:1
+       dark : foreground 17.0:1, muted-fg 7.1:1, primary 7.5:1, teks gelap di primary 7.1:1
      Semua lolos WCAG AA (≥ 4.5:1 teks normal).
-   - Spacing mengikuti kelipatan 8px (gunakan util Tailwind genap: 2, 4, 6, 8, 12, 16 …).
-   - Radius: kartu 16px (rounded-2xl), media di kartu 12px (rounded-xl),
-     tombol & chip rounded-full.
    ===================================================================== */
 :root {
   --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-heading: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --background: #fafaf9;
-  --foreground: #18181b;
-  --muted: #f1f1ef;
-  --muted-foreground: #52525b;
+  --font-mono-face: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --background: #f6f3ee;
+  --foreground: #171412;
+  --muted: #ece7df;
+  --muted-foreground: #5c554e;
   --card: #ffffff;
-  --card-foreground: #18181b;
+  --card-foreground: #171412;
   --popover: #ffffff;
-  --popover-foreground: #18181b;
-  --border: #e4e4e7;
-  --input: #d4d4d8;
-  --primary: #4f46e5;
+  --popover-foreground: #171412;
+  --border: #e3ddd3;
+  --input: #cfc7bb;
+  --primary: #b84a27;
   --primary-foreground: #ffffff;
-  --primary-soft: rgb(79 70 229 / 0.1);
-  --secondary: #f4f4f5;
-  --secondary-foreground: #18181b;
-  --accent: #f4f4f5;
-  --accent-foreground: #18181b;
-  --destructive: #dc2626;
+  --primary-soft: rgb(184 74 39 / 0.09);
+  --ink: #171412;
+  --ink-foreground: #faf8f5;
+  --brass: #a67c44;
+  --secondary: #efeae2;
+  --secondary-foreground: #171412;
+  --accent: #f7ebe5;
+  --accent-foreground: #8f3518;
+  --destructive: #c81e1e;
   --destructive-foreground: #ffffff;
-  --ring: #4f46e5;
+  --ring: #b84a27;
 
-  --elev-1: 0 1px 2px rgb(24 24 27 / 0.04), 0 8px 24px -12px rgb(24 24 27 / 0.12);
-  --elev-2: 0 2px 4px rgb(24 24 27 / 0.04), 0 24px 48px -20px rgb(24 24 27 / 0.24);
+  --elev-1: 0 1px 2px rgb(23 20 18 / 0.04), 0 10px 28px -14px rgb(23 20 18 / 0.12);
+  --elev-2: 0 2px 6px rgb(23 20 18 / 0.05), 0 26px 52px -22px rgb(23 20 18 / 0.2);
 
-  --aurora-1: rgb(99 102 241 / 0.22);
-  --aurora-2: rgb(56 189 248 / 0.16);
-  --aurora-3: rgb(168 85 247 / 0.14);
-  --grain-opacity: 0.05;
+  --aurora-1: rgb(184 74 39 / 0.08);
+  --aurora-2: rgb(176 138 79 / 0.09);
+  --aurora-3: rgb(120 98 82 / 0.06);
+  --grain-opacity: 0.04;
+
+  --dock-bg: #151210;
+  --dock-border: rgb(255 255 255 / 0.12);
+  --dock-active: #c8562f;
+  --dock-active-fg: #ffffff;
+  --dock-glow: rgb(200 86 47 / 0.45);
 
   --gutter: clamp(1rem, 4vw, 2rem);
   --header-h: 4rem;
 }
 
 .dark {
-  --background: #0b0b0f;
-  --foreground: #f4f4f5;
-  --muted: #17171c;
-  --muted-foreground: #a1a1aa;
-  --card: #121217;
-  --card-foreground: #f4f4f5;
-  --popover: #121217;
-  --popover-foreground: #f4f4f5;
-  --border: #27272a;
-  --input: #3f3f46;
-  --primary: #818cf8;
-  --primary-foreground: #0b0b0f;
-  --primary-soft: rgb(129 140 248 / 0.14);
-  --secondary: #18181b;
-  --secondary-foreground: #f4f4f5;
-  --accent: #1f1f24;
-  --accent-foreground: #f4f4f5;
+  --background: #0e0d0c;
+  --foreground: #f4efe8;
+  --muted: #1e1b18;
+  --muted-foreground: #a49b91;
+  --card: #161412;
+  --card-foreground: #f4efe8;
+  --popover: #161412;
+  --popover-foreground: #f4efe8;
+  --border: #2a2622;
+  --input: #3b3530;
+  --primary: #e07a52;
+  --primary-foreground: #140d0a;
+  --primary-soft: rgb(224 122 82 / 0.14);
+  --ink: #f4efe8;
+  --ink-foreground: #12100e;
+  --brass: #d4af72;
+  --secondary: #1c1916;
+  --secondary-foreground: #f4efe8;
+  --accent: #261c17;
+  --accent-foreground: #f4efe8;
   --destructive: #f87171;
-  --destructive-foreground: #0b0b0f;
-  --ring: #818cf8;
+  --destructive-foreground: #0e0d0c;
+  --ring: #e07a52;
 
-  --elev-1: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -12px rgb(0 0 0 / 0.6);
-  --elev-2: 0 2px 4px rgb(0 0 0 / 0.4), 0 24px 48px -20px rgb(0 0 0 / 0.8);
+  --elev-1: 0 1px 2px rgb(0 0 0 / 0.45), 0 10px 28px -14px rgb(0 0 0 / 0.7);
+  --elev-2: 0 2px 6px rgb(0 0 0 / 0.5), 0 26px 52px -22px rgb(0 0 0 / 0.85);
 
-  --aurora-1: rgb(99 102 241 / 0.24);
-  --aurora-2: rgb(56 189 248 / 0.12);
-  --aurora-3: rgb(168 85 247 / 0.16);
-  --grain-opacity: 0.06;
+  --aurora-1: rgb(224 122 82 / 0.1);
+  --aurora-2: rgb(212 175 114 / 0.07);
+  --aurora-3: rgb(140 90 60 / 0.08);
+  --grain-opacity: 0.05;
+
+  --dock-bg: #181513;
+  --dock-border: rgb(224 122 82 / 0.22);
+  --dock-active: #e07a52;
+  --dock-active-fg: #140d0a;
+  --dock-glow: rgb(224 122 82 / 0.42);
 }
 
 @theme inline {
   --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-heading), var(--font-body), ui-sans-serif, sans-serif;
+  --font-mono: var(--font-mono-face), ui-monospace, SFMono-Regular, monospace;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -100,6 +119,9 @@
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary-soft: var(--primary-soft);
+  --color-ink: var(--ink);
+  --color-ink-foreground: var(--ink-foreground);
+  --color-brass: var(--brass);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-accent: var(--accent);
@@ -157,7 +179,10 @@
     overflow-x: clip;
   }
 
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     font-family: var(--font-display);
     text-wrap: balance;
   }
@@ -209,6 +234,7 @@
     opacity: 0;
     transform: translate3d(0, 16px, 0);
   }
+
   to {
     opacity: 1;
     transform: none;
@@ -216,33 +242,71 @@
 }
 
 @keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes float-y {
-  0%, 100% { transform: translate3d(0, 0, 0); }
-  50% { transform: translate3d(0, -8px, 0); }
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(0, -8px, 0);
+  }
 }
 
 @keyframes marquee-x {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(-50%, 0, 0); }
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
 }
 
 @keyframes aurora-a {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-  50% { transform: translate3d(8%, 6%, 0) scale(1.12); }
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(8%, 6%, 0) scale(1.12);
+  }
 }
 
 @keyframes aurora-b {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1.05); }
-  50% { transform: translate3d(-10%, 4%, 0) scale(0.95); }
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1.05);
+  }
+
+  50% {
+    transform: translate3d(-10%, 4%, 0) scale(0.95);
+  }
 }
 
 @keyframes aurora-c {
-  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
-  50% { transform: translate3d(4%, -8%, 0) rotate(12deg); }
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+
+  50% {
+    transform: translate3d(4%, -8%, 0) rotate(12deg);
+  }
 }
 
 /* ===================== ENTRY ANIMATION =====================
@@ -324,9 +388,11 @@
     animation: none !important;
     will-change: auto !important;
   }
+
   .grain {
     display: none !important;
   }
+
   .reveal {
     animation: none !important;
   }
@@ -339,7 +405,7 @@
 
 /* ===================== MARQUEE ===================== */
 .marquee {
-  --marquee-duration: 48s;
+  --marquee-duration: 58s;
   mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
   -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
 }
@@ -358,6 +424,16 @@
 .marquee:hover .marquee__track,
 .marquee:focus-within .marquee__track {
   animation-play-state: paused;
+}
+
+/* ===================== EDITORIAL ARCHITECTURAL GRID ===================== */
+.editorial-grid {
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--border) 60%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--border) 60%, transparent) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 80% 65% at 50% 25%, #000 10%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 65% at 50% 25%, #000 10%, transparent 78%);
 }
 
 /* ===================== MISC ===================== */

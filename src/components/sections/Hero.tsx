@@ -4,7 +4,7 @@ import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, Sparkles, Code2, Smartphone } from "lucide-react";
-import { site, whatsappUrl } from "@/lib/site";
+import { site } from "@/lib/site";
 import { motion } from "framer-motion";
 
 export function Hero() {
@@ -49,8 +49,9 @@ export function Hero() {
             aria-label="Hero Pengenalan"
             className="relative w-full overflow-hidden section-y min-h-[calc(100svh-4rem)] flex flex-col justify-center"
         >
-            {/* Latar Belakang Aurora Mesh Sangat Halus + Grain */}
+            {/* Latar Belakang Arsitektural Halus: Grid + Warm Ambient + Grain */}
             <div className="aurora" aria-hidden="true">
+                <div className="absolute inset-0 editorial-grid opacity-75" />
                 <div className="aurora__blob aurora__blob--1" />
                 <div className="aurora__blob aurora__blob--2" />
                 <div className="aurora__blob aurora__blob--3" />
@@ -69,13 +70,18 @@ export function Hero() {
                             className="flex flex-col items-start"
                         >
                             {/* Status Badge */}
-                            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-border/80 bg-background/80 backdrop-blur-sm text-xs font-medium text-foreground mb-6 shadow-sm">
-                                <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true" />
-                                <span>Full Stack Developer</span>
+                            <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-border bg-card/85 backdrop-blur-sm text-xs font-medium text-foreground mb-6 shadow-soft">
+                                <span className="relative flex h-2 w-2" aria-hidden="true">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-60" />
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+                                </span>
+                                <span className="font-mono text-[11px] tracking-wide uppercase">Full Stack Developer</span>
+                                <span className="text-border">•</span>
+                                <span className="text-muted-foreground text-[11px]">Oke Web Indonesia</span>
                             </div>
 
                             {/* Nama & Posisi */}
-                            <h1 className="text-display font-display font-bold tracking-tight text-foreground leading-[1.05]">
+                            <h1 className="text-display font-display font-bold tracking-tight text-foreground leading-[1.04]">
                                 {site.name}
                             </h1>
 
@@ -88,11 +94,11 @@ export function Hero() {
                                 {site.tagline}
                             </p>
 
-                            {/* Call To Actions Nyata (Slide-in dari Bawah) */}
+                            {/* Call To Actions Nyata */}
                             <div className="mt-8 flex flex-wrap items-center gap-3 w-full sm:w-auto">
                                 <Link
                                     href="/projects"
-                                    className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-primary text-primary-foreground font-semibold text-sm shadow-lift hover:opacity-95 transition-all"
+                                    className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-ink text-ink-foreground font-semibold text-sm shadow-lift hover:bg-primary hover:text-primary-foreground transition-all duration-200"
                                 >
                                     <span>Lihat Proyek</span>
                                     <ArrowUpRight className="h-4 w-4" />
@@ -100,38 +106,38 @@ export function Hero() {
 
                                 <Link
                                     href="/contact"
-                                    className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full border border-border bg-background hover:bg-muted text-foreground font-medium text-sm transition-all shadow-sm"
+                                    className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full border border-border bg-card hover:border-primary/50 hover:bg-muted text-foreground font-medium text-sm transition-all shadow-soft"
                                 >
                                     <span>Hubungi Saya</span>
                                 </Link>
                             </div>
 
                             {/* Kesiapan Skema Kerja Perusahaan */}
-                            <div className="mt-7 pt-5 border-t border-border/60 w-full max-w-xl">
-                                <p className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground mb-2">
-                                    Kesiapan Kerja & Penempatan:
+                            <div className="mt-8 pt-6 border-t border-border/70 w-full max-w-xl">
+                                <p className="text-[11px] font-mono uppercase tracking-[0.14em] text-muted-foreground mb-2.5">
+                                    Kesiapan Kerja &amp; Penempatan
                                 </p>
                                 <div className="flex flex-wrap gap-1.5 text-[11px]">
-                                    <span className="px-2.5 py-1 rounded-full bg-secondary/80 text-foreground font-medium border border-border/50">
+                                    <span className="px-2.5 py-1 rounded-full bg-card text-foreground font-medium border border-border/80">
                                         Remote / WFH
                                     </span>
-                                    <span className="px-2.5 py-1 rounded-full bg-secondary/80 text-foreground font-medium border border-border/50">
+                                    <span className="px-2.5 py-1 rounded-full bg-card text-foreground font-medium border border-border/80">
                                         WFO
                                     </span>
-                                    <span className="px-2.5 py-1 rounded-full bg-secondary/80 text-foreground font-medium border border-border/50">
+                                    <span className="px-2.5 py-1 rounded-full bg-primary/10 text-primary font-semibold border border-primary/20">
                                         Full Time (PKWTT / PKWT)
                                     </span>
-                                    <span className="px-2.5 py-1 rounded-full bg-secondary/80 text-foreground font-medium border border-border/50">
+                                    <span className="px-2.5 py-1 rounded-full bg-card text-foreground font-medium border border-border/80">
                                         Part Time / Shift
                                     </span>
-                                    <span className="px-2.5 py-1 rounded-full bg-secondary/80 text-foreground font-medium border border-border/50">
+                                    <span className="px-2.5 py-1 rounded-full bg-card text-foreground font-medium border border-border/80">
                                         Magang
                                     </span>
-                                    <span className="px-2.5 py-1 rounded-full bg-secondary/80 text-foreground font-medium border border-border/50">
+                                    <span className="px-2.5 py-1 rounded-full bg-card text-foreground font-medium border border-border/80">
                                         Freelance
                                     </span>
-                                    <span className="px-2.5 py-1 rounded-full bg-secondary/80 text-foreground font-medium border border-border/50">
-                                        Outsourcing (Alih Daya)
+                                    <span className="px-2.5 py-1 rounded-full bg-card text-foreground font-medium border border-border/80">
+                                        Outsourcing
                                     </span>
                                 </div>
                             </div>
@@ -151,19 +157,19 @@ export function Hero() {
                             transition={{ duration: 0.55, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
                             className="relative w-full max-w-[340px] sm:max-w-[380px] aspect-[4/5] mx-auto lg:mx-0"
                         >
-                            {/* Frame Geometri / Gradient Di Belakang Foto */}
+                            {/* Frame Arsitektural Hangat Di Belakang Foto */}
                             <div
                                 aria-hidden="true"
-                                className="absolute -inset-3 rounded-[2.5rem] bg-gradient-to-tr from-primary/30 via-indigo-500/20 to-sky-400/20 blur-xl -z-10"
+                                className="absolute -inset-3 rounded-[2.5rem] bg-gradient-to-tr from-primary/20 via-brass/15 to-transparent blur-2xl -z-10"
                             />
                             <div
                                 aria-hidden="true"
-                                className="absolute -inset-1 rounded-[2rem] border border-primary/20 bg-gradient-to-b from-card to-muted -z-10 shadow-lift"
+                                className="absolute -inset-1.5 rounded-[2rem] border border-border bg-gradient-to-b from-card to-muted -z-10 shadow-lift"
                             />
 
                             {/* Kontainer Foto dengan Rasio 4:5, Border Halus, Shadow Lembut */}
                             <div
-                                className="relative w-full h-full rounded-[1.75rem] overflow-hidden border border-border/80 bg-muted/40 shadow-lift transition-transform duration-200 ease-out flex items-end justify-center"
+                                className="relative w-full h-full rounded-[1.75rem] overflow-hidden border border-border/90 bg-muted/40 shadow-lift transition-transform duration-200 ease-out flex items-end justify-center"
                                 style={
                                     !prefersReducedMotion && !isTouchDevice
                                         ? {
@@ -185,29 +191,29 @@ export function Hero() {
 
                             {/* Badge Melayang 1: TypeScript & Tailwind */}
                             <div
-                                className="absolute -top-3 -left-3 sm:-left-6 px-3.5 py-1.5 rounded-full border border-border/90 bg-background/90 backdrop-blur-md text-xs font-semibold text-foreground shadow-lift flex items-center gap-1.5 float-y z-20"
+                                className="absolute -top-3 left-2 sm:-left-6 px-3.5 py-1.5 rounded-full border border-border bg-card/95 backdrop-blur-md text-xs font-semibold text-foreground shadow-lift flex items-center gap-1.5 float-y z-20"
                                 style={{ "--d": "0ms" } as React.CSSProperties}
                             >
-                                <Sparkles className="h-3.5 w-3.5 text-amber-500" />
-                                <span>TypeScript & Tailwind</span>
+                                <Sparkles className="h-3.5 w-3.5 text-brass" />
+                                <span>TypeScript &amp; Golang</span>
                             </div>
 
                             {/* Badge Melayang 2: Next.js */}
                             <div
-                                className="absolute top-1/2 -right-4 sm:-right-6 px-3.5 py-1.5 rounded-full border border-border/90 bg-background/90 backdrop-blur-md text-xs font-semibold text-foreground shadow-lift flex items-center gap-1.5 float-y z-20"
+                                className="absolute top-1/2 right-2 sm:-right-6 px-3.5 py-1.5 rounded-full border border-border bg-card/95 backdrop-blur-md text-xs font-semibold text-foreground shadow-lift flex items-center gap-1.5 float-y z-20"
                                 style={{ "--d": "1200ms" } as React.CSSProperties}
                             >
-                                <Code2 className="h-3.5 w-3.5 text-indigo-500" />
+                                <Code2 className="h-3.5 w-3.5 text-primary" />
                                 <span>Next.js Full Stack</span>
                             </div>
 
                             {/* Badge Melayang 3: React Native */}
                             <div
-                                className="absolute -bottom-3 left-4 sm:left-6 px-3.5 py-1.5 rounded-full border border-border/90 bg-background/90 backdrop-blur-md text-xs font-semibold text-foreground shadow-lift flex items-center gap-1.5 float-y z-20"
+                                className="absolute -bottom-3 left-4 sm:left-6 px-3.5 py-1.5 rounded-full border border-border bg-card/95 backdrop-blur-md text-xs font-semibold text-foreground shadow-lift flex items-center gap-1.5 float-y z-20"
                                 style={{ "--d": "2400ms" } as React.CSSProperties}
                             >
-                                <Smartphone className="h-3.5 w-3.5 text-sky-500" />
-                                <span>React Native</span>
+                                <Smartphone className="h-3.5 w-3.5 text-foreground/80" />
+                                <span>React Native &amp; Kotlin</span>
                             </div>
                         </motion.div>
                     </div>
@@ -230,14 +236,14 @@ export function Hero() {
                     <div className="marquee mb-4">
                         <div className="marquee__track gap-4 pr-4">
                             {[
-                                { title: "Ponorogo Phone", img: "/ponorogophone.png" },
                                 { title: "NALARA AI Learning", img: "/itxlearning.png" },
-                                { title: "Rempang Melayu Perkasa", img: "/rempang.png" },
-                                { title: "Bernardus Insight", img: "/bernadus.png" },
-                                { title: "Peminjaman Alat UKK", img: "/peminjaman.png" },
-                                { title: "Dealer Hino Jakarta", img: "/hino.png" },
-                                { title: "Gibran CCTV", img: "/gibrancctv.png" },
+                                { title: "PrajaLinks Studio", img: "/prajalinks-perusahaan.png" },
+                                { title: "Desa Karangwaluh", img: "/desa-karangwaluh.png" },
+                                { title: "PrajaLinks Coffee & Bakery", img: "/prajalinks-kafe.png" },
                                 { title: "Ponorogo Phone", img: "/ponorogophone.png" },
+                                { title: "PrajaLinks Laundry & Care", img: "/prajalinks-laundry.png" },
+                                { title: "PrajaLinks Nightlife", img: "/prajalinks-diskotik.png" },
+                                { title: "NALARA AI Learning", img: "/itxlearning.png" },
                             ].map((p, idx) => (
                                 <div
                                     key={`m1-${idx}`}
@@ -245,8 +251,8 @@ export function Hero() {
                                 >
                                     <Image
                                         src={p.img}
-                                        alt={idx < 4 ? p.title : ""}
-                                        aria-hidden={idx >= 4 ? true : undefined}
+                                        alt={idx < 7 ? p.title : ""}
+                                        aria-hidden={idx >= 7 ? true : undefined}
                                         fill
                                         sizes="(max-width: 640px) 256px, 320px"
                                         className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -265,14 +271,14 @@ export function Hero() {
                     <div className="marquee">
                         <div className="marquee__track marquee__track--reverse gap-4 pr-4">
                             {[
-                                { title: "Ponorogo Phone", img: "/ponorogophone.png" },
-                                { title: "NALARA AI Learning", img: "/itxlearning.png" },
-                                { title: "Gibran CCTV", img: "/gibrancctv.png" },
-                                { title: "Peminjaman Alat UKK", img: "/peminjaman.png" },
-                                { title: "Dealer Hino Jakarta", img: "/hino.png" },
-                                { title: "Bernardus Insight", img: "/bernadus.png" },
+                                { title: "PrajaLinks Nightlife", img: "/prajalinks-diskotik.png" },
+                                { title: "PrajaLinks Laundry & Care", img: "/prajalinks-laundry.png" },
+                                { title: "Desa Karangwaluh", img: "/desa-karangwaluh.png" },
+                                { title: "PrajaLinks Coffee & Bakery", img: "/prajalinks-kafe.png" },
+                                { title: "PrajaLinks Studio", img: "/prajalinks-perusahaan.png" },
                                 { title: "Rempang Melayu Perkasa", img: "/rempang.png" },
-                                { title: "Ponorogo Phone", img: "/ponorogophone.png" },
+                                { title: "Bernardus Insight", img: "/bernadus.png" },
+                                { title: "PrajaLinks Nightlife", img: "/prajalinks-diskotik.png" },
                             ].map((p, idx) => (
                                 <div
                                     key={`m2-${idx}`}
@@ -280,8 +286,8 @@ export function Hero() {
                                 >
                                     <Image
                                         src={p.img}
-                                        alt={idx < 4 ? p.title : ""}
-                                        aria-hidden={idx >= 4 ? true : undefined}
+                                        alt={idx < 7 ? p.title : ""}
+                                        aria-hidden={idx >= 7 ? true : undefined}
                                         fill
                                         sizes="(max-width: 640px) 256px, 320px"
                                         className="object-cover transition-transform duration-500 group-hover:scale-105"

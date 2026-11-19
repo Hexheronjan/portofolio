@@ -52,8 +52,8 @@ export function CursorGlow() {
             const target = e.target as HTMLElement;
             if (target.closest('a') || target.closest('button')) {
                 ring.setAttribute('data-hovering', 'true');
-                ring.style.borderColor = 'rgba(190, 242, 100, 0.8)';
-                ring.style.backgroundColor = 'rgba(190, 242, 100, 0.1)';
+                ring.style.borderColor = 'rgba(224, 122, 82, 0.8)';
+                ring.style.backgroundColor = 'rgba(224, 122, 82, 0.1)';
             } else {
                 ring.setAttribute('data-hovering', 'false');
                 ring.style.borderColor = 'rgba(255, 255, 255, 0.3)';
