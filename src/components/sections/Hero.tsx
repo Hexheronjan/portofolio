@@ -151,13 +151,13 @@ export function Hero() {
 
             <div className="container-page relative z-10">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-10 items-center">
-                    {/* KOLOM KIRI: Editorial Identity + Interactive Capability Deck (Slide dari Kiri ke Tengah) */}
+                    {/* KOLOM KIRI: Editorial Identity + Interactive Capability Deck (Slide dari Kiri ke Tengah di Desktop; Statis di Mobile) */}
                     <div className="lg:col-span-7">
                         <motion.div
                             variants={leftContainerVariants}
                             initial="hidden"
                             animate={heroReady ? "visible" : "hidden"}
-                            className="flex flex-col items-start"
+                            className="hero-no-mobile-anim flex flex-col items-start"
                         >
                             {/* Status Pill */}
                             <motion.div
@@ -314,15 +314,15 @@ export function Hero() {
                             >
                                 <Link
                                     href="/projects"
-                                    className="group inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-ink text-ink-foreground font-semibold text-sm shadow-lift hover:bg-primary hover:text-primary-foreground transition-all duration-200 flex-1 sm:flex-none"
+                                    className="group inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 rounded-full bg-ink text-ink-foreground font-semibold text-xs sm:text-sm whitespace-nowrap shadow-lift hover:bg-primary hover:text-primary-foreground transition-all duration-200 flex-1 sm:flex-none"
                                 >
                                     <span>Eksplorasi Proyek</span>
-                                    <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                                    <ArrowUpRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                                 </Link>
 
                                 <Link
                                     href="/contact"
-                                    className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full border border-border bg-card hover:border-primary/60 hover:bg-muted text-foreground font-medium text-sm transition-all shadow-soft flex-1 sm:flex-none"
+                                    className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 rounded-full border border-border bg-card hover:border-primary/60 hover:bg-muted text-foreground font-medium text-xs sm:text-sm whitespace-nowrap transition-all shadow-soft flex-1 sm:flex-none"
                                 >
                                     <span>Hubungi Saya</span>
                                 </Link>
@@ -407,7 +407,7 @@ export function Hero() {
                                         : { opacity: 0, x: 56, scale: 0.95 }
                             }
                             transition={{ duration: 0.72, delay: 0.14, ease: [0.22, 1, 0.36, 1] }}
-                            className="relative w-full max-w-[300px] sm:max-w-[335px] mx-auto lg:mx-0 group"
+                            className="hero-no-mobile-anim relative w-full max-w-[300px] sm:max-w-[335px] mx-auto lg:mx-0 group"
                         >
                             {/* Halo Cahaya Studio Cyan-Copper di Belakang Monolith */}
                             <div

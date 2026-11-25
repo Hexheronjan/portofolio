@@ -19,11 +19,6 @@ const ScrollToTop = dynamic(
   { loading: () => null }
 );
 
-const MusicToggle = dynamic(
-  () => import("@/components/ui/MusicToggle").then((mod) => ({ default: mod.MusicToggle })),
-  { loading: () => null }
-);
-
 const WhatsAppFloat = dynamic(
   () => import("@/components/ui/WhatsAppFloat").then((mod) => ({ default: mod.WhatsAppFloat })),
   { loading: () => null }
@@ -148,14 +143,6 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {/* Audio latar: default pause, tanpa autoplay paksaan */}
-          <audio
-            id="bg-music"
-            src="/music.mp3"
-            loop
-            preload="none"
-          />
-
           <div className="flex flex-col min-h-screen">
             <ScrollProgress />
             <Navbar />
@@ -165,7 +152,6 @@ export default function RootLayout({
             <Footer />
           </div>
 
-          <MusicToggle />
           <WhatsAppFloat />
           <ScrollToTop />
           <MobileBottomNav />

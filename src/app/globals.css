@@ -398,6 +398,14 @@
   .reveal {
     animation: none !important;
   }
+
+  .hero-no-mobile-anim,
+  .hero-no-mobile-anim > * {
+    transform: none !important;
+    opacity: 1 !important;
+    transition: none !important;
+    animation: none !important;
+  }
 }
 
 .float-y {

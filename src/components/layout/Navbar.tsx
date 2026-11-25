@@ -7,7 +7,6 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Menu } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
-import { MusicToggle } from "@/components/ui/MusicToggle";
 import { MobileSidebar } from "@/components/layout/MobileSidebar";
 import { site, navItems } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -114,7 +113,7 @@ export function Navbar() {
                                 item.href === "/"
                                     ? pathname === "/"
                                     : pathname === item.href ||
-                                      pathname.startsWith(`${item.href}/`);
+                                    pathname.startsWith(`${item.href}/`);
                             return (
                                 <Link
                                     key={item.href}
@@ -127,8 +126,8 @@ export function Navbar() {
                                                 ? "text-[#140d0a] font-semibold"
                                                 : "text-ink-foreground font-semibold"
                                             : overDarkHero
-                                            ? "text-[#f4efe8]/75 hover:text-[#f4efe8]"
-                                            : "text-muted-foreground hover:text-foreground"
+                                                ? "text-[#f4efe8]/75 hover:text-[#f4efe8]"
+                                                : "text-muted-foreground hover:text-foreground"
                                     )}
                                 >
                                     {isActive && (
@@ -171,9 +170,8 @@ export function Navbar() {
                         </Link>
                     </div>
 
-                    {/* Kontrol Mobile: CV, Musik, Tema & Tombol Sidebar Drawer */}
+                    {/* Kontrol Mobile: Tema & Tombol Sidebar Drawer */}
                     <div className="flex md:hidden items-center gap-1.5">
-                        <MusicToggle variant="inline" onDarkSurface={overDarkHero} />
                         <ThemeToggle onDarkSurface={overDarkHero} />
                         <button
                             type="button"

@@ -22,7 +22,6 @@ import {
     type LucideIcon,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
-import { MusicToggle } from "@/components/ui/MusicToggle";
 import { site, navItems, mailtoUrl, whatsappUrl } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
@@ -193,7 +192,7 @@ export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
                                         item.href === "/"
                                             ? pathname === "/"
                                             : pathname === item.href ||
-                                              pathname.startsWith(`${item.href}/`);
+                                            pathname.startsWith(`${item.href}/`);
 
                                     return (
                                         <Link
@@ -282,18 +281,17 @@ export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
                                 </div>
                             </div>
 
-                            {/* Pengaturan Tampilan & Audio */}
+                            {/* Pengaturan Tampilan */}
                             <div className="flex items-center justify-between px-3.5 py-3 rounded-xl border border-border/80 bg-card/70">
                                 <div>
                                     <p className="text-xs font-semibold text-foreground">
-                                        Tema &amp; Musik Latar
+                                        Tema Tampilan
                                     </p>
                                     <p className="text-[11px] text-muted-foreground">
-                                        Sesuaikan kenyamanan tampilan
+                                        Mode terang atau gelap
                                     </p>
                                 </div>
                                 <div className="flex items-center gap-1.5">
-                                    <MusicToggle variant="inline" />
                                     <ThemeToggle />
                                 </div>
                             </div>
