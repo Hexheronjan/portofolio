@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Terminal, Code, Cpu, Sparkles, Check, Play, Copy, Layers, Activity } from "lucide-react";
+import { Terminal, Code, Cpu, Sparkles, Check, Play, Copy } from "lucide-react";
 import Link from "next/link";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 
@@ -69,6 +69,51 @@ echo "✨ Deploy berhasil ke Vercel Edge Network!"`,
     },
 ];
 
+function renderHighlightedLine(line: string) {
+    const trimmed = line.trim();
+    if (trimmed.startsWith("//") || trimmed.startsWith("#")) {
+        return <span className="text-[#8a8177] italic">{line}</span>;
+    }
+
+    const tokenRegex =
+        /("[^"]*"|\b(?:export|const|import|from|async|function|await|if|return|true|false|string|npm|run|echo)\b|\b\d+(?:\.\d+)?\b)/g;
+
+    const parts = line.split(tokenRegex);
+    return parts.map((part, idx) => {
+        if (!part) return null;
+        if (part.startsWith('"') && part.endsWith('"')) {
+            return (
+                <span key={idx} className="text-[#d4af72]">
+                    {part}
+                </span>
+            );
+        }
+        if (
+            /^(export|const|import|from|async|function|await|if|return|npm|run|echo)$/.test(
+                part
+            )
+        ) {
+            return (
+                <span key={idx} className="text-[#e07a52] font-semibold">
+                    {part}
+                </span>
+            );
+        }
+        if (/^(true|false|string|\d+(?:\.\d+)?)$/.test(part)) {
+            return (
+                <span key={idx} className="text-[#f3b59b]">
+                    {part}
+                </span>
+            );
+        }
+        return (
+            <span key={idx} className="text-[#e8e2d9]">
+                {part}
+            </span>
+        );
+    });
+}
+
 export function LiveTechShowcase() {
     const [activeTab, setActiveTab] = useState(0);
     const [copied, setCopied] = useState(false);
@@ -118,24 +163,36 @@ export function LiveTechShowcase() {
         }, 1800);
     };
 
+    const activeLines = files[activeTab].code.split("\n");
+
     return (
-        <section aria-label="Showcase Teknologi Interaktif" className="section-y relative border-t border-border/60 bg-muted/10 overflow-hidden">
+        <section
+            aria-label="Showcase Teknologi Interaktif"
+            className="section-y relative border-t border-border/60 bg-muted/15 overflow-hidden"
+        >
             {/* Latar Belakang Lingkaran Cahaya Halus */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-primary/5 blur-[120px] rounded-full pointer-events-none -z-10" />
 
             <div className="container-page">
                 {/* Header Section */}
-                <ScrollReveal direction="up" className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 mb-12">
+                <ScrollReveal
+                    direction="up"
+                    className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 mb-12"
+                >
                     <div className="max-w-2xl">
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-mono font-semibold uppercase tracking-[0.12em] mb-3">
                             <Sparkles className="h-3.5 w-3.5" />
                             <span>02 // Workspace Rekayasa</span>
                         </div>
                         <h2 className="text-h2 font-display font-bold tracking-tight text-foreground">
-                            Interaksi Kode & Ekosistem Nyata
+                            Interaksi Kode &amp;{" "}
+                            <span className="font-editorial text-primary font-normal text-[1.12em]">
+                                Ekosistem Nyata
+                            </span>
                         </h2>
                         <p className="text-muted-foreground text-sm sm:text-base mt-2">
-                            Melihat lebih dekat bagaimana saya menstrukturkan kode, arsitektur aplikasi AI, dan alur kerja otomatis yang rapi dan mudah dirawat.
+                            Melihat lebih dekat bagaimana saya menstrukturkan kode, arsitektur
+                            aplikasi AI, dan alur kerja otomatis yang rapi dan mudah dirawat.
                         </p>
                     </div>
 
@@ -143,8 +200,8 @@ export function LiveTechShowcase() {
                     <div className="flex items-center gap-3">
                         <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-card border border-border shadow-soft">
                             <span className="relative flex h-2.5 w-2.5">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-65"></span>
-                                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-65" />
+                                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary" />
                             </span>
                             <span className="text-xs font-mono font-medium text-foreground">
                                 Interactive Sandbox (Demo)
@@ -155,71 +212,93 @@ export function LiveTechShowcase() {
 
                 {/* Grid Interaktif: Jendela Code Editor (Kiri) & Live Simulator (Kanan) */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-                    
-                    {/* JENDELA CODE EDITOR MAC-STYLE (7 Kolom) */}
+                    {/* JENDELA CODE EDITOR OBSIDIAN (7 Kolom) */}
                     <ScrollReveal direction="left" className="lg:col-span-7 flex flex-col h-full">
-                        <div className="flex flex-col h-full rounded-2xl border border-border bg-card overflow-hidden shadow-lift transition-all duration-300">
-                        {/* Title Bar Editor */}
-                        <div className="flex items-center justify-between px-4 py-3 bg-muted/60 border-b border-border/80">
-                            {/* Window control buttons */}
-                            <div className="flex items-center gap-2">
-                                <span className="w-2.5 h-2.5 rounded-full bg-primary/75 inline-block" />
-                                <span className="w-2.5 h-2.5 rounded-full bg-brass/75 inline-block" />
-                                <span className="w-2.5 h-2.5 rounded-full bg-muted-foreground/35 inline-block" />
-                                <span className="text-xs font-mono text-muted-foreground ml-2 hidden sm:inline">
-                                    fauzan-workspace / src
-                                </span>
+                        <div className="flex flex-col h-full rounded-2xl border border-white/10 bg-[#141210] text-[#e8e2d9] overflow-hidden shadow-lift transition-all duration-300">
+                            {/* Title Bar Editor */}
+                            <div className="flex items-center justify-between px-4 py-3 bg-[#1c1916] border-b border-white/10">
+                                <div className="flex items-center gap-2">
+                                    <span className="w-2.5 h-2.5 rounded-full bg-[#e07a52] inline-block" />
+                                    <span className="w-2.5 h-2.5 rounded-full bg-[#d4af72] inline-block" />
+                                    <span className="w-2.5 h-2.5 rounded-full bg-white/25 inline-block" />
+                                    <span className="text-xs font-mono text-[#a49b91] ml-2 hidden sm:inline">
+                                        fauzan-workspace / src
+                                    </span>
+                                </div>
+
+                                {/* Tombol Salin */}
+                                <button
+                                    type="button"
+                                    onClick={handleCopy}
+                                    className="inline-flex items-center gap-1.5 text-xs text-[#a49b91] hover:text-[#f4efe8] transition-colors px-2.5 py-1 rounded-md hover:bg-white/10"
+                                    title="Salin kode"
+                                >
+                                    {copied ? (
+                                        <Check className="h-3.5 w-3.5 text-[#e07a52]" />
+                                    ) : (
+                                        <Copy className="h-3.5 w-3.5" />
+                                    )}
+                                    <span className="text-[11px] font-mono">
+                                        {copied ? "Tersalin!" : "Salin"}
+                                    </span>
+                                </button>
                             </div>
 
-                            {/* Tombol Salin */}
-                            <button
-                                type="button"
-                                onClick={handleCopy}
-                                className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded hover:bg-muted"
-                                title="Salin kode"
-                            >
-                                {copied ? <Check className="h-3.5 w-3.5 text-primary" /> : <Copy className="h-3.5 w-3.5" />}
-                                <span className="text-[11px] font-mono">{copied ? "Tersalin!" : "Salin"}</span>
-                            </button>
-                        </div>
+                            {/* File Tabs */}
+                            <div className="flex items-center overflow-x-auto bg-[#181513] border-b border-white/10 px-2 pt-2 scrollbar-none">
+                                {files.map((file, idx) => {
+                                    const Icon = file.icon;
+                                    const isActive = activeTab === idx;
+                                    return (
+                                        <button
+                                            key={file.name}
+                                            type="button"
+                                            onClick={() => setActiveTab(idx)}
+                                            className={`flex items-center gap-2 px-3.5 py-2 text-xs font-mono border-t-2 transition-all rounded-t-lg shrink-0 ${
+                                                isActive
+                                                    ? "bg-[#141210] text-[#f4efe8] font-semibold border-[#e07a52]"
+                                                    : "border-transparent text-[#8a8177] hover:text-[#f4efe8] hover:bg-white/5"
+                                            }`}
+                                        >
+                                            <Icon className="h-3.5 w-3.5 text-[#e07a52]" />
+                                            <span>{file.name}</span>
+                                        </button>
+                                    );
+                                })}
+                            </div>
 
-                        {/* File Tabs */}
-                        <div className="flex items-center overflow-x-auto bg-muted/30 border-b border-border/60 px-2 pt-2 scrollbar-none">
-                            {files.map((file, idx) => {
-                                const Icon = file.icon;
-                                const isActive = activeTab === idx;
-                                return (
-                                    <button
-                                        key={file.name}
-                                        type="button"
-                                        onClick={() => setActiveTab(idx)}
-                                        className={`flex items-center gap-2 px-3.5 py-2 text-xs font-mono border-t-2 border-transparent transition-all rounded-t-lg shrink-0 ${
-                                            isActive
-                                                ? "bg-card text-foreground font-semibold border-primary shadow-sm"
-                                                : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
-                                        }`}
-                                    >
-                                        <Icon className="h-3.5 w-3.5 text-primary" />
-                                        <span>{file.name}</span>
-                                    </button>
-                                );
-                            })}
+                            {/* Code Display dengan Nomor Baris & Syntax Highlighting */}
+                            <div className="p-4 sm:p-5 overflow-x-auto text-xs sm:text-[13px] font-mono leading-relaxed select-text flex-1">
+                                <div className="min-w-max">
+                                    {activeLines.map((line, i) => (
+                                        <div
+                                            key={i}
+                                            className="flex hover:bg-white/[0.03] rounded px-1 -mx-1"
+                                        >
+                                            <span
+                                                aria-hidden="true"
+                                                className="w-8 pr-4 text-right text-[#5c554e] select-none shrink-0"
+                                            >
+                                                {i + 1}
+                                            </span>
+                                            <span className="whitespace-pre">
+                                                {renderHighlightedLine(line)}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
-
-                        {/* Code Display dengan Baris Angka */}
-                        <div className="p-4 sm:p-6 overflow-x-auto bg-card text-xs sm:text-sm font-mono leading-relaxed text-foreground select-text flex-1">
-                            <pre className="text-muted-foreground/90 whitespace-pre">
-                                <code>{files[activeTab].code}</code>
-                            </pre>
-                        </div>
-                    </div>
-                </ScrollReveal>
+                    </ScrollReveal>
 
                     {/* INTERACTIVE TERMINAL & LIVE METRICS (5 Kolom) */}
-                    <ScrollReveal direction="right" delay={0.1} className="lg:col-span-5 flex flex-col gap-6 justify-between">
-                        
+                    <ScrollReveal
+                        direction="right"
+                        delay={0.1}
+                        className="lg:col-span-5 flex flex-col gap-6 justify-between"
+                    >
                         {/* Terminal Box */}
-                        <div className="rounded-2xl border border-border/80 bg-[#141210] text-[#e8e2d9] p-5 shadow-lift flex flex-col flex-1">
+                        <div className="rounded-2xl border border-white/10 bg-[#141210] text-[#e8e2d9] p-5 shadow-lift flex flex-col flex-1">
                             <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
                                 <div className="flex items-center gap-2">
                                     <Terminal className="h-4 w-4 text-[#e07a52]" />
@@ -272,7 +351,10 @@ export function LiveTechShowcase() {
 
                         {/* Kartu Ringkasan Proyek Terbaru: NALARA */}
                         <div className="relative p-5 rounded-2xl border border-border bg-card shadow-soft overflow-hidden">
-                            <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-primary via-brass to-transparent" aria-hidden="true" />
+                            <div
+                                className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-primary via-brass to-transparent"
+                                aria-hidden="true"
+                            />
                             <div className="flex items-center justify-between mb-2">
                                 <span className="text-[11px] font-mono font-semibold text-primary uppercase">
                                     Proyek Terbaru
@@ -286,7 +368,8 @@ export function LiveTechShowcase() {
                                 NALARA AI Learning Intelligence
                             </h3>
                             <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                                Platform adaptif dengan Think First Socratic Tutor, peta graf prasyarat, dan simulasi soal cerdas.
+                                Platform adaptif dengan Think First Socratic Tutor, peta graf
+                                prasyarat, dan simulasi soal cerdas.
                             </p>
 
                             <div className="mt-4 flex items-center justify-between">
@@ -306,9 +389,7 @@ export function LiveTechShowcase() {
                                 </a>
                             </div>
                         </div>
-
                     </ScrollReveal>
-
                 </div>
             </div>
         </section>

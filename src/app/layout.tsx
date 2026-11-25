@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     siteName: site.name,
     images: [
       {
-        url: "/portrait-hero.png",
+        url: "/portrait-hero.jpg",
         width: 1200,
         height: 630,
         alt: `${site.name} — ${site.role}`,
@@ -66,7 +66,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: `${site.name} — ${site.role}`,
     description: site.tagline,
-    images: ["/portrait-hero.png"],
+    images: ["/portrait-hero.jpg"],
   },
   robots: {
     index: true,

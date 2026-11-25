@@ -71,54 +71,63 @@ export function ScrollReveal({
         const isAtBottom = () =>
             window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 24;
 
-        const rect = el.getBoundingClientRect();
-        // Jika elemen sudah berada jelas di dalam layar awal saat halaman pertama dibuka
-        if (rect.top < window.innerHeight * 0.82 && rect.bottom > 0) {
-            setPhase("visible");
-            return;
-        }
-
-        // Elemen berada di bawah area pandang: tahan di posisi awal sampai pengguna scroll ke sini
+        // Mulai dalam keadaan hidden agar animasi slide berjalan halus,
+        // lalu tunggu 1 frame agar scroll reset (top: 0) selesai sebelum mengukur posisi.
         setPhase("hidden");
 
         let revealed = false;
+        let raf1 = 0;
+        let raf2 = 0;
+        let observer: IntersectionObserver | null = null;
+
         const triggerReveal = () => {
             if (revealed) return;
             revealed = true;
-            // Pastikan browser sempat mem-paint state `hidden` sebelum mentransisikan ke `visible`
-            requestAnimationFrame(() => {
+            raf2 = requestAnimationFrame(() => {
                 setPhase("visible");
             });
         };
 
-        const observer =
-            typeof IntersectionObserver !== "undefined"
-                ? new IntersectionObserver(
-                      (entries) => {
-                          for (const entry of entries) {
-                              if (entry.isIntersecting) {
-                                  triggerReveal();
-                                  if (once) observer?.disconnect();
-                              }
-                          }
-                      },
-                      { threshold: 0.05, rootMargin: "0px 0px -16% 0px" }
-                  )
-                : null;
-
-        observer?.observe(el);
-
         const onScroll = () => {
             if (revealed) return;
             const r = el.getBoundingClientRect();
-            if (r.top < window.innerHeight * 0.84 || isAtBottom()) {
+            if (r.top < window.innerHeight * 0.86 || isAtBottom()) {
                 triggerReveal();
                 observer?.disconnect();
             }
         };
 
-        window.addEventListener("scroll", onScroll, { passive: true });
+        raf1 = requestAnimationFrame(() => {
+            const rect = el.getBoundingClientRect();
+            // Jika elemen sudah berada di layar awal setelah scroll berada di atas,
+            // langsung mainkan animasi slide masuk (dari hidden -> visible)
+            if (rect.top < window.innerHeight * 0.86 && rect.bottom > 0) {
+                triggerReveal();
+                return;
+            }
+
+            observer =
+                typeof IntersectionObserver !== "undefined"
+                    ? new IntersectionObserver(
+                          (entries) => {
+                              for (const entry of entries) {
+                                  if (entry.isIntersecting) {
+                                      triggerReveal();
+                                      if (once) observer?.disconnect();
+                                  }
+                              }
+                          },
+                          { threshold: 0.05, rootMargin: "0px 0px -14% 0px" }
+                      )
+                    : null;
+
+            observer?.observe(el);
+            window.addEventListener("scroll", onScroll, { passive: true });
+        });
+
         return () => {
+            cancelAnimationFrame(raf1);
+            cancelAnimationFrame(raf2);
             observer?.disconnect();
             window.removeEventListener("scroll", onScroll);
         };
@@ -188,51 +197,59 @@ export function StaggerContainer({
         const isAtBottom = () =>
             window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 24;
 
-        const rect = el.getBoundingClientRect();
-        if (rect.top < window.innerHeight * 0.82 && rect.bottom > 0) {
-            setPhase("visible");
-            return;
-        }
-
         setPhase("hidden");
 
         let done = false;
+        let raf1 = 0;
+        let raf2 = 0;
+        let observer: IntersectionObserver | null = null;
+
         const trigger = () => {
             if (done) return;
             done = true;
-            requestAnimationFrame(() => {
+            raf2 = requestAnimationFrame(() => {
                 setPhase("visible");
             });
         };
 
-        const observer =
-            typeof IntersectionObserver !== "undefined"
-                ? new IntersectionObserver(
-                      (entries) => {
-                          for (const entry of entries) {
-                              if (entry.isIntersecting) {
-                                  trigger();
-                                  observer?.disconnect();
-                              }
-                          }
-                      },
-                      { threshold: 0.04, rootMargin: "0px 0px -16% 0px" }
-                  )
-                : null;
-
-        observer?.observe(el);
-
         const onScroll = () => {
             if (done) return;
             const r = el.getBoundingClientRect();
-            if (r.top < window.innerHeight * 0.84 || isAtBottom()) {
+            if (r.top < window.innerHeight * 0.86 || isAtBottom()) {
                 trigger();
                 observer?.disconnect();
             }
         };
 
-        window.addEventListener("scroll", onScroll, { passive: true });
+        raf1 = requestAnimationFrame(() => {
+            const rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight * 0.86 && rect.bottom > 0) {
+                trigger();
+                return;
+            }
+
+            observer =
+                typeof IntersectionObserver !== "undefined"
+                    ? new IntersectionObserver(
+                          (entries) => {
+                              for (const entry of entries) {
+                                  if (entry.isIntersecting) {
+                                      trigger();
+                                      observer?.disconnect();
+                                  }
+                              }
+                          },
+                          { threshold: 0.04, rootMargin: "0px 0px -14% 0px" }
+                      )
+                    : null;
+
+            observer?.observe(el);
+            window.addEventListener("scroll", onScroll, { passive: true });
+        });
+
         return () => {
+            cancelAnimationFrame(raf1);
+            cancelAnimationFrame(raf2);
             observer?.disconnect();
             window.removeEventListener("scroll", onScroll);
         };

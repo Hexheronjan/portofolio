@@ -1,9 +1,10 @@
 "use client";
 
-import { Cpu, Smartphone, Globe, Database, Server, Palette, Cloud, Terminal, Code2 } from "lucide-react";
+import { Cpu, Smartphone, Globe, Database, Server, Palette, Cloud, Terminal, Code2, Layers } from "lucide-react";
 
 const techItems = [
     { name: "Next.js & React", icon: Globe, highlight: "Full Stack Web" },
+    { name: "Laravel & PHP", icon: Layers, highlight: "Full Stack Backend" },
     { name: "Go (Golang)", icon: Server, highlight: "High-Perf API" },
     { name: "Kotlin & Java", icon: Smartphone, highlight: "Android & OOP" },
     { name: "C & C++", icon: Terminal, highlight: "Systems & Logic" },
@@ -16,7 +17,10 @@ const techItems = [
 
 export function TechStream() {
     return (
-        <div className="w-full py-8 border-y border-border/70 bg-card/55 overflow-hidden relative" aria-label="Teknologi Inti">
+        <div
+            className="w-full py-6 border-y border-white/10 bg-[#141210] text-[#f4efe8] overflow-hidden relative"
+            aria-label="Teknologi Inti"
+        >
             <div className="marquee">
                 <div className="marquee__track gap-3.5 pr-3.5">
                     {[...techItems, ...techItems].map((item, idx) => {
@@ -24,16 +28,16 @@ export function TechStream() {
                         return (
                             <div
                                 key={idx}
-                                className="inline-flex items-center gap-3 px-4 py-2.5 rounded-full border border-border bg-card shadow-soft shrink-0 hover:border-primary/50 transition-colors"
+                                className="inline-flex items-center gap-3 px-4 py-2.5 rounded-full border border-white/12 bg-white/[0.04] backdrop-blur-sm shrink-0 hover:border-[#e07a52]/60 hover:bg-white/[0.08] transition-colors"
                             >
-                                <div className="p-1.5 rounded-full bg-primary/10 text-primary">
+                                <div className="p-1.5 rounded-full bg-[#e07a52]/15 text-[#e07a52]">
                                     <Icon className="h-4 w-4" />
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="text-xs font-semibold text-foreground tracking-tight">
+                                    <span className="text-xs font-semibold text-[#f4efe8] tracking-tight">
                                         {item.name}
                                     </span>
-                                    <span className="text-[10px] font-mono text-muted-foreground">
+                                    <span className="text-[10px] font-mono text-[#a49b91]">
                                         {item.highlight}
                                     </span>
                                 </div>

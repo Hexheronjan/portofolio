@@ -10,7 +10,7 @@ export const site = {
     currentRole: "Full Stack Developer di Oke Web Indonesia",
     /** Satu kalimat value proposition. */
     tagline:
-        "Full Stack Developer di Oke Web Indonesia. Saya membangun website bisnis dan aplikasi web & mobile end-to-end, dari antarmuka, API, hingga database, yang cepat dan mudah dikelola klien.",
+        "Saya membangun website bisnis dan aplikasi web & mobile end-to-end, dari antarmuka, API, hingga database, yang cepat dan mudah dikelola klien.",
     location: "Ponorogo, Indonesia",
     url: "https://portofolio-kappa-smoky.vercel.app", // TODO: ganti jika memakai domain kustom
     locale: "id_ID",
