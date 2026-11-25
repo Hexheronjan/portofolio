@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence, useMotionValue, animate } from "framer-motion";
 
 /**
@@ -25,10 +26,12 @@ interface PreloaderProps {
 }
 
 export function Preloader({ onComplete }: PreloaderProps) {
-    // Mulai dengan true agar Preloader langsung menutup layar sejak first paint (SSR)
-    // sebelum Navbar/konten muncul. Jika sesi sudah melihat intro, aturan CSS
-    // `html[data-intro="skip"] .preloader-root { display: none }` menyembunyikannya instan.
-    const [isVisible, setIsVisible] = useState(true);
+    const pathname = usePathname();
+    const isHomePage = pathname === "/";
+    // Mulai dengan true di Beranda agar Preloader langsung menutup layar sejak first paint (SSR)
+    // di root stacking context (di atas Navbar & MobileBottomNav). Jika sesi sudah melihat intro,
+    // aturan CSS `html[data-intro="skip"] .preloader-root { display: none }` menyembunyikannya instan.
+    const [isVisible, setIsVisible] = useState(isHomePage);
     const [isExiting, setIsExiting] = useState(false);
     const counterRef = useRef<HTMLSpanElement>(null);
     const progressBarRef = useRef<HTMLDivElement>(null);
@@ -55,7 +58,7 @@ export function Preloader({ onComplete }: PreloaderProps) {
     }, [onComplete]);
 
     useEffect(() => {
-        if (!PRELOADER_CONFIG.ENABLED) {
+        if (!isHomePage || !PRELOADER_CONFIG.ENABLED) {
             setIsVisible(false);
             if (onComplete) onComplete();
             return;
@@ -144,9 +147,9 @@ export function Preloader({ onComplete }: PreloaderProps) {
             window.removeEventListener("keydown", handleKeyDown);
             document.body.style.overflow = "";
         };
-    }, [finishIntro, onComplete, progressMotion]);
+    }, [finishIntro, isHomePage, onComplete, progressMotion]);
 
-    if (!isVisible) return null;
+    if (!isHomePage || !isVisible) return null;
 
     return (
         <AnimatePresence>

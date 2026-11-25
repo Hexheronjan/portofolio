@@ -403,8 +403,8 @@ export function Hero() {
                                 heroReady
                                     ? { opacity: 1, x: 0, scale: 1 }
                                     : prefersReducedMotion
-                                    ? { opacity: 1, x: 0, scale: 1 }
-                                    : { opacity: 0, x: 56, scale: 0.95 }
+                                        ? { opacity: 1, x: 0, scale: 1 }
+                                        : { opacity: 0, x: 56, scale: 0.95 }
                             }
                             transition={{ duration: 0.72, delay: 0.14, ease: [0.22, 1, 0.36, 1] }}
                             className="relative w-full max-w-[300px] sm:max-w-[335px] mx-auto lg:mx-0 group"

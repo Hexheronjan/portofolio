@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/layout/Navbar";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Footer } from "@/components/layout/Footer";
+import { Preloader } from "@/components/ui/Preloader";
 import { site } from "@/lib/site";
 import dynamic from "next/dynamic";
 
@@ -168,6 +169,7 @@ export default function RootLayout({
           <WhatsAppFloat />
           <ScrollToTop />
           <MobileBottomNav />
+          <Preloader />
         </ThemeProvider>
       </body>
     </html>
